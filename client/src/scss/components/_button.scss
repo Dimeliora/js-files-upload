@@ -1,0 +1,18 @@
+.button {
+    padding: 8px 20px;
+    border: 2px solid transparent;
+    border-radius: 40px;
+    background-color: $blue;
+    color: #ffffff;
+    font-size: 1.6rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease-out;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $blue;
+        background-color: #ffffff;
+        color: $blue;
+    }
+}

@@ -12,5 +12,41 @@
         <link rel="stylesheet" href="/styles.css" />
         <script src="/script.js" defer></script>
     </head>
-    <body></body>
+    <body>
+        <div class="container">
+            <div class="dashboard">
+                <div class="dashboard__header">
+                    <div class="dashboard__user">
+                        <div class="dashboard__avatar">
+                            <img
+                                src="/images/user-avatar.webp"
+                                alt="User avatar image"
+                                class="dashboard__avatar-image"
+                            />
+                        </div>
+                        <div class="dashboard__user-info">
+                            <div class="dashboard__username">Laura Eddy</div>
+                            <div class="dashboard__email">
+                                info@lauraeddy.com.au
+                            </div>
+                        </div>
+                    </div>
+                    <a
+                        href="/"
+                        class="dashboard__link"
+                        title="Dashboard"
+                        aria-label="Dashboard"
+                    >
+                        <svg class="dashboard__link-icon">
+                            <use href="/icons/icon-sprite.svg#settings" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="dashboard__storage"></div>
+                <div class="dashboard__plan"></div>
+                <div class="dashboard__settings"></div>
+                <div class="dashboard__footer"></div>
+            </div>
+        </div>
+    </body>
 </html>

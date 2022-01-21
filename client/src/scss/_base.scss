@@ -32,13 +32,10 @@ button:focus {
 }
 
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     max-width: 807px;
     min-height: 100vh;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 60px 20px;
 }
 
 .visually-hidden {

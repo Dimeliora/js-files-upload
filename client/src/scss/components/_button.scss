@@ -15,4 +15,10 @@
         background-color: #ffffff;
         color: $blue;
     }
+
+    &--secondary {
+        border-color: $gray-dark;
+        background-color: #ffffff;
+        color: $black;
+    }
 }

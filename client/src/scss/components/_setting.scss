@@ -1,0 +1,15 @@
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+
+    &__info {
+        font-size: 1.6rem;
+    }
+
+    &__title {
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+}

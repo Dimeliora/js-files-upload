@@ -1,0 +1,35 @@
+.upload {
+    &__dropzone {
+        padding: 32px;
+    }
+
+    &__dropzone-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        border: 2px dashed $gray;
+        border-radius: 24px;
+        cursor: pointer;
+        transition: border-color 0.3s ease-out;
+
+        &:hover,
+        &:focus-visible {
+            border-color: $blue;
+            outline: none;
+
+            .upload__dropzone-text {
+                color: $blue;
+            }
+        }
+    }
+
+    &__dropzone-text {
+        max-width: 200px;
+        color: $gray-dark;
+        font-size: 2rem;
+        line-height: 2.6rem;
+        text-align: center;
+        transition: color 0.3s ease-out;
+    }
+}

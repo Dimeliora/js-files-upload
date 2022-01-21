@@ -14,7 +14,7 @@
     </head>
     <body>
         <div class="container">
-            <div class="dashboard">
+            <!-- <div class="dashboard paper">
                 <div class="dashboard__header">
                     <div class="dashboard__user">
                         <div class="dashboard__avatar">
@@ -32,13 +32,13 @@
                         </div>
                     </div>
                     <a
-                        href="/"
-                        class="dashboard__link"
-                        title="Dashboard"
-                        aria-label="Dashboard"
+                        href="#new-upload"
+                        class="dashboard__link home-link home-link--active"
+                        title="Upload file"
+                        aria-label="Upload file"
                     >
-                        <svg class="dashboard__link-icon">
-                            <use href="/icons/icon-sprite.svg#settings" />
+                        <svg class="home-link__icon">
+                            <use href="/icons/icon-sprite.svg#upload" />
                         </svg>
                     </a>
                 </div>
@@ -90,6 +90,31 @@
                         <use href="/icons/icon-sprite.svg#tick" />
                     </svg>
                     <div class="dashboard__sync">Last synced: 3 mins ago</div>
+                </div>
+            </div> -->
+            <div class="upload paper">
+                <div class="upload__header header">
+                    <nav class="header__navigation">
+                        <a
+                            href="#new-upload"
+                            class="header__link header__link--active"
+                            >New Upload</a
+                        >
+                        <a href="#recent" class="header__link">Recent</a>
+                    </nav>
+                    <a href="#" class="header__home home-link">
+                        <svg class="home-link__icon">
+                            <use href="/icons/icon-sprite.svg#settings" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="upload__dropzone">
+                    <input type="file" style="display: none" />
+                    <div class="upload__dropzone-inner" tabindex="0">
+                        <div class="upload__dropzone-text">
+                            Click to browse or drag and drop your files
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

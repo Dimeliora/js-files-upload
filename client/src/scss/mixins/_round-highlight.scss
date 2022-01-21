@@ -1,0 +1,27 @@
+@mixin round-highlight($color, $size) {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: $size;
+        height: $size;
+        border-radius: 50%;
+        background-color: $color;
+        transition: transform 0.1s ease-out;
+    }
+
+    &:hover,
+    &:focus-visible {
+        &::after {
+            transform: translate(-50%, -50%) scale(1);
+
+            @media screen and (max-width: $md) {
+                transform: translate(-50%, -50%) scale(0);
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+.file {
+    display: grid;
+    grid-template-columns: 30px 1fr 40px 60px 30px;
+    column-gap: 10px;
+    align-items: center;
+
+    &__icon {
+        align-self: start;
+        width: 20px;
+        height: 20px;
+        fill: $blue;
+    }
+
+    &__info {
+        overflow: hidden;
+    }
+    
+    &__name {
+        margin-bottom: 5px;
+        font-size: 1.8rem;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &__upload-time {
+        font-size: 1.4rem;
+    }
+
+    &__retry {
+        visibility: hidden;
+        justify-self: center;
+
+        &--visible {
+            visibility: visible;
+        }
+    }
+
+    &__size {
+        padding: 4px 8px;
+        border: 2px solid $gray-dark;
+        border-radius: 2px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-align: center;
+
+        &--error {
+            border-color: $red;
+            color: $red;
+        }
+    }
+}

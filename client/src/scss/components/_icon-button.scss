@@ -1,0 +1,21 @@
+.icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    @include round-highlight($blue-transparent, 30px);
+
+    &__icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    &--danger {
+        .icon-button__icon {
+            fill: $red;
+        }
+    }
+}

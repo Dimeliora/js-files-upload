@@ -1,0 +1,15 @@
+.recent {
+    &__list {
+        list-style-type: none;
+    }
+
+    &__list-item {
+        padding: 16px 0;
+        border-bottom: 1px solid $gray-light;
+    }
+
+    &__view-all {
+        padding: 16px 0 20px;
+        text-align: center;
+    }
+}

@@ -24,9 +24,7 @@ export const createUploadHTML = () => {
             <div class="upload__dropzone">
                 <input type="file" style="display: none" multiple data-upload-input />
                 <div class="upload__dropzone-inner" tabindex="0" data-upload-dropzone>
-                    <div class="upload__dropzone-text">
-                        Click to browse or drag and drop your files
-                    </div>
+                    Click to browse or <br/> drag and drop your files
                 </div>
             </div>
         </div>

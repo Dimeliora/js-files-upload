@@ -1,6 +1,6 @@
 .button {
     @include button-like();
-    background-color: $blue;
+    background-color: $purple;
     color: #ffffff;
 
     &--secondary {
@@ -11,8 +11,8 @@
 
     &:hover,
     &:focus-visible {
-        border-color: $blue;
+        border-color: $purple;
         background-color: transparent;
-        color: $blue;
+        color: $purple;
     }
 }

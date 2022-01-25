@@ -19,14 +19,14 @@
         text-decoration: none;
 
         &--active {
-            background-color: $blue;
+            background-color: $purple;
             color: #ffffff;
         }
 
         &:hover:not(.header__link--active),
         &:focus-visible:not(.header__link--active) {
-            border-color: $blue;
-            color: $blue;
+            border-color: $purple;
+            color: $purple;
         }
 
         & + .header__link {

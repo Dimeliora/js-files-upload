@@ -70,9 +70,9 @@
     &__plan-notice {
         position: relative;
         padding: 8px 12px;
-        border: 2px solid $blue;
+        border: 2px solid $purple;
         border-radius: 4px;
-        color: $blue;
+        color: $purple;
         font-size: 1.4rem;
         font-weight: 700;
         line-height: 1;
@@ -87,8 +87,8 @@
             transform: translate(-50%, -50%) rotate(45deg);
             width: 8px;
             height: 8px;
-            border-bottom: 2px solid $blue;
-            border-left: 2px solid $blue;
+            border-bottom: 2px solid $purple;
+            border-left: 2px solid $purple;
             background-color: #ffffff;
         }
     }

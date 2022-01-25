@@ -13,8 +13,8 @@
     &--filled,
     &:hover,
     &:focus-visible {
-        border-color: $blue;
-        background-color: $blue;
+        border-color: $purple;
+        background-color: $purple;
 
         .home-link__icon {
             fill: #ffffff;
@@ -28,7 +28,7 @@
             background-color: #ffffff;
 
             .home-link__icon {
-                fill: $blue;
+                fill: $purple;
             }
         }
     }
@@ -36,7 +36,7 @@
     &__icon {
         width: 16px;
         height: 16px;
-        fill: $blue;
+        fill: $purple;
         transition: fill 0.3s ease-out;
     }
 }

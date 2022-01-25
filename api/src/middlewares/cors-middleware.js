@@ -1,4 +1,4 @@
-const corsMW = (_, res, next) => {
+module.exports = (_, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader(
@@ -8,5 +8,3 @@ const corsMW = (_, res, next) => {
 
     next();
 };
-
-exports.corsMW = corsMW;

@@ -1,10 +1,8 @@
-const { connect } = require('mongoose');
 require('dotenv/config');
+const { connect } = require('mongoose');
 
-const dbConnect = async () =>
+module.exports = async () =>
     connect(process.env.DB_CONNECTION_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
-
-exports.dbConnect = dbConnect;

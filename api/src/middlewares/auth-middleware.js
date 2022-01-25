@@ -1,11 +1,10 @@
 require('dotenv/config');
 const jwt = require('jsonwebtoken');
 
-const authMW = (req, res, next) => {
-    if ((req.method = 'OPTIONS')) {
+module.exports = (req, res, next) => {
+    if ((req.method === 'OPTIONS')) {
         return next();
     }
-
     try {
         const [_, token] = req.headers.authorization.split(' ');
         if (!token) {
@@ -21,5 +20,3 @@ const authMW = (req, res, next) => {
         return res.status(400).json({ msg: 'Authorization failed' });
     }
 };
-
-exports.authMW = authMW;

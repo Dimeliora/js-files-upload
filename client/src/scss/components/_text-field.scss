@@ -1,4 +1,5 @@
 .text-field {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 13px 24px;
@@ -7,6 +8,15 @@
     background-color: #ffffff;
     box-shadow: 0px 0 14px $blue-transparent;
     transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+
+    &--invalid {
+        border-color: $red;
+
+        .text-field__error {
+            visibility: visible;
+            color: $red;
+        }
+    }
 
     &:focus-within {
         border-color: $purple;
@@ -53,5 +63,15 @@
         &:focus {
             outline: none;
         }
+    }
+
+    &__error {
+        position: absolute;
+        bottom: 0;
+        left: 58px;
+        visibility: hidden;
+        color: $red;
+        font-size: 1.2rem;
+        text-transform: none;
     }
 }

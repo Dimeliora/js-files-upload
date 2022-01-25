@@ -20,6 +20,7 @@ export const createLoginFormHTML = () => {
                     placeholder="Enter Email"
                     data-login-email
                 />
+                <div class="text-field__error"></div>
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -38,6 +39,7 @@ export const createLoginFormHTML = () => {
                     placeholder="Enter Password"
                     data-login-password
                 />
+                <div class="text-field__error"></div>
             </div>
             <div class="auth-form__controls">
                 <button class="auth-form__submit button" type="submit">
@@ -79,6 +81,7 @@ export const createRegisterFormHTML = () => {
                     placeholder="Enter Name"
                     data-register-username
                 />
+                <div class="text-field__error"></div>
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -95,6 +98,7 @@ export const createRegisterFormHTML = () => {
                     placeholder="Enter Email"
                     data-register-email
                 />
+                <div class="text-field__error"></div>
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -113,6 +117,7 @@ export const createRegisterFormHTML = () => {
                     placeholder="Enter Password"
                     data-register-password
                 />
+                <div class="text-field__error"></div>
             </div>
             <div class="auth-form__controls">
                 <button

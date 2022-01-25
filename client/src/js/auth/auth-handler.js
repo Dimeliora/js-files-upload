@@ -4,12 +4,14 @@ import {
     createRegisterFormHTML,
 } from './auth-template-creators';
 import {
-    getSignInFormSwitchHandler,
-    getSignUpFormSwitchHandler,
-    getSignInFormTransitionHandler,
-    getSignUpFormTransitionHandler,
+    getLoginFormSwitchHandler,
+    getRegisterFormSwitchHandler,
+    getLoginFormTransitionHandler,
+    getRegisterFormTransitionHandler,
 } from './auth-view-updates';
 import { getAuthElms } from './auth-dom-elements';
+
+
 
 export const authHandler = (appContainer) => {
     appContainer.innerHTML = createAuthHTML();
@@ -28,23 +30,23 @@ export const authHandler = (appContainer) => {
 
     const authElms = getAuthElms(appContainer);
 
-    authElms.signInFormSwitchElm.addEventListener(
+    authElms.loginFormSwitchElm.addEventListener(
         'click',
-        getSignInFormSwitchHandler(authElms)
+        getLoginFormSwitchHandler(authElms)
     );
 
-    authElms.signUpFormSwitchElm.addEventListener(
+    authElms.registerFormSwitchElm.addEventListener(
         'click',
-        getSignUpFormSwitchHandler(authElms)
+        getRegisterFormSwitchHandler(authElms)
     );
 
-    authElms.signInFormElm.addEventListener(
+    authElms.loginFormElm.addEventListener(
         'transitionend',
-        getSignInFormTransitionHandler(authElms)
+        getLoginFormTransitionHandler(authElms)
     );
 
-    authElms.signUpFormElm.addEventListener(
+    authElms.registerFormElm.addEventListener(
         'transitionend',
-        getSignUpFormTransitionHandler(authElms)
+        getRegisterFormTransitionHandler(authElms)
     );
 };

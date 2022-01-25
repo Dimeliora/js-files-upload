@@ -1,25 +1,25 @@
 let isFormTransitionInProgress = false;
 
-export const getSignInFormSwitchHandler = (authElms) => () => {
-    authElms.signUpFormElm.classList.add('auth__forms-item--hidden');
+export const getLoginFormSwitchHandler = (authElms) => () => {
+    authElms.registerFormElm.classList.add('auth__forms-item--hidden');
     isFormTransitionInProgress = true;
 };
 
-export const getSignUpFormSwitchHandler = (authElms) => () => {
-    authElms.signInFormElm.classList.add('auth__forms-item--hidden');
+export const getRegisterFormSwitchHandler = (authElms) => () => {
+    authElms.loginFormElm.classList.add('auth__forms-item--hidden');
     isFormTransitionInProgress = true;
 };
 
-export const getSignInFormTransitionHandler = (authElms) => (e) => {
-    if (e.target === authElms.signInFormElm && isFormTransitionInProgress) {
-        authElms.signUpFormElm.classList.remove('auth__forms-item--hidden');
+export const getLoginFormTransitionHandler = (authElms) => (e) => {
+    if (e.target === authElms.loginFormElm && isFormTransitionInProgress) {
+        authElms.registerFormElm.classList.remove('auth__forms-item--hidden');
         isFormTransitionInProgress = false;
     }
 };
 
-export const getSignUpFormTransitionHandler = (authElms) => (e) => {
-    if (e.target === authElms.signUpFormElm && isFormTransitionInProgress) {
-        authElms.signInFormElm.classList.remove('auth__forms-item--hidden');
+export const getRegisterFormTransitionHandler = (authElms) => (e) => {
+    if (e.target === authElms.registerFormElm && isFormTransitionInProgress) {
+        authElms.loginFormElm.classList.remove('auth__forms-item--hidden');
         isFormTransitionInProgress = false;
     }
 };

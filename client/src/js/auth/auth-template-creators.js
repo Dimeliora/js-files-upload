@@ -3,22 +3,22 @@ export const createLoginFormHTML = () => {
         <form
             class="auth__forms-item auth-form"
             novalidate
-            data-sign-in-form
+            data-login-form
         >
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
                     <use href="/icons/icon-sprite.svg#email" />
                 </svg>
-                <label class="text-field__label" for="sign-in-email"
+                <label class="text-field__label" for="login-email"
                     >Email</label
                 >
                 <input
                     class="text-field__input"
                     type="text"
-                    name="sign-in-email"
-                    id="sign-in-email"
+                    name="login-email"
+                    id="login-email"
                     placeholder="Enter Email"
-                    data-sign-in-email
+                    data-login-email
                 />
             </div>
             <div class="auth-form__field text-field">
@@ -27,16 +27,16 @@ export const createLoginFormHTML = () => {
                 </svg>
                 <label
                     class="text-field__label"
-                    for="sign-in-password"
+                    for="login-password"
                     >Password</label
                 >
                 <input
                     class="text-field__input"
                     type="password"
-                    name="sign-in-password"
-                    id="sign-in-password"
+                    name="login-password"
+                    id="login-password"
                     placeholder="Enter Password"
-                    data-sign-in-password
+                    data-login-password
                 />
             </div>
             <div class="auth-form__controls">
@@ -46,7 +46,7 @@ export const createLoginFormHTML = () => {
                 <button
                     class="auth-form__switch-form"
                     type="button"
-                    data-sign-up-switch
+                    data-register-switch
                 >
                     Don't have an account?
                 </button>
@@ -60,7 +60,7 @@ export const createRegisterFormHTML = () => {
         <form
             class="auth__forms-item auth__forms-item--hidden auth-form"
             novalidate
-            data-sign-up-form
+            data-register-form
         >
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -68,32 +68,32 @@ export const createRegisterFormHTML = () => {
                 </svg>
                 <label
                     class="text-field__label"
-                    for="sign-up-username"
+                    for="register-username"
                     >Name</label
                 >
                 <input
                     class="text-field__input"
                     type="text"
-                    name="sign-up-username"
-                    id="sign-up-username"
+                    name="register-username"
+                    id="register-username"
                     placeholder="Enter Name"
-                    data-sign-up-username
+                    data-register-username
                 />
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
                     <use href="/icons/icon-sprite.svg#email" />
                 </svg>
-                <label class="text-field__label" for="sign-up-email"
+                <label class="text-field__label" for="register-email"
                     >Email</label
                 >
                 <input
                     class="text-field__input"
                     type="text"
-                    name="sign-up-email"
-                    id="sign-up-email"
+                    name="register-email"
+                    id="register-email"
                     placeholder="Enter Email"
-                    data-sign-up-email
+                    data-register-email
                 />
             </div>
             <div class="auth-form__field text-field">
@@ -102,16 +102,16 @@ export const createRegisterFormHTML = () => {
                 </svg>
                 <label
                     class="text-field__label"
-                    for="sign-up-password"
+                    for="register-password"
                     >Password</label
                 >
                 <input
                     class="text-field__input"
                     type="password"
-                    name="sign-up-password"
-                    id="sign-up-password"
+                    name="register-password"
+                    id="register-password"
                     placeholder="Enter Password"
-                    data-sign-up-password
+                    data-register-password
                 />
             </div>
             <div class="auth-form__controls">
@@ -124,7 +124,7 @@ export const createRegisterFormHTML = () => {
                 <button
                     class="auth-form__switch-form"
                     type="button"
-                    data-sign-in-switch
+                    data-login-switch
                 >
                     Have already an account?
                 </button>

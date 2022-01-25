@@ -1,6 +1,6 @@
 export const getAuthElms = (rootElement) => ({
-    signInFormElm: rootElement.querySelector('[data-sign-in-form]'),
-    signUpFormElm: rootElement.querySelector('[data-sign-up-form]'),
-    signInFormSwitchElm: rootElement.querySelector('[data-sign-in-switch]'),
-    signUpFormSwitchElm: rootElement.querySelector('[data-sign-up-switch]'),
+    loginFormElm: rootElement.querySelector('[data-login-form]'),
+    registerFormElm: rootElement.querySelector('[data-register-form]'),
+    loginFormSwitchElm: rootElement.querySelector('[data-login-switch]'),
+    registerFormSwitchElm: rootElement.querySelector('[data-register-switch]'),
 });

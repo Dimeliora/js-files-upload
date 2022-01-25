@@ -4,7 +4,7 @@ export const createUploadHTML = () => {
             <div class="upload__header header">
                 <nav class="header__navigation">
                     <a
-                        href="#new-upload"
+                        href="#upload"
                         class="header__link header__link--active"
                         >New Upload</a
                     >

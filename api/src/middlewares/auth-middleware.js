@@ -18,6 +18,6 @@ module.exports = (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(400).json({ msg: 'Authorization failed' });
+        return res.status(400).json({ message: 'Authorization failed' });
     }
 };

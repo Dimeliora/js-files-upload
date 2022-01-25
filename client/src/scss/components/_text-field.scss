@@ -9,11 +9,11 @@
     transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
 
     &:focus-within {
-        border-color: $blue-light;
+        border-color: $blue;
 
         @media screen and (max-width: $xl) {
-            border-color: $blue-light;
-            box-shadow: inset 0 0 8px $blue-light;
+            border-color: $blue;
+            box-shadow: inset 0 0 8px $blue;
         }
 
         @media screen and (max-width: $md) {
@@ -22,7 +22,7 @@
     }
 
     @media screen and (max-width: $xl) {
-        border-color: $blue-light;
+        border-color: $blue;
         box-shadow: none;
     }
 
@@ -30,7 +30,7 @@
         width: 24px;
         height: 24px;
         margin-right: 10px;
-        fill: $blue-light;
+        fill: $blue;
     }
 
     &__label {
@@ -42,12 +42,12 @@
         border: none;
         border-bottom: 1px solid transparent;
         background-color: transparent;
-        color: $blue-light;
+        color: $blue;
         font-size: 1.6rem;
         line-height: 2.4rem;
 
         &::placeholder {
-            color: $blue-light;
+            color: $blue;
         }
 
         &:focus {

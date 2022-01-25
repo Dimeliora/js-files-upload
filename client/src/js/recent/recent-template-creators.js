@@ -3,7 +3,7 @@ export const createRecentHTML = () => {
         <div class="recent paper">
             <div class="upload__header header">
                 <nav class="header__navigation">
-                    <a href="#new-upload" class="header__link"
+                    <a href="#upload" class="header__link"
                         >New Upload</a
                     >
                     <a

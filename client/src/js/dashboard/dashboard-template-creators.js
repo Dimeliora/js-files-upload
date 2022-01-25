@@ -18,7 +18,7 @@ export const createDashboardHTML = () => {
                     </div>
                 </div>
                 <a
-                    href="#new-upload"
+                    href="#upload"
                     class="dashboard__link home-link home-link--filled"
                     title="Upload file"
                     aria-label="Upload file"

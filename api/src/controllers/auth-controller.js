@@ -21,7 +21,7 @@ exports.auth = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
-            return res.status(401).json({ msg: 'User is not authorized' });
+            return res.status(401).json({ message: 'User is not authorized' });
         }
 
         sendAuthorizedUser(res, user);
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ msg: 'User not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
         const isPasswordValid = await bcrypt.compare(
@@ -44,12 +44,12 @@ exports.login = async (req, res) => {
             user.passwordHash
         );
         if (!isPasswordValid) {
-            return res.status(401).json({ msg: 'Invalid Password' });
+            return res.status(401).json({ message: 'Invalid Password' });
         }
 
         sendAuthorizedUser(res, user);
     } catch (error) {
-        res.status(400).json({ msg: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
@@ -59,14 +59,17 @@ exports.register = async (req, res) => {
         if (!errors.isEmpty()) {
             return res
                 .status(400)
-                .json({ msg: 'Invalid credentials', errors: errors.errors });
+                .json({
+                    message: 'Invalid credentials',
+                    errors: errors.errors,
+                });
         }
 
         const { username, email, password } = req.body;
 
         const candidate = await User.findOne({ email });
         if (candidate) {
-            return res.status(400).json({ msg: 'User already exists' });
+            return res.status(400).json({ message: 'User already exists' });
         }
 
         const salt = await bcrypt.genSalt(8);
@@ -79,6 +82,6 @@ exports.register = async (req, res) => {
 
         sendAuthorizedUser(res, user);
     } catch (error) {
-        res.status(400).json({ msg: error.message });
+        res.status(400).json({ message: error.message });
     }
 };

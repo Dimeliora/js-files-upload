@@ -17,13 +17,13 @@
 
     &__submit {
         margin-top: 20px;
-        background-color: $blue-light;
+        background-color: $blue;
 
         &:hover,
         &:focus-visible {
-            border-color: $blue-light;
+            border-color: $blue;
             background-color: transparent;
-            color: $blue-light;
+            color: $blue;
         }
 
         &:disabled {
@@ -44,7 +44,7 @@
 
         &:hover,
         &:focus {
-            color: $blue-light;
+            color: $blue;
         }
 
         &:disabled {

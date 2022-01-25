@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user-model');
 
@@ -45,6 +46,36 @@ exports.login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ msg: 'Invalid Password' });
         }
+
+        sendAuthorizedUser(res, user);
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+};
+
+exports.register = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res
+                .status(400)
+                .json({ msg: 'Invalid credentials', errors: errors.errors });
+        }
+
+        const { username, email, password } = req.body;
+
+        const candidate = await User.findOne({ email });
+        if (candidate) {
+            return res.status(400).json({ msg: 'User already exists' });
+        }
+
+        const salt = await bcrypt.genSalt(8);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const user = new User({ username, email, passwordHash });
+        await user.save();
+
+        //TODO - Create directory for new user
 
         sendAuthorizedUser(res, user);
     } catch (error) {

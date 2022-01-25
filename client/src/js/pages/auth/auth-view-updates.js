@@ -1,5 +1,13 @@
 let isFormTransitionInProgress = false;
 
+export const formInputErrorSet = (inputElm) => {
+    inputElm.parentElement.classList.add('text-field--invalid');
+};
+
+export const formInputErrorClearHandler = ({ target }) => {
+    target.parentElement.classList.remove('text-field--invalid');
+};
+
 export const getLoginFormSwitchHandler = (authElms) => () => {
     authElms.registerFormElm.classList.add('auth__forms-item--hidden');
     isFormTransitionInProgress = true;

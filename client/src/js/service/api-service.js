@@ -31,3 +31,18 @@ export const userLogin = async (email, password) => {
 
     return response.json();
 };
+
+export const userRegister = async (username, email, password) => {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ username, email, password }),
+    });
+
+    if (!response.ok) {
+        const { message } = await response.json();
+        throw new Error(message);
+    }
+
+    return response.json();
+};

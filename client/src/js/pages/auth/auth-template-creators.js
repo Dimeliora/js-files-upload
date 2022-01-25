@@ -80,8 +80,9 @@ export const createRegisterFormHTML = () => {
                     id="register-username"
                     placeholder="Enter Name"
                     data-register-username
+                    data-validate="notEmpty"
                 />
-                <div class="text-field__error"></div>
+                <div class="text-field__error">Name must be specified</div>
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -97,8 +98,9 @@ export const createRegisterFormHTML = () => {
                     id="register-email"
                     placeholder="Enter Email"
                     data-register-email
+                    data-validate="email"
                 />
-                <div class="text-field__error"></div>
+                <div class="text-field__error">Email must be valid e-mail address</div>
             </div>
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
@@ -116,8 +118,9 @@ export const createRegisterFormHTML = () => {
                     id="register-password"
                     placeholder="Enter Password"
                     data-register-password
+                    data-validate="minLength"
                 />
-                <div class="text-field__error"></div>
+                <div class="text-field__error">Password must have at least 6 characters</div>
             </div>
             <div class="auth-form__controls">
                 <button

@@ -9,9 +9,10 @@ import {
     getLoginFormTransitionHandler,
     getRegisterFormTransitionHandler,
 } from './auth-view-updates';
+import { ee } from '../../helpers/event-emitter';
 import { getAuthElms } from './auth-dom-elements';
 import { userLogin } from '../../service/api-service';
-import { ee } from '../../helpers/event-emitter';
+import { alertHandle } from '../../alerts/alerts-handler';
 
 const getLoginFormSubmitHandler = (authElms) => async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ const getLoginFormSubmitHandler = (authElms) => async (e) => {
 
         ee.emit('auth/user-logged-in', { accessToken, user });
     } catch (error) {
-        console.log(error.message);
+        alertHandle(error.message);
     }
 };
 

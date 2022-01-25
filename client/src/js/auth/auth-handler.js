@@ -10,8 +10,23 @@ import {
     getRegisterFormTransitionHandler,
 } from './auth-view-updates';
 import { getAuthElms } from './auth-dom-elements';
+import { userLogin } from '../service/api-service';
+import { ee } from '../helpers/event-emitter';
 
+const getLoginFormSubmitHandler = (authElms) => async (e) => {
+    e.preventDefault();
 
+    const email = authElms.loginEmailInput.value;
+    const password = authElms.loginPasswordInput.value;
+
+    try {
+        const { accessToken, user } = await userLogin(email, password);
+
+        ee.emit('auth/user-logged-in', { accessToken, user });
+    } catch (error) {
+        console.log(error.message);
+    }
+};
 
 export const authHandler = (appContainer) => {
     appContainer.innerHTML = createAuthHTML();
@@ -48,5 +63,10 @@ export const authHandler = (appContainer) => {
     authElms.registerFormElm.addEventListener(
         'transitionend',
         getRegisterFormTransitionHandler(authElms)
+    );
+
+    authElms.loginFormElm.addEventListener(
+        'submit',
+        getLoginFormSubmitHandler(authElms)
     );
 };

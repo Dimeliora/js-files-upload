@@ -16,3 +16,18 @@ export const userAuth = async () => {
 
     return response.json();
 };
+
+export const userLogin = async (email, password) => {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+        const { message } = await response.json();
+        throw new Error(message);
+    }
+
+    return response.json();
+};

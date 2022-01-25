@@ -1,20 +1,31 @@
 import state from '../state/state';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
-import { userAuth } from '../service/fetch-data';
+import { userAuth } from '../service/api-service';
+import { ee } from '../helpers/event-emitter';
+
+const setAuthState = (accessToken, user) => {
+    localStorage.setItem('access-token', accessToken);
+
+    state.setAuthState(user);
+};
 
 const checkUserAuthStatus = async () => {
     try {
         const { accessToken, user } = await userAuth();
 
-        localStorage.setItem('access-token', accessToken);
-
-        state.setAuthState(user);
+        setAuthState(accessToken, user);
     } catch (error) {
         localStorage.removeItem('access-token');
     } finally {
         router();
     }
+};
+
+const userLoginHandler = ({ accessToken, user }) => {
+    setAuthState(accessToken, user);
+
+    router();
 };
 
 const router = () => {
@@ -32,7 +43,4 @@ window.addEventListener('load', checkUserAuthStatus);
 
 window.addEventListener('hashchange', router);
 
-// localStorage.setItem(
-//     'access-token',
-//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZWY3NWJkYzljMTI0YjY0OWZkZDQ4YiIsInVzZXJuYW1lIjoiQW5vbiIsImlhdCI6MTY0MzEwMDQ3MywiZXhwIjoxNjQzMTg2ODczfQ.23oIOCnWMEtTDbk4V1QPcnnLu00kpWHlNgz-qGNZ5I8'
-// );
+ee.on('auth/user-logged-in', userLoginHandler);

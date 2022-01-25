@@ -1,12 +1,11 @@
 require('dotenv/config');
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const UserSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
     },
     email: {
         type: String,
@@ -18,6 +17,20 @@ const UserSchema = new Schema({
         required: true,
     },
     userAvatar: String,
+    totalDiskSpace: {
+        type: Number,
+        default: 10 * 1024 ** 3,
+    },
+    usedDiskSpace: {
+        type: Number,
+        default: 0,
+    },
+    files: [
+        {
+            type: Types.ObjectId,
+            ref: 'File',
+        },
+    ],
 });
 
 UserSchema.methods.generateToken = function () {

@@ -28,6 +28,14 @@ const userLoginHandler = ({ accessToken, user }) => {
     router();
 };
 
+const userLogoutHandler = () => {
+    localStorage.removeItem('access-token');
+
+    state.resetAuthState();
+
+    router();
+};
+
 const router = () => {
     let path = window.location.hash.slice(1) || '/';
     if (!state.isAuth) {
@@ -44,3 +52,5 @@ window.addEventListener('load', checkUserAuthStatus);
 window.addEventListener('hashchange', router);
 
 ee.on('auth/user-logged-in', userLoginHandler);
+
+ee.on('auth/user-logged-out', userLogoutHandler);

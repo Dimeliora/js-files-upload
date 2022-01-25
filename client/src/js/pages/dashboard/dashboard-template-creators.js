@@ -72,10 +72,22 @@ export const createDashboardHTML = (user) => {
                 </div>
             </div>
             <div class="dashboard__footer footer">
-                <svg class="footer__sync-icon">
-                    <use href="/icons/icon-sprite.svg#tick" />
-                </svg>
-                <div class="footer__sync">Last synced: 3 mins ago</div>
+                <div class="footer__sync">
+                    <svg class="footer__sync-icon">
+                        <use href="/icons/icon-sprite.svg#tick" />
+                    </svg>
+                    <div class="footer__sync">Last synced: 3 mins ago</div>
+                </div>
+                <button 
+                    class="footer__logout icon-button"
+                    title="Logout"
+                    aria-label="Logout"
+                    data-dashboard-logout
+                >
+                    <svg class="icon-button__icon">
+                        <use href="/icons/icon-sprite.svg#sign-out" />
+                    </svg>
+                </button>
             </div>
         </div>
     `;

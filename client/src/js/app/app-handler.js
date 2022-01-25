@@ -10,7 +10,7 @@ const setAuthState = (accessToken, user) => {
     state.setAuthState(user);
 };
 
-const checkUserAuthStatus = async () => {
+const checkUserAuthStatusHandler = async () => {
     try {
         const { accessToken, user } = await userAuth();
 
@@ -18,14 +18,14 @@ const checkUserAuthStatus = async () => {
     } catch (error) {
         localStorage.removeItem('access-token');
     } finally {
-        router();
+        routesHandler();
     }
 };
 
 const userLoginHandler = ({ accessToken, user }) => {
     setAuthState(accessToken, user);
 
-    router();
+    routesHandler();
 };
 
 const userLogoutHandler = () => {
@@ -33,10 +33,11 @@ const userLogoutHandler = () => {
 
     state.resetAuthState();
 
-    router();
+    window.location.hash = '';
+    routesHandler();
 };
 
-const router = () => {
+const routesHandler = () => {
     let path = window.location.hash.slice(1) || '/';
     if (!state.isAuth) {
         path = 'auth';
@@ -47,9 +48,9 @@ const router = () => {
     routeHandler(appElms.appContainer);
 };
 
-window.addEventListener('load', checkUserAuthStatus);
+window.addEventListener('load', checkUserAuthStatusHandler);
 
-window.addEventListener('hashchange', router);
+window.addEventListener('hashchange', routesHandler);
 
 ee.on('auth/user-logged-in', userLoginHandler);
 

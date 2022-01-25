@@ -2,6 +2,20 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user-model');
 
+const sendAuthorizedUser = (res, userDocument) => {
+    const accessToken = userDocument.generateToken();
+    const userData = {
+        id: userDocument._id,
+        username: userDocument.username,
+        email: userDocument.email,
+    };
+
+    res.status(200).json({
+        accessToken,
+        user: userData,
+    });
+};
+
 exports.auth = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -9,12 +23,7 @@ exports.auth = async (req, res) => {
             return res.status(401).json({ msg: 'User is not authorized' });
         }
 
-        const accessToken = user.generateToken();
-
-        res.status(200).json({
-            accessToken,
-            user,
-        });
+        sendAuthorizedUser(res, user);
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }
@@ -37,12 +46,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ msg: 'Invalid Password' });
         }
 
-        const accessToken = user.generateToken();
-
-        res.status(200).json({
-            accessToken,
-            user,
-        });
+        sendAuthorizedUser(res, user);
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

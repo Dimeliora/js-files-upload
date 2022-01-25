@@ -1,0 +1,38 @@
+.auth {
+    text-align: center;
+
+    &__heading {
+        margin-bottom: 20px;
+        font-size: 3.6rem;
+    }
+
+    &__subheading {
+        font-size: 2.4rem;
+    }
+
+    &__forms {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        min-height: 300px;
+    }
+
+    &__forms-item {
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50%;
+        transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+
+        &--hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        @media screen and (max-width: $sm) {
+            width: 100%;
+        }
+    }
+}

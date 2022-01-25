@@ -1,0 +1,54 @@
+.auth-form {
+    color: $black;
+    text-transform: uppercase;
+    text-align: center;
+
+    &__field {
+        & + .auth-form__field {
+            margin-top: 10px;
+        }
+    }
+
+    &__controls {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &__submit {
+        margin-top: 20px;
+        background-color: $blue-light;
+
+        &:hover,
+        &:focus-visible {
+            border-color: $blue-light;
+            background-color: transparent;
+            color: $blue-light;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    &__switch-form {
+        margin-top: 25px;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: $black;
+        font-size: 1.6rem;
+        text-decoration: underline;
+        cursor: pointer;
+        transition: color 0.2s ease-in, opacity 0.2s ease-out;
+
+        &:hover,
+        &:focus {
+            color: $blue-light;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}

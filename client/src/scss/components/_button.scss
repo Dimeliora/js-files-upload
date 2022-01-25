@@ -12,7 +12,7 @@
     &:hover,
     &:focus-visible {
         border-color: $blue;
-        background-color: #ffffff;
+        background-color: transparent;
         color: $blue;
     }
 }

@@ -1,6 +1,5 @@
 require('dotenv/config');
 const express = require('express');
-const jwt = require('jsonwebtoken');
 
 const dbConnect = require('./db/db-connection');
 const corsMW = require('./middlewares/cors-middleware');

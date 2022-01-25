@@ -1,4 +1,6 @@
-export const createDashboardHTML = () => {
+export const createDashboardHTML = (user) => {
+    const { username, email } = user;
+
     return `
         <div class="dashboard paper">
             <div class="dashboard__header">
@@ -11,10 +13,8 @@ export const createDashboardHTML = () => {
                         />
                     </div>
                     <div class="dashboard__user-info">
-                        <div class="dashboard__username">Laura Eddy</div>
-                        <div class="dashboard__email">
-                            info@lauraeddy.com.au
-                        </div>
+                        <div class="dashboard__username">${username}</div>
+                        <div class="dashboard__email">${email}</div>
                     </div>
                 </div>
                 <a
@@ -48,7 +48,7 @@ export const createDashboardHTML = () => {
                     <div class="setting__info">
                         <div class="setting__title">Storage location</div>
                         <div class="setting__value">
-                            /Laura/My Documents
+                            /SomeDir/MyDocuments
                         </div>
                     </div>
                     <button

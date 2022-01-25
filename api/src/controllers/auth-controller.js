@@ -10,6 +10,8 @@ const sendAuthorizedUser = (res, userDocument) => {
         id: userDocument._id,
         username: userDocument.username,
         email: userDocument.email,
+        totalDiskSpace: userDocument.totalDiskSpace,
+        usedDiskSpace: userDocument.usedDiskSpace,
     };
 
     res.status(200).json({
@@ -20,7 +22,7 @@ const sendAuthorizedUser = (res, userDocument) => {
 
 exports.auth = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id).exec();
         if (!user) {
             return res.status(401).json({ message: 'User is not authorized' });
         }
@@ -35,7 +37,7 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).exec();
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -66,7 +68,7 @@ exports.register = async (req, res) => {
 
         const { username, email, password } = req.body;
 
-        const candidate = await User.findOne({ email });
+        const candidate = await User.findOne({ email }).exec();
         if (candidate) {
             return res.status(400).json({ message: 'User already exists' });
         }

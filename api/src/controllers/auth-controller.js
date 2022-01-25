@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user-model');
+const { createUserDir } = require('../services/fs-service');
 
 const sendAuthorizedUser = (res, userDocument) => {
     const accessToken = userDocument.generateToken();
@@ -57,12 +58,10 @@ exports.register = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res
-                .status(400)
-                .json({
-                    message: 'Invalid credentials',
-                    errors: errors.errors,
-                });
+            return res.status(400).json({
+                message: 'Invalid credentials',
+                errors: errors.errors,
+            });
         }
 
         const { username, email, password } = req.body;
@@ -78,10 +77,10 @@ exports.register = async (req, res) => {
         const user = new User({ username, email, passwordHash });
         await user.save();
 
-        //TODO - Create directory for new user
+        await createUserDir(user._id.toString());
 
         sendAuthorizedUser(res, user);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: 'Service error. Please, try later' });
     }
 };

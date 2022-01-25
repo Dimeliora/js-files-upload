@@ -10,8 +10,8 @@ import {
     getRegisterFormTransitionHandler,
 } from './auth-view-updates';
 import { getAuthElms } from './auth-dom-elements';
-import { userLogin } from '../service/api-service';
-import { ee } from '../helpers/event-emitter';
+import { userLogin } from '../../service/api-service';
+import { ee } from '../../helpers/event-emitter';
 
 const getLoginFormSubmitHandler = (authElms) => async (e) => {
     e.preventDefault();

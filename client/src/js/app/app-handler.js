@@ -31,3 +31,8 @@ const router = () => {
 window.addEventListener('load', checkUserAuthStatus);
 
 window.addEventListener('hashchange', router);
+
+// localStorage.setItem(
+//     'access-token',
+//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZWY3NWJkYzljMTI0YjY0OWZkZDQ4YiIsInVzZXJuYW1lIjoiQW5vbiIsImlhdCI6MTY0MzEwMDQ3MywiZXhwIjoxNjQzMTg2ODczfQ.23oIOCnWMEtTDbk4V1QPcnnLu00kpWHlNgz-qGNZ5I8'
+// );

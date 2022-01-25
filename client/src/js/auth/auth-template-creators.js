@@ -1,6 +1,10 @@
 export const createLoginFormHTML = () => {
     return `
-        <form class="auth__forms-item auth-form">
+        <form
+            class="auth__forms-item auth-form"
+            novalidate
+            data-sign-in-form
+        >
             <div class="auth-form__field text-field">
                 <svg class="text-field__icon">
                     <use href="/icons/icon-sprite.svg#email" />
@@ -134,7 +138,7 @@ export const createAuthHTML = () => {
         <div class="auth">
             <h2 class="auth__heading">Welcome to JS Files Upload App</h2>
             <div class="auth__subheading">
-                Enter your Email and Password to continue
+                Please, sign in to continue
             </div>
             <div class="auth__forms" data-auth-forms></div>
         </div>

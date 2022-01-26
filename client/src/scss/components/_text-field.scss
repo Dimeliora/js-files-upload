@@ -12,9 +12,17 @@
     &--invalid {
         border-color: $red;
 
+        .text-field__input::placeholder {
+            color: $red;
+        }
+
         .text-field__error {
             visibility: visible;
             color: $red;
+        }
+
+        .text-field__icon {
+            fill: $red;
         }
     }
 

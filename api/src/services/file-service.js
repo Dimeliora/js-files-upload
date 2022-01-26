@@ -9,7 +9,7 @@ const { getUserFilesDir } = require('../helpers/data-path-helpers');
 exports.fileUploadAbilityCheck = async (filename, size, userId) => {
     const user = await User.findById(userId);
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
-        throw new FileError('Not enought disk space', 400);
+        throw new FileError(`Not enought disk space for ${filename}`, 400);
     }
 
     const userFilesDirPath = getUserFilesDir(userId);

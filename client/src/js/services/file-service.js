@@ -6,21 +6,19 @@ const fileService = axios.create({
     baseURL: `${BASE_URL}/file`,
 });
 
-const fileUploadAbilityCheck = (fileData) => {
-    const accessToken = localStorage.getItem('access-token');
-
-    return fileService.post('/upload/check', fileData, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
-};
-
 export const fileUpload = async (file) => {
     const accessToken = localStorage.getItem('access-token');
 
     try {
-        await fileUploadAbilityCheck({ filename: file.name, size: file.size });
+        await fileService.post(
+            '/upload/check',
+            { filename: file.name, size: file.size },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
 
         const formData = new FormData();
         formData.append('file', file);

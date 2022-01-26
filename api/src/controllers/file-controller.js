@@ -1,5 +1,25 @@
 const FileError = require('../errors/file-error');
-const { fileUpload } = require('../services/file-service');
+const {
+    fileUploadAbilityCheck,
+    fileUpload,
+} = require('../services/file-service');
+
+exports.fileUploadAbilityCheck = async (req, res) => {
+    const { filename, size } = req.body;
+    const { id } = req.user;
+
+    try {
+        await fileUploadAbilityCheck(filename, size, id);
+
+        res.sendStatus(200);
+    } catch (error) {
+        if (error instanceof FileError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: 'Service error. Please, try later' });
+    }
+};
 
 exports.fileUpload = async (req, res) => {
     const { file } = req.files;
@@ -11,7 +31,7 @@ exports.fileUpload = async (req, res) => {
         res.status(201).json(newFileData);
     } catch (error) {
         if (error instanceof FileError) {
-            return res.status(400).json({ message: error.message });
+            return res.status(error.status).json({ message: error.message });
         }
 
         res.status(500).json({ message: 'Service error. Please, try later' });

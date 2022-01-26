@@ -11,8 +11,6 @@ exports.fileUpload = async (file, userId) => {
         throw new FileError('Not enought disk space');
     }
 
-    user.usedDiskSpace += file.size;
-
     const userFilesDirPath = getUserFilesDir(userId);
     file.mv(path.resolve(userFilesDirPath, file.name));
 
@@ -25,6 +23,10 @@ exports.fileUpload = async (file, userId) => {
     });
 
     await newFile.save();
+
+    user.usedDiskSpace += file.size;
+    user.files.push(newFile);
+
     await user.save();
 
     return newFile;

@@ -4,7 +4,6 @@ import {
     removeDropzoneHoveredClass,
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
-import { fileUpload } from '../../service/api-service';
 
 const renderBlockAndGetDOMElms = (rootElement) => {
     rootElement.innerHTML = createUploadHTML();
@@ -13,7 +12,7 @@ const renderBlockAndGetDOMElms = (rootElement) => {
 
 const handleFilesToUpload = (files) => {
     console.log(files);
-    fileUpload(files[0]);
+
 };
 
 const uploadInputChangeHandler = (e) => {

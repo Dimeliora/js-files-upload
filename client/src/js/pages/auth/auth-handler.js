@@ -12,7 +12,7 @@ import {
 } from './auth-view-updates';
 import { ee } from '../../helpers/event-emitter';
 import { getAuthElms } from './auth-dom-elements';
-import { userLogin, userRegister } from '../../service/api-service';
+import { userLogin, userRegister } from '../../services/auth-service';
 import { alertHandle } from '../../alerts/alerts-handler';
 import { validateForm } from '../../helpers/form-validation';
 

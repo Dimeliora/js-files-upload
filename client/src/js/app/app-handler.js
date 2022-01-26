@@ -1,7 +1,7 @@
 import state from '../state/state';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
-import { userAuth } from '../service/api-service';
+import { userAuth } from '../services/auth-service';
 import { ee } from '../helpers/event-emitter';
 
 const setAuthState = (accessToken, user) => {

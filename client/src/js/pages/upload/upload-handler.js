@@ -4,15 +4,21 @@ import {
     removeDropzoneHoveredClass,
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
+import { fileUpload } from '../../services/file-service';
 
 const renderBlockAndGetDOMElms = (rootElement) => {
     rootElement.innerHTML = createUploadHTML();
     return getUploadElms(rootElement);
 };
 
-const handleFilesToUpload = (files) => {
-    console.log(files);
-
+const handleFilesToUpload = async (files) => {
+    try {
+        for (const file of files) {
+            fileUpload(file);
+        }
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 const uploadInputChangeHandler = (e) => {

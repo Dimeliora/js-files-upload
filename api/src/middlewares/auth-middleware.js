@@ -8,9 +8,6 @@ module.exports = (req, res, next) => {
 
     try {
         const [_, token] = req.headers.authorization.split(' ');
-        if (!token) {
-            throw new Error();
-        }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -18,6 +15,6 @@ module.exports = (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(400).json({ message: 'Authorization failed' });
+        res.status(401).json({ message: 'Authorization failed' });
     }
 };

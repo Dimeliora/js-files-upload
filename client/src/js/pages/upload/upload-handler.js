@@ -5,6 +5,7 @@ import {
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
 import { fileUpload } from '../../services/file-service';
+import { alertHandle } from '../../alerts/alerts-handler';
 
 const renderBlockAndGetDOMElms = (rootElement) => {
     rootElement.innerHTML = createUploadHTML();
@@ -12,12 +13,14 @@ const renderBlockAndGetDOMElms = (rootElement) => {
 };
 
 const handleFilesToUpload = async (files) => {
-    try {
-        for (const file of files) {
-            fileUpload(file);
+    for (const file of files) {
+        try {
+            const fileData = await fileUpload(file);
+
+            console.log(fileData);
+        } catch (error) {
+            alertHandle(error.message, 'error');
         }
-    } catch (error) {
-        console.log(error);
     }
 };
 

@@ -13,10 +13,6 @@ const FileSchema = new Schema({
         type: Number,
         default: 0,
     },
-    path: {
-        type: String,
-        default: '',
-    },
     creationDate: {
         type: Date,
         default: Date.now(),

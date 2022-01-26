@@ -46,3 +46,28 @@ export const userRegister = async (username, email, password) => {
 
     return response.json();
 };
+
+export const fileUpload = (file) => {
+    const reader = new FileReader();
+    const xhr = new XMLHttpRequest();
+
+    const accessToken = localStorage.getItem('access-token');
+    xhr.open('POST', `${BASE_URL}/file/upload`);
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+
+    xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+            console.log((e.loaded / e.total) * 100);
+        }
+    });
+
+    xhr.upload.addEventListener('load', () => {
+        console.log('Load end');
+    });
+
+    reader.addEventListener('load', (e) => {
+        xhr.send(e.target.result);
+    });
+
+    reader.readAsBinaryString(file);
+};

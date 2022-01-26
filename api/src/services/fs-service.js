@@ -1,10 +1,10 @@
 const path = require('path');
 const fs = require('fs/promises');
 
-const dataDir = require('../constants/data-dir');
+const { getUserFilesDir } = require('../helpers/data-path-helpers');
 
 exports.createUserDir = async (userId) => {
-    const userFilesDirPath = path.resolve(dataDir, userId, 'files');
+    const userFilesDirPath = getUserFilesDir(userId);
 
     try {
         await fs.mkdir(userFilesDirPath, { recursive: true });

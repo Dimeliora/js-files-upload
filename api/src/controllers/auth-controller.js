@@ -1,8 +1,7 @@
-const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 
-const User = require('../models/user-model');
-const { createUserDir } = require('../services/fs-service');
+const AuthError = require('../errors/auth-error');
+const { auth, login, register } = require('../services/auth-service');
 
 const sendAuthorizedUser = (res, userDocument) => {
     const accessToken = userDocument.generateToken();
@@ -21,68 +20,57 @@ const sendAuthorizedUser = (res, userDocument) => {
 };
 
 exports.auth = async (req, res) => {
+    const { id } = req.user;
+
     try {
-        const user = await User.findById(req.user.id).exec();
-        if (!user) {
-            return res.status(401).json({ message: 'User is not authorized' });
+        const userData = await auth(id);
+
+        sendAuthorizedUser(res, userData);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            return res.status(error.status).json({ message: error.message });
         }
 
-        sendAuthorizedUser(res, user);
-    } catch (error) {
-        res.status(400).json({ msg: error.message });
+        res.status(500).json({ message: 'Service error. Please, try later' });
     }
 };
 
 exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
     try {
-        const { email, password } = req.body;
+        const userData = await login(email, password);
 
-        const user = await User.findOne({ email }).exec();
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-            password,
-            user.passwordHash
-        );
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid Password' });
-        }
-
-        sendAuthorizedUser(res, user);
+        sendAuthorizedUser(res, userData);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        if (error instanceof AuthError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: 'Service error. Please, try later' });
     }
 };
 
 exports.register = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            message: 'Invalid credentials',
+            errors: errors.errors,
+        });
+    }
+
+    const { username, email, password } = req.body;
+
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                message: 'Invalid credentials',
-                errors: errors.errors,
-            });
-        }
+        const userData = await register(username, email, password);
 
-        const { username, email, password } = req.body;
-
-        const candidate = await User.findOne({ email }).exec();
-        if (candidate) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        const salt = await bcrypt.genSalt(8);
-        const passwordHash = await bcrypt.hash(password, salt);
-
-        const user = new User({ username, email, passwordHash });
-        await user.save();
-
-        await createUserDir(user._id.toString());
-
-        sendAuthorizedUser(res, user);
+        sendAuthorizedUser(res, userData);
     } catch (error) {
+        if (error instanceof AuthError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
         res.status(500).json({ message: 'Service error. Please, try later' });
     }
 };

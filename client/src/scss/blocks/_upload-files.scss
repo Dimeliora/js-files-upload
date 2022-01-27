@@ -1,6 +1,7 @@
 .upload-files {
     display: flex;
     flex-direction: column;
+    width: 600px;
 
     &--done {
         .upload-files__button--cancel {
@@ -33,7 +34,7 @@
 
     &__item {
         display: grid;
-        grid-template-columns: 120px 1fr 40px;
+        grid-template-columns: 200px 1fr 40px;
         column-gap: 10px;
         align-items: center;
         margin-bottom: 15px;
@@ -41,14 +42,24 @@
         &--done,
         &--error,
         &--cancelled {
+            .upload-files__progress {
+                display: none;
+            }
+
             .upload-files__abort {
                 display: none;
+            }
+
+            .upload-files__message {
+                display: block;
             }
         }
 
         &--done {
-            .upload-files__name {
-                font-weight: 700;
+            color: $green;
+
+            .upload-files__icon--error {
+                display: none;
             }
 
             .upload-files__icon--done {
@@ -57,16 +68,10 @@
         }
 
         &--error {
-            .upload-files__name {
-                color: $red;
-            }
+            color: $red;
 
-            .upload-files__progress {
+            .upload-files__icon--done {
                 display: none;
-            }
-
-            .upload-files__error {
-                display: block;
             }
 
             .upload-files__icon--error {
@@ -76,15 +81,6 @@
 
         &--cancelled {
             opacity: 0.5;
-
-            .upload-files__progress {
-                display: none;
-            }
-
-            .upload-files__error {
-                display: block;
-                color: $black;
-            }
 
             .upload-files__icon--cancelled {
                 display: block;
@@ -107,10 +103,9 @@
         overflow: hidden;
     }
 
-    &__error {
+    &__message {
         display: none;
         overflow: hidden;
-        color: $red;
         font-size: 1.4rem;
         white-space: nowrap;
         text-overflow: ellipsis;

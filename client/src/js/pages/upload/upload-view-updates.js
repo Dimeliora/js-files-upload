@@ -22,18 +22,18 @@ export const renderUploadFilesModal = (files) => {
     document.body.insertAdjacentHTML('beforeend', createUploadModalHTML());
 
     const uploadModalElm = document.querySelector('[data-upload-modal]');
-    const uploadModalInnerElms = getUploadModalElms(uploadModalElm);
+    const uploadModalElms = getUploadModalElms(uploadModalElm);
 
     const uploadFilesMarkup = files
         .map((file) => createUploadFileHTML(file.id, file.name))
         .join(' ');
 
-    uploadModalInnerElms.uploadFilesListElm.insertAdjacentHTML(
+    uploadModalElms.uploadFilesListElm.insertAdjacentHTML(
         'beforeend',
         uploadFilesMarkup
     );
 
-    return uploadModalInnerElms;
+    return uploadModalElms;
 };
 
 export const getUploadFileAbortElm = (fileElm) => {
@@ -57,4 +57,8 @@ export const getUpdateFileProgressHandler = (fileElm) => {
         uploadFileInnerElms.uploadFileProgressBar.style.width = `${progress}%`;
         uploadFileInnerElms.uploadFileProgressValue.textContent = `${progress}%`;
     };
+};
+
+export const switchUploadFilesModalButtons = (uploadFilesBlockElm) => {
+    uploadFilesBlockElm.classList.add('upload-files--done');
 };

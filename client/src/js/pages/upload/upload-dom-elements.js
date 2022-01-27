@@ -4,8 +4,11 @@ export const getUploadElms = (rootElement) => ({
 });
 
 export const getUploadModalElms = (modalElm) => ({
+    uploadModalElm: modalElm,
+    uploadFilesBlockElm: modalElm.querySelector('[data-upload-block]'),
     uploadFilesListElm: modalElm.querySelector('[data-upload-files-list]'),
     uploadCancelElm: modalElm.querySelector('[data-upload-cancel]'),
+    uploadDoneElm: modalElm.querySelector('[data-upload-done]'),
 });
 
 export const getUploadFileElms = (uploadFileElm) => ({

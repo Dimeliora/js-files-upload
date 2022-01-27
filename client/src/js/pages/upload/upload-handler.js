@@ -9,11 +9,13 @@ import {
     getUploadFileAbortElm,
     updateUploadFileElmStatus,
     getUpdateFileProgressHandler,
+    switchUploadFilesModalButtons,
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
 import { fileUpload } from '../../services/file-service';
 import FileItem from './upload-file-model';
 import CancelError from '../../errors/cancel-error';
+import uploadState from '../../state/upload-state';
 
 const getFileUploadAbortHandler = (fileItem) => () => {
     if (fileItem.status === 'uploading') {
@@ -30,8 +32,12 @@ const getFileUploadAbortHandler = (fileItem) => () => {
     }
 };
 
-const uploadFiles = async (files) => {
-    for (const fileItem of files) {
+const uploadFiles = async () => {
+    for (const fileItem of uploadState.uploadFiles) {
+        if (!uploadState.isUploading) {
+            return;
+        }
+
         if (fileItem.status === 'cancelled') {
             continue;
         }
@@ -75,12 +81,27 @@ const uploadFiles = async (files) => {
     }
 };
 
-const uploadFilesHandler = async (files) => {
+const getAbortFilesUpload = (uploadModalElm) => () => {
+    uploadState.isUploading = false;
+
+    ee.emit('upload/abort');
+
+    uploadModalElm.remove();
+};
+
+const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
+    uploadState.isUploading = false;
+    uploadState.uploadFiles = [];
+
+    uploadModalElm.remove();
+};
+
+const prepareFilesForUpload = async (files) => {
     const uploadFileItems = [...files].map((file) => new FileItem(v4(), file));
 
-    const uploadModalInnerElms = renderUploadFilesModal(uploadFileItems);
+    const uploadModalElms = renderUploadFilesModal(uploadFileItems);
 
-    const uploadFileElms = uploadModalInnerElms.uploadFilesListElm.children;
+    const uploadFileElms = uploadModalElms.uploadFilesListElm.children;
 
     for (const fileElm of uploadFileElms) {
         const id = fileElm.dataset.uploadFile;
@@ -95,13 +116,26 @@ const uploadFilesHandler = async (files) => {
         );
     }
 
-    await uploadFiles(uploadFileItems);
+    uploadState.isUploading = true;
+    uploadState.uploadFiles = uploadFileItems;
 
-    console.log('Uploaded');
+    uploadModalElms.uploadCancelElm.addEventListener(
+        'click',
+        getAbortFilesUpload(uploadModalElms.uploadModalElm)
+    );
+
+    await uploadFiles();
+
+    switchUploadFilesModalButtons(uploadModalElms.uploadFilesBlockElm);
+
+    uploadModalElms.uploadDoneElm.addEventListener(
+        'click',
+        getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
+    );
 };
 
 const uploadInputChangeHandler = (e) => {
-    uploadFilesHandler(e.target.files);
+    prepareFilesForUpload(e.target.files);
 };
 
 const dropzoneDragOverHandler = (e) => {
@@ -127,7 +161,7 @@ const getDropzoneDropHandler = (uploadElms) => (e) => {
 
     removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
 
-    uploadFilesHandler(e.dataTransfer.files);
+    prepareFilesForUpload(e.dataTransfer.files);
 };
 
 export const uploadHandler = (appContainer) => {

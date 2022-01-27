@@ -35,13 +35,19 @@ export const createUploadModalHTML = () => {
     return `
         <div class="modal" data-upload-modal>
             <div class="modal__content paper">
-                <div class="upload-files">
+                <div class="upload-files" data-upload-block>
                     <ul class="upload-files__list" data-upload-files-list></ul>
                     <button
-                        class="upload-files__cancel button"
+                        class="upload-files__button upload-files__button--cancel button"
                         data-upload-cancel
                     >
                         Cancel
+                    </button>
+                    <button
+                        class="upload-files__button upload-files__button--done button button--success"
+                        data-upload-done
+                    >
+                        Done!
                     </button>
                 </div>
             </div>

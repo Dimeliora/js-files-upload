@@ -7,6 +7,7 @@ import {
     removeDropzoneHoveredClass,
     renderUploadFilesModal,
     getUploadFileAbortElm,
+    disableUploadFileAbortElm,
     updateUploadFileElmStatus,
     getUpdateFileProgressHandler,
     switchUploadFilesModalButtons,
@@ -20,7 +21,10 @@ import uploadState from '../../state/upload-state';
 const getFileUploadAbortHandler = (fileItem) => () => {
     if (fileItem.status === 'uploading') {
         ee.emit('upload/abort');
-    } else {
+        return;
+    }
+
+    if (fileItem.status === 'pending') {
         fileItem.status = 'cancelled';
         fileItem.message = 'Upload cancelled';
 
@@ -55,40 +59,38 @@ const uploadFiles = async () => {
                 fileItem.status = 'done';
                 fileItem.message = 'Upload completed';
 
-                updateUploadFileElmStatus(
-                    fileItem.domElm,
-                    fileItem.status,
-                    fileItem.message
-                );
+                disableUploadFileAbortElm(fileItem.domElm);
             }
         );
 
         try {
             await fileUpload(fileItem.file);
         } catch (error) {
-            fileItem.status =
-                error instanceof CancelError ? 'cancelled' : 'error';
+            if (fileItem.status !== 'done') {
+                fileItem.status =
+                    error instanceof CancelError ? 'cancelled' : 'error';
 
-            fileItem.message = error.message;
-
+                fileItem.message = error.message;
+            }
+        } finally {
             updateUploadFileElmStatus(
                 fileItem.domElm,
                 fileItem.status,
                 fileItem.message
             );
-        } finally {
+
             unsubscribeProgressChangeEvent();
             unsubscribeUploadCompleteEvent();
         }
     }
 };
 
-const getAbortFilesUpload = (uploadModalElm) => () => {
+const abortFilesUploadHandler = () => {
     uploadState.isUploading = false;
 
-    ee.emit('upload/abort');
-
-    uploadModalElm.remove();
+   for (const file of uploadState.uploadFiles) {
+        getFileUploadAbortHandler(file)();
+    }
 };
 
 const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
@@ -123,7 +125,7 @@ const prepareFilesForUpload = async (files) => {
 
     uploadModalElms.uploadCancelElm.addEventListener(
         'click',
-        getAbortFilesUpload(uploadModalElms.uploadModalElm)
+        abortFilesUploadHandler
     );
 
     await uploadFiles();

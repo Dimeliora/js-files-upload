@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     userAvatar: String,
     totalDiskSpace: {
         type: Number,
-        default: 10 * 1024 ** 2,
+        default: 100 * 1024 ** 2,
     },
     usedDiskSpace: {
         type: Number,

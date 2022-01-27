@@ -40,6 +40,11 @@ export const getUploadFileAbortElm = (fileElm) => {
     return fileElm.querySelector('[data-upload-file-abort]');
 };
 
+export const disableUploadFileAbortElm = (fileElm) => {
+    const uploadFileAbortElm = getUploadFileAbortElm(fileElm);
+    uploadFileAbortElm.disabled = true;
+};
+
 export const updateUploadFileElmStatus = (fileElm, uploadState, message) => {
     const classname = UPLOAD_FILE_ELM_STATE_CLASS_MAP[uploadState];
     fileElm.classList.add(classname);

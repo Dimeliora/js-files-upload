@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import CancelError from '../errors/cancel-error';
 import { ee } from '../helpers/event-emitter';
 import { BASE_URL } from '../config/base-url';
+import CancelError from '../errors/cancel-error';
 
 const fileService = axios.create({
     baseURL: `${BASE_URL}/file`,
@@ -12,6 +12,12 @@ export const fileUpload = async (file) => {
     const accessToken = localStorage.getItem('access-token');
 
     try {
+        const source = axios.CancelToken.source();
+
+        ee.on('upload/abort', () => {
+            source.cancel('Upload cancelled');
+        });
+
         await fileService.post(
             '/upload/check',
             { filename: file.name, size: file.size },
@@ -19,17 +25,12 @@ export const fileUpload = async (file) => {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
+                cancelToken: source.token,
             }
         );
 
         const formData = new FormData();
         formData.append('file', file);
-
-        const source = axios.CancelToken.source();
-
-        ee.on('upload/abort', () => {
-            source.cancel('Upload cancelled');
-        });
 
         await fileService.post('/upload', formData, {
             headers: {

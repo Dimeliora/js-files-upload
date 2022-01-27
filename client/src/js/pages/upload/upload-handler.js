@@ -22,12 +22,12 @@ const getFileUploadAbortHandler = (fileItem) => () => {
         ee.emit('upload/abort');
     } else {
         fileItem.status = 'cancelled';
-        fileItem.error = 'Upload cancelled';
+        fileItem.message = 'Upload cancelled';
 
         updateUploadFileElmStatus(
             fileItem.domElm,
             fileItem.status,
-            fileItem.error
+            fileItem.message
         );
     }
 };
@@ -53,10 +53,12 @@ const uploadFiles = async () => {
             'upload/upload-complete',
             () => {
                 fileItem.status = 'done';
+                fileItem.message = 'Upload completed';
+
                 updateUploadFileElmStatus(
                     fileItem.domElm,
                     fileItem.status,
-                    fileItem.error
+                    fileItem.message
                 );
             }
         );
@@ -67,12 +69,12 @@ const uploadFiles = async () => {
             fileItem.status =
                 error instanceof CancelError ? 'cancelled' : 'error';
 
-            fileItem.error = error.message;
+            fileItem.message = error.message;
 
             updateUploadFileElmStatus(
                 fileItem.domElm,
                 fileItem.status,
-                fileItem.error
+                fileItem.message
             );
         } finally {
             unsubscribeProgressChangeEvent();

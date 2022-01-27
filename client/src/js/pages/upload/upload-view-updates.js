@@ -46,7 +46,7 @@ export const updateUploadFileElmStatus = (fileElm, uploadState, message) => {
 
     if (message) {
         const uploadFileInnerElms = getUploadFileElms(fileElm);
-        uploadFileInnerElms.uploadFileError.textContent = message;
+        uploadFileInnerElms.uploadFileMessage.textContent = message;
     }
 };
 

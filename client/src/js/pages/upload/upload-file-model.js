@@ -1,6 +1,6 @@
 export default class FileItem {
     status = 'pending';
-    error = null;
+    message = null;
     domElm = null;
 
     constructor(id, file) {

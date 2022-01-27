@@ -18,6 +18,6 @@ export const getUploadFileElms = (uploadFileElm) => ({
     uploadFileProgressValue: uploadFileElm.querySelector(
         '[data-upload-file-progress-value]'
     ),
-    uploadFileError: uploadFileElm.querySelector('[data-upload-file-error]'),
+    uploadFileMessage: uploadFileElm.querySelector('[data-upload-file-message]'),
     uploadFileAbort: uploadFileElm.querySelector('[data-upload-file-abort]'),
 });

@@ -70,7 +70,7 @@ export const createUploadFileHTML = (id, filename) => {
                     ></div>
                     <span class="progress__text" data-upload-file-progress-value>0%</span>
                 </div>
-                <div class="upload-files__error" data-upload-file-error></div>
+                <div class="upload-files__message" data-upload-file-message></div>
             </div>
             <div class="upload-files__controls">
                 <button

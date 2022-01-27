@@ -12,7 +12,7 @@ import {
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
 import { fileUpload } from '../../services/file-service';
-import uploadState, { FileItem } from '../../state/upload-state';
+import FileItem from './upload-file-model';
 import CancelError from '../../errors/cancel-error';
 
 const getFileUploadAbortHandler = (fileItem) => () => {
@@ -30,7 +30,52 @@ const getFileUploadAbortHandler = (fileItem) => () => {
     }
 };
 
-const handleFilesToUpload = async (files) => {
+const uploadFiles = async (files) => {
+    for (const fileItem of files) {
+        if (fileItem.status === 'cancelled') {
+            continue;
+        }
+
+        fileItem.status = 'uploading';
+
+        const unsubscribeProgressChangeEvent = ee.on(
+            'upload/progress-changed',
+            getUpdateFileProgressHandler(fileItem.domElm)
+        );
+
+        const unsubscribeUploadCompleteEvent = ee.on(
+            'upload/upload-complete',
+            () => {
+                fileItem.status = 'done';
+                updateUploadFileElmStatus(
+                    fileItem.domElm,
+                    fileItem.status,
+                    fileItem.error
+                );
+            }
+        );
+
+        try {
+            await fileUpload(fileItem.file);
+        } catch (error) {
+            fileItem.status =
+                error instanceof CancelError ? 'cancelled' : 'error';
+
+            fileItem.error = error.message;
+
+            updateUploadFileElmStatus(
+                fileItem.domElm,
+                fileItem.status,
+                fileItem.error
+            );
+        } finally {
+            unsubscribeProgressChangeEvent();
+            unsubscribeUploadCompleteEvent();
+        }
+    }
+};
+
+const uploadFilesHandler = async (files) => {
     const uploadFileItems = [...files].map((file) => new FileItem(v4(), file));
 
     const uploadModalInnerElms = renderUploadFilesModal(uploadFileItems);
@@ -50,43 +95,13 @@ const handleFilesToUpload = async (files) => {
         );
     }
 
-    uploadState.files = uploadFileItems;
+    await uploadFiles(uploadFileItems);
 
-    for (const fileItem of uploadState.files) {
-        if (fileItem.status === 'cancelled') {
-            continue;
-        }
-
-        fileItem.status = 'uploading';
-
-        const unsubscribeProgressChangeEvent = ee.on(
-            'upload/progress-changed',
-            getUpdateFileProgressHandler(fileItem.domElm)
-        );
-
-        try {
-            await fileUpload(fileItem.file);
-
-            fileItem.status = 'done';
-        } catch (error) {
-            fileItem.status =
-                error instanceof CancelError ? 'cancelled' : 'error';
-
-            fileItem.error = error.message;
-        } finally {
-            updateUploadFileElmStatus(
-                fileItem.domElm,
-                fileItem.status,
-                fileItem.error
-            );
-
-            unsubscribeProgressChangeEvent();
-        }
-    }
+    console.log('Uploaded');
 };
 
 const uploadInputChangeHandler = (e) => {
-    handleFilesToUpload(e.target.files);
+    uploadFilesHandler(e.target.files);
 };
 
 const dropzoneDragOverHandler = (e) => {
@@ -112,7 +127,7 @@ const getDropzoneDropHandler = (uploadElms) => (e) => {
 
     removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
 
-    handleFilesToUpload(e.dataTransfer.files);
+    uploadFilesHandler(e.dataTransfer.files);
 };
 
 export const uploadHandler = (appContainer) => {

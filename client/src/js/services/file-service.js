@@ -53,6 +53,10 @@ export const fileUpload = async (file) => {
                 );
 
                 ee.emit('upload/progress-changed', uploadProgress);
+
+                if (uploadProgress >= 100) {
+                    ee.emit('upload/upload-complete');
+                }
             },
         });
     } catch (error) {

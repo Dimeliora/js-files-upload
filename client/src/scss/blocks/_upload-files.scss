@@ -43,6 +43,10 @@
         }
 
         &--error {
+            .upload-files__name {
+                color: $red;
+            }
+
             .upload-files__progress {
                 display: none;
             }

@@ -9,13 +9,13 @@ const { getUserFilesDir } = require('../helpers/data-path-helpers');
 exports.fileUploadAbilityCheck = async (filename, size, userId) => {
     const user = await User.findById(userId);
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
-        throw new FileError(`Not enought disk space for ${filename}`, 400);
+        throw new FileError(`Not enought disk space`, 400);
     }
 
     const userFilesDirPath = getUserFilesDir(userId);
     const filePath = path.resolve(userFilesDirPath, filename);
     if (fs.existsSync(filePath)) {
-        throw new FileError(`File ${filename} already exists`, 400);
+        throw new FileError(`File already exists`, 400);
     }
 };
 

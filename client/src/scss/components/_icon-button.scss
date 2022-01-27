@@ -8,6 +8,10 @@
     cursor: pointer;
     @include round-highlight($blue-transparent, 30px);
 
+    &:disabled {
+        cursor: default;
+    }
+
     &__icon {
         width: 20px;
         height: 20px;

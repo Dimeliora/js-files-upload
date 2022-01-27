@@ -20,8 +20,14 @@
             transform: translate(-50%, -50%) scale(1);
 
             @media screen and (max-width: $md) {
-                transform: translate(-50%, -50%) scale(0);
+                display: none;
             }
+        }
+    }
+
+    &:disabled {
+        &::after {
+            display: none;
         }
     }
 }

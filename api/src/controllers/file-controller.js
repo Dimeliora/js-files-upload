@@ -22,6 +22,10 @@ exports.fileUploadAbilityCheck = async (req, res) => {
 };
 
 exports.fileUpload = async (req, res) => {
+    if (!req.files) {
+        return;
+    }
+
     const { file } = req.files;
     const { id } = req.user;
 

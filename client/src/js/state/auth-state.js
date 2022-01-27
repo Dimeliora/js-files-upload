@@ -1,4 +1,4 @@
-class State {
+class AuthState {
     isAuth = false;
     user = null;
 
@@ -13,4 +13,4 @@ class State {
     }
 }
 
-export default new State();
+export default new AuthState();

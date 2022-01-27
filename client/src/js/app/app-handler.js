@@ -1,4 +1,4 @@
-import state from '../state/state';
+import authState from '../state/auth-state';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
@@ -7,7 +7,7 @@ import { ee } from '../helpers/event-emitter';
 const setAuthState = (accessToken, user) => {
     localStorage.setItem('access-token', accessToken);
 
-    state.setAuthState(user);
+    authState.setAuthState(user);
 };
 
 const checkUserAuthStatusHandler = async () => {
@@ -31,7 +31,7 @@ const userLoginHandler = ({ accessToken, user }) => {
 const userLogoutHandler = () => {
     localStorage.removeItem('access-token');
 
-    state.resetAuthState();
+    authState.resetAuthState();
 
     window.location.hash = '';
     routesHandler();
@@ -39,7 +39,7 @@ const userLogoutHandler = () => {
 
 const routesHandler = () => {
     let path = window.location.hash.slice(1) || '/';
-    if (!state.isAuth) {
+    if (!authState.isAuth) {
         path = 'auth';
     }
 

@@ -91,6 +91,13 @@ export const createUploadFileHTML = (id, filename) => {
                         href="/icons/icon-sprite.svg#alert-error"
                     />
                 </svg>
+                <svg
+                    class="upload-files__icon upload-files__icon--cancelled"
+                >
+                    <use
+                        href="/icons/icon-sprite.svg#cancel"
+                    />
+                </svg>
             </div>
         </li>
     `;

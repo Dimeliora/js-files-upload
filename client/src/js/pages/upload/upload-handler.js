@@ -1,65 +1,86 @@
 import { v4 } from 'uuid';
 
 import { ee } from '../../helpers/event-emitter';
-import {
-    getUploadElms,
-    getUploadModalElms,
-    getUploadFileElms,
-} from './upload-dom-elements';
+import { getUploadElms } from './upload-dom-elements';
 import {
     setDropzoneHoveredClass,
     removeDropzoneHoveredClass,
+    renderUploadFilesModal,
+    getUploadFileAbortElm,
+    updateUploadFileElmStatus,
+    getUpdateFileProgressHandler,
 } from './upload-view-updates';
-import {
-    createUploadHTML,
-    createUploadModalHTML,
-    createUploadFileHTML,
-} from './upload-template-creators';
+import { createUploadHTML } from './upload-template-creators';
 import { fileUpload } from '../../services/file-service';
 import uploadState, { FileItem } from '../../state/upload-state';
+import CancelError from '../../errors/cancel-error';
+
+const getFileUploadAbortHandler = (fileItem) => () => {
+    if (fileItem.status === 'uploading') {
+        ee.emit('upload/abort');
+    } else {
+        fileItem.status = 'cancelled';
+        fileItem.error = 'Upload cancelled';
+
+        updateUploadFileElmStatus(
+            fileItem.domElm,
+            fileItem.status,
+            fileItem.error
+        );
+    }
+};
 
 const handleFilesToUpload = async (files) => {
-    const fileItems = [...files].map((file) => new FileItem(v4(), file));
+    const uploadFileItems = [...files].map((file) => new FileItem(v4(), file));
 
-    uploadState.setFilesToUpload(fileItems);
+    const uploadModalInnerElms = renderUploadFilesModal(uploadFileItems);
 
-    document.body.insertAdjacentHTML('beforeend', createUploadModalHTML());
+    const uploadFileElms = uploadModalInnerElms.uploadFilesListElm.children;
 
-    const uploadModalElm = document.querySelector('[data-upload-modal]');
-    const uploadModalInnerElms = getUploadModalElms(uploadModalElm);
+    for (const fileElm of uploadFileElms) {
+        const id = fileElm.dataset.uploadFile;
 
-    const uploadFilesMarkup = uploadState.files
-        .map((file) => createUploadFileHTML(file.id, file.name))
-        .join(' ');
-    uploadModalInnerElms.uploadFilesListElm.insertAdjacentHTML(
-        'beforeend',
-        uploadFilesMarkup
-    );
+        const fileItem = uploadFileItems.find((item) => item.id === id);
+        fileItem.domElm = fileElm;
 
-    for (const { id, file } of uploadState.files) {
-        const uploadFilesListItemElm =
-            uploadModalInnerElms.uploadFilesListElm.querySelector(
-                `[data-upload-file="${id}"]`
-            );
-        const uploadFileInnerElms = getUploadFileElms(uploadFilesListItemElm);
+        const uploadFileAbortElm = getUploadFileAbortElm(fileElm);
+        uploadFileAbortElm.addEventListener(
+            'click',
+            getFileUploadAbortHandler(fileItem)
+        );
+    }
 
-        const unsubProgressChangeEvn = ee.on(
+    uploadState.files = uploadFileItems;
+
+    for (const fileItem of uploadState.files) {
+        if (fileItem.status === 'cancelled') {
+            continue;
+        }
+
+        fileItem.status = 'uploading';
+
+        const unsubscribeProgressChangeEvent = ee.on(
             'upload/progress-changed',
-            (progress) => {
-                uploadFileInnerElms.uploadFileProgressBar.style.width = `${progress}%`;
-                uploadFileInnerElms.uploadFileProgressValue.textContent = `${progress}%`;
-            }
+            getUpdateFileProgressHandler(fileItem.domElm)
         );
 
         try {
-            await fileUpload(file);
+            await fileUpload(fileItem.file);
 
-            uploadFilesListItemElm.classList.add('upload-files__item--done');
+            fileItem.status = 'done';
         } catch (error) {
-            uploadFileInnerElms.uploadFileError.textContent = error.message;
-            uploadFilesListItemElm.classList.add('upload-files__item--error');
+            fileItem.status =
+                error instanceof CancelError ? 'cancelled' : 'error';
+
+            fileItem.error = error.message;
         } finally {
-            unsubProgressChangeEvn();
+            updateUploadFileElmStatus(
+                fileItem.domElm,
+                fileItem.status,
+                fileItem.error
+            );
+
+            unsubscribeProgressChangeEvent();
         }
     }
 };

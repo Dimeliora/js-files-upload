@@ -1,17 +1,15 @@
 class UploadState {
-    isUploading = false;
     files = [];
 
-    setFilesToUpload(files) {
-        this.isUploading = true;
-        this.files = files;
+    getFileById(id) {
+        return this.files.find((item) => item.id === id);
     }
 }
 
 export class FileItem {
-    progress = 0;
     status = 'pending';
     error = null;
+    domElm = null;
 
     constructor(id, file) {
         this.id = id;

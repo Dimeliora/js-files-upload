@@ -3,6 +3,16 @@
     height: 6px;
     border-radius: 24px;
     background-color: $gray-light;
+    text-align: center;
+
+    &--text {
+        height: 16px;
+        padding: 2px 0;
+
+        .progress__text {
+            display: inline-block;
+        }
+    }
 
     &__filler {
         position: absolute;
@@ -11,5 +21,13 @@
         height: 100%;
         border-radius: 24px;
         background-color: $purple;
+    }
+
+    &__text {
+        position: relative;
+        z-index: 100;
+        display: none;
+        font-size: 1.2rem;
+        font-weight: 700;
     }
 }

@@ -1,0 +1,76 @@
+.upload-files {
+    display: flex;
+    flex-direction: column;
+
+    &__list {
+        max-height: 300px;
+        padding: 10px 0;
+        overflow-y: auto;
+        margin-bottom: 30px;
+        list-style-type: none;
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 6px;
+            background-color: $gray-dark;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 6px;
+            background-color: $purple;
+        }
+    }
+
+    &__item {
+        display: grid;
+        grid-template-columns: 120px 1fr 40px;
+        column-gap: 10px;
+        align-items: center;
+        margin-bottom: 15px;
+
+        &--done {
+            .upload-files__abort {
+                display: none;
+            }
+
+            .upload-files__icon {
+                display: block;
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 1.6rem;
+    }
+
+    &__status {
+    }
+
+    &__progress {
+    }
+
+    &__controls {
+        justify-self: center;
+    }
+
+    &__icon {
+        display: none;
+        width: 20px;
+        height: 20px;
+        fill: $green;
+    }
+
+    &__abort {
+    }
+
+    &__cancel {
+        align-self: center;
+    }
+}

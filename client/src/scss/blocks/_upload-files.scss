@@ -2,6 +2,16 @@
     display: flex;
     flex-direction: column;
 
+    &--done {
+        .upload-files__button--cancel {
+            display: none;
+        }
+
+        .upload-files__button--done {
+            display: inline-block;
+        }
+    }
+
     &__list {
         max-height: 300px;
         padding: 10px 0;
@@ -129,7 +139,11 @@
         }
     }
 
-    &__cancel {
+    &__button {
         align-self: center;
+
+        &--done {
+            display: none;
+        }
     }
 }

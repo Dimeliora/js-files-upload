@@ -27,10 +27,9 @@ exports.fileUpload = async (file, userId) => {
 
     file.mv(filePath);
 
-    const fileType = file.name.split('.').pop();
     const newFile = new File({
         name: file.name,
-        type: fileType,
+        type: file.mimetype,
         size: file.size,
         user: user._id,
     });

@@ -29,11 +29,33 @@
         margin-bottom: 15px;
 
         &--done {
+            .upload-files__name {
+                font-weight: 700;
+            }
+
             .upload-files__abort {
                 display: none;
             }
 
-            .upload-files__icon {
+            .upload-files__icon--done {
+                display: block;
+            }
+        }
+
+        &--error {
+            .upload-files__progress {
+                display: none;
+            }
+
+            .upload-files__error {
+                display: block;
+            }
+
+            .upload-files__abort {
+                display: none;
+            }
+
+            .upload-files__icon--error {
                 display: block;
             }
         }
@@ -50,10 +72,10 @@
         font-size: 1.6rem;
     }
 
-    &__status {
-    }
-
-    &__progress {
+    &__error {
+        display: none;
+        color: $red;
+        font-size: 1.4rem;
     }
 
     &__controls {
@@ -64,10 +86,15 @@
         display: none;
         width: 20px;
         height: 20px;
-        fill: $green;
-    }
 
-    &__abort {
+        &--done {
+            fill: $green;
+        }
+
+        &--error {
+            fill: transparent;
+            stroke: $red;
+        }
     }
 
     &__cancel {

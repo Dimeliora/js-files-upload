@@ -1,25 +1,65 @@
-import { getUploadElms } from './upload-dom-elements';
+import { v4 } from 'uuid';
+
+import { ee } from '../../helpers/event-emitter';
+import {
+    getUploadElms,
+    getUploadModalElms,
+    getUploadFileElms,
+} from './upload-dom-elements';
 import {
     setDropzoneHoveredClass,
     removeDropzoneHoveredClass,
 } from './upload-view-updates';
-import { createUploadHTML } from './upload-template-creators';
+import {
+    createUploadHTML,
+    createUploadModalHTML,
+    createUploadFileHTML,
+} from './upload-template-creators';
 import { fileUpload } from '../../services/file-service';
-import { alertHandle } from '../../alerts/alerts-handler';
-
-const renderBlockAndGetDOMElms = (rootElement) => {
-    rootElement.innerHTML = createUploadHTML();
-    return getUploadElms(rootElement);
-};
+import uploadState, { FileItem } from '../../state/upload-state';
 
 const handleFilesToUpload = async (files) => {
-    for (const file of files) {
-        try {
-            const fileData = await fileUpload(file);
+    const fileItems = [...files].map((file) => new FileItem(v4(), file));
 
-            console.log(fileData);
+    uploadState.setFilesToUpload(fileItems);
+
+    document.body.insertAdjacentHTML('beforeend', createUploadModalHTML());
+
+    const uploadModalElm = document.querySelector('[data-upload-modal]');
+    const uploadModalInnerElms = getUploadModalElms(uploadModalElm);
+
+    const uploadFilesMarkup = uploadState.files
+        .map((file) => createUploadFileHTML(file.id, file.name))
+        .join(' ');
+    uploadModalInnerElms.uploadFilesListElm.insertAdjacentHTML(
+        'beforeend',
+        uploadFilesMarkup
+    );
+
+    for (const { id, file } of uploadState.files) {
+        const uploadFilesListItemElm =
+            uploadModalInnerElms.uploadFilesListElm.querySelector(
+                `[data-upload-file="${id}"]`
+            );
+        const uploadFileInnerElms = getUploadFileElms(uploadFilesListItemElm);
+
+        const unsubProgressChangeEvn = ee.on(
+            'upload/progress-changed',
+            (progress) => {
+                uploadFileInnerElms.uploadFileProgressBar.style.width = `${progress}%`;
+                uploadFileInnerElms.uploadFileProgressValue.textContent = `${progress}%`;
+            }
+        );
+
+        try {
+            await fileUpload(file);
+
+            uploadFilesListItemElm.classList.add('upload-files__item--done');
         } catch (error) {
-            alertHandle(error.message, 'error');
+            uploadFileInnerElms.uploadFileError.textContent = error.message;
+            uploadFilesListItemElm.classList.add('upload-files__item--error');
+        } finally {
+            unsubProgressChangeEvn();
         }
     }
 };
@@ -55,7 +95,9 @@ const getDropzoneDropHandler = (uploadElms) => (e) => {
 };
 
 export const uploadHandler = (appContainer) => {
-    const uploadElms = renderBlockAndGetDOMElms(appContainer);
+    appContainer.innerHTML = createUploadHTML();
+
+    const uploadElms = getUploadElms(appContainer);
 
     uploadElms.uploadInputElm.addEventListener(
         'change',

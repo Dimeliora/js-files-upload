@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { ee } from '../helpers/event-emitter';
 import { BASE_URL } from '../config/base-url';
 
 const fileService = axios.create({
@@ -23,7 +24,7 @@ export const fileUpload = async (file) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        const { data } = await fileService.post('/upload', formData, {
+        await fileService.post('/upload', formData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -42,11 +43,10 @@ export const fileUpload = async (file) => {
                 const uploadProgress = Math.round(
                     (e.loaded / totalLength) * 100
                 );
-                console.log(file.name, uploadProgress);
+
+                ee.emit('upload/progress-changed', uploadProgress);
             },
         });
-
-        return data;
     } catch (error) {
         throw new Error(error.response.data.message);
     }

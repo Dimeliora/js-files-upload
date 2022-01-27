@@ -31,12 +31,12 @@ export const createUploadHTML = () => {
     `;
 };
 
-export const createUploadFilesModalHTML = () => {
+export const createUploadModalHTML = () => {
     return `
-        <div class="modal">
+        <div class="modal" data-upload-modal>
             <div class="modal__content paper">
                 <div class="upload-files">
-                    <ul class="upload-files__list" data-upload-modal></ul>
+                    <ul class="upload-files__list" data-upload-files-list></ul>
                     <button
                         class="upload-files__cancel button"
                         data-upload-cancel
@@ -49,9 +49,9 @@ export const createUploadFilesModalHTML = () => {
     `;
 };
 
-export const createUploadFilesListItemHTML = (filename) => {
+export const createUploadFileHTML = (id, filename) => {
     return `
-        <li class="upload-files__item" data-upload-file>
+        <li class="upload-files__item" data-upload-file="${id}">
             <div class="upload-files__name">${filename}</div>
             <div class="upload-files__status">
                 <div

@@ -2,6 +2,7 @@ import {
     getFormattedFileSize,
     getFormattedFileCreationDate,
 } from '../../helpers/file-info-formatters';
+import { createLoaderHTML } from '../../components/loader/loader-template-creators';
 
 const FILE_TYPES_ICON_MAP = {
     text: 'document-file',
@@ -17,10 +18,24 @@ const getFileTypeIcon = (mime) => {
     return FILE_TYPES_ICON_MAP[type] || 'common-type';
 };
 
+export const createRecentContentHTML = () => {
+    return `
+        <ul class="recent__list" data-recent-list></ul>
+        <div class="recent__view-all">
+            <button
+                class="recent__view-all-button button button--secondary"
+                data-view-all
+            >
+                View all uploads
+            </button>
+        </div>
+    `;
+};
+
 export const createRecentHTML = () => {
     return `
         <div class="recent paper">
-            <div class="upload__header header">
+            <div class="recent__header header">
                 <nav class="header__navigation">
                     <a href="#upload" class="header__link"
                         >New Upload</a
@@ -42,16 +57,10 @@ export const createRecentHTML = () => {
                     </svg>
                 </a>
             </div>
-            <ul class="recent__list" data-recent-list></ul>
-            <div class="recent__view-all">
-                <button
-                    class="recent__view-all-button button button--secondary"
-                    data-view-all
-                >
-                    View all uploads
-                </button>
+            <div class="recent__content" data-recent-content>
+                ${createLoaderHTML()}
             </div>
-            <div class="dashboard__footer footer">
+            <div class="recent__footer footer">
                 <div class="footer__sync">
                     <svg class="footer__sync-icon">
                         <use href="/icons/icon-sprite.svg#tick" />
@@ -102,7 +111,7 @@ export const createRecentFileHTML = (file) => {
     `;
 };
 
-export const createRecentPlaceholderHTML = (reason = 'error') => {
+export const createRecentPlaceholderHTML = (reason) => {
     let placeholderText = 'No files to show';
     if (reason === 'error') {
         placeholderText = 'Error occured during files list fetch';

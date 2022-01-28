@@ -13,7 +13,7 @@ import {
 import { ee } from '../../helpers/event-emitter';
 import { getAuthElms } from './auth-dom-elements';
 import { userLogin, userRegister } from '../../services/auth-service';
-import { alertHandle } from '../../alerts/alerts-handler';
+import { alertHandle } from '../../components/alerts/alerts-handler';
 import { validateForm } from '../../helpers/form-validation';
 
 const getLoginFormSubmitHandler = (authElms) => async (e) => {

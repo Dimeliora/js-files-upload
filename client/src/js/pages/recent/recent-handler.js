@@ -1,23 +1,51 @@
 import { ee } from '../../helpers/event-emitter';
-import { getRecentElms } from './recent-dom-elements';
+import { getRecentElms, getRecentContentElms } from './recent-dom-elements';
 import {
     createRecentHTML,
+    createRecentContentHTML,
     createRecentFileHTML,
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
+import { viewAllElmStateHandler } from './recent-view-updates';
 import { getFiles } from '../../services/file-service';
+import recentState from '../../state/recent-state';
 
-const getFilesAndCreateListMarkup = async (max = 0) => {
+const getRecentFiles = async (max = 0) => {
     try {
         const files = await getFiles(max);
-        const recentListMarkup = files
-            .map((file) => createRecentFileHTML(file))
-            .join(' ');
 
-        return recentListMarkup;
+        recentState.setRecentFiles(files);
     } catch (error) {
+        recentState.setError();
+    }
+};
+
+const getRecentFilesListMarkup = () => {
+    if (recentState.isError) {
         return createRecentPlaceholderHTML('error');
     }
+
+    if (!recentState.hasFiles) {
+        return createRecentPlaceholderHTML();
+    }
+
+    const recentListMarkup = recentState.recentFiles
+        .map((file) => createRecentFileHTML(file))
+        .join(' ');
+
+    return recentListMarkup;
+};
+
+const renderRecentContentBlock = (recentElms) => {
+    recentElms.recentContentElm.innerHTML = createRecentContentHTML();
+    const recentContentElms = getRecentContentElms(recentElms.recentContentElm);
+
+    recentContentElms.recentListElm.innerHTML = getRecentFilesListMarkup();
+
+    viewAllElmStateHandler(
+        recentContentElms.recentViewAllElm,
+        recentState.hasFiles
+    );
 };
 
 const logoutHandler = () => {
@@ -29,8 +57,9 @@ export const recentHandler = async (appContainer) => {
 
     const recentElms = getRecentElms(appContainer);
 
-    const recentListMarkup = await getFilesAndCreateListMarkup(5);
-    recentElms.recentListElm.innerHTML = recentListMarkup;
+    await getRecentFiles(5);
+
+    renderRecentContentBlock(recentElms);
 
     recentElms.recentLogoutElm.addEventListener('click', logoutHandler);
 };

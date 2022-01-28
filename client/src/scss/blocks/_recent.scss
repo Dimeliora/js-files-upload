@@ -1,4 +1,13 @@
 .recent {
+    &__content {
+        display: flex;
+        flex-direction: column;
+
+        .loader {
+            align-self: center;
+        }
+    }
+
     &__list {
         list-style-type: none;
     }
@@ -6,10 +15,21 @@
     &__list-item {
         padding: 16px 0;
         border-bottom: 1px solid $gray-light;
+
+        &--placeholder {
+            border: none;
+            font-size: 2rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
     }
 
     &__view-all {
         padding: 16px 0 20px;
         text-align: center;
+
+        &--hidden {
+            display: none;
+        }
     }
 }

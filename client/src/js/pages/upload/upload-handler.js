@@ -98,9 +98,15 @@ const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
     uploadState.resetUploadState();
 
     uploadModalElm.remove();
+
+    window.location.hash = 'recent';
 };
 
 const prepareFilesForUpload = async (files) => {
+    if (files.length === 0) {
+        return;
+    }
+
     const uploadFileItems = [...files].map((file) => new FileItem(v4(), file));
 
     const uploadModalElms = renderUploadFilesModal(uploadFileItems);

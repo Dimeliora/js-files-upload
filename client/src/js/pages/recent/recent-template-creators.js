@@ -20,22 +20,22 @@ const getFileTypeIcon = (mime) => {
 export const createRecentHTML = () => {
     return `
         <div class="recent paper" data-recent-block>
-            <div class="recent__content" data-recent-content></div>
+            <div class="recent__content">
+                <ul class="recent__list" data-recent-list></ul>
+                <div class="recent__view-all" data-recent-load></div>
+            </div>
         </div>
     `;
 };
 
-export const createRecentContentHTML = () => {
+export const createViewAllHTML = () => {
     return `
-        <ul class="recent__list" data-recent-list></ul>
-        <div class="recent__view-all">
-            <button
-                class="recent__view-all-button button button--secondary"
-                data-view-all
-            >
-                View all uploads
-            </button>
-        </div>
+        <button
+            class="recent__view-all-button button button--secondary"
+            data-view-all
+        >
+            View all uploads
+        </button>
     `;
 };
 

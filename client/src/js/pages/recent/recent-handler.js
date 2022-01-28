@@ -1,23 +1,23 @@
 import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
-import { getRecentElms, getRecentContentElms } from './recent-dom-elements';
+import { getRecentElms } from './recent-dom-elements';
+import { hideRecentLoadElm, showRecentLoadElm } from './recent-view-updates';
 import {
     createRecentHTML,
-    createRecentContentHTML,
+    createViewAllHTML,
     createRecentFileHTML,
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
 import { createLoaderHTML } from '../../components/loader/loader-template-creators';
-import { viewAllElmStateHandler } from './recent-view-updates';
 import { getFiles } from '../../services/file-service';
 import recentState from '../../state/recent-state';
 
 const getRecentFiles = async (max = 0) => {
     try {
-        const filesData = await getFiles(max);
+        const files = await getFiles(max);
 
-        recentState.setRecentFiles(filesData);
+        recentState.setRecentFiles(files);
     } catch (error) {
         recentState.setError();
     }
@@ -28,7 +28,7 @@ const getRecentFilesListMarkup = () => {
         return createRecentPlaceholderHTML('error');
     }
 
-    if (recentState.totalFilesCount === 0) {
+    if (recentState.recentFiles.length === 0) {
         return createRecentPlaceholderHTML();
     }
 
@@ -39,25 +39,44 @@ const getRecentFilesListMarkup = () => {
     return recentListMarkup;
 };
 
-const renderRecentContentBlock = (recentElms) => {
-    if (recentState.isFetching) {
-        recentElms.recentContentElm.innerHTML = createLoaderHTML();
-        return;
+const fetchRecentFilesHandler = async (recentElms, count = 0) => {
+    recentElms.recentLoadElm.innerHTML = createLoaderHTML();
+
+    await getRecentFiles(count);
+};
+
+const renderRecentList = (recentElms) => {
+    const { recentLoadElm, recentListElm } = recentElms;
+    const { isFullUploadsList, recentFiles } = recentState;
+
+    recentListElm.innerHTML = getRecentFilesListMarkup();
+
+    if (isFullUploadsList || recentFiles.length < 5) {
+        recentLoadElm.innerHTML = '';
+
+        hideRecentLoadElm(recentLoadElm);
+    } else {
+        recentLoadElm.innerHTML = createViewAllHTML();
+        const recentViewAllElm = recentLoadElm.firstElementChild;
+
+        showRecentLoadElm(recentLoadElm);
+
+        recentViewAllElm.addEventListener(
+            'click',
+            getViewAllUploadsHandler(recentElms)
+        );
     }
-
-    recentElms.recentContentElm.innerHTML = createRecentContentHTML();
-    const recentContentElms = getRecentContentElms(recentElms.recentContentElm);
-
-    recentContentElms.recentListElm.innerHTML = getRecentFilesListMarkup();
-
-    viewAllElmStateHandler(
-        recentContentElms.recentViewAllElm,
-        recentState.totalFilesCount > 5
-    );
 };
 
 const resetRecentListActuality = () => {
     recentState.resetRecentListActualState();
+};
+
+const getViewAllUploadsHandler = (recentElms) => async () => {
+    await fetchRecentFilesHandler(recentElms);
+
+    recentState.setFullUploadList();
+    renderRecentList(recentElms);
 };
 
 export const recentHandler = async (appContainer) => {
@@ -69,14 +88,10 @@ export const recentHandler = async (appContainer) => {
     footerHandler(recentElms.recentBlockElm);
 
     if (!recentState.isRecentListActual) {
-        recentState.setFetching();
-
-        renderRecentContentBlock(recentElms);
-
-        await getRecentFiles(5);
+        await fetchRecentFilesHandler(recentElms, 5);
     }
 
-    renderRecentContentBlock(recentElms);
+    renderRecentList(recentElms);
 
     ee.on('upload/resync-needed', resetRecentListActuality);
 };

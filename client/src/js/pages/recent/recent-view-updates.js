@@ -1,7 +1,7 @@
-export const viewAllElmStateHandler = (viewAllElm, isVisible) => {
-    if (isVisible) {
-        viewAllElm.parentElement.classList.remove('recent__view-all--hidden');
-    } else {
-        viewAllElm.parentElement.classList.add('recent__view-all--hidden');
-    }
+export const hideRecentLoadElm = (recentLoadElm) => {
+    recentLoadElm.classList.add('recent__view-all--hidden');
+};
+
+export const showRecentLoadElm = (recentLoadElm) => {
+    recentLoadElm.classList.remove('recent__view-all--hidden');
 };

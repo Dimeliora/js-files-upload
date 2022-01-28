@@ -1,39 +1,38 @@
 class RecentState {
     isError = false;
     isRecentListActual = false;
-    isFetching = true;
-    totalFilesCount = 0;
+    isFullUploadsList = false;
     recentFiles = [];
 
-    setFetching() {
-        this.isFetching = true;
+    setFetching() {}
+
+    setFullUploadList() {
+        this.isFullUploadsList = true;
     }
 
     resetRecentListActualState() {
         this.isRecentListActual = false;
+        this.isFullUploadsList = false;
     }
 
-    setRecentFiles({ total, recent }) {
+    setRecentFiles(files) {
         this.isError = false;
-        this.isFetching = false;
         this.isRecentListActual = true;
-        this.totalFilesCount = total;
-        this.recentFiles = recent;
+        this.isFullUploadsList = false;
+        this.recentFiles = files;
     }
 
     setError() {
         this.isError = true;
-        this.isFetching = false;
         this.isRecentListActual = false;
-        this.totalFilesCount = 0;
+        this.isFullUploadsList = false;
         this.recentFiles = [];
     }
 
     resetRecentState() {
         this.isError = false;
         this.isRecentListActual = false;
-        this.isFetching = true;
-        this.totalFilesCount = 0;
+        this.isFullUploadsList = false;
         this.recentFiles = [];
     }
 }

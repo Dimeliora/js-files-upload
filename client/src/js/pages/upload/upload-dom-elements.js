@@ -1,4 +1,5 @@
 export const getUploadElms = (rootElement) => ({
+    uploadBlockElm: rootElement.querySelector('[data-upload-block]'),
     uploadInputElm: rootElement.querySelector('[data-upload-input]'),
     uploadDropzoneElm: rootElement.querySelector('[data-upload-dropzone]'),
 });
@@ -18,6 +19,8 @@ export const getUploadFileElms = (uploadFileElm) => ({
     uploadFileProgressValue: uploadFileElm.querySelector(
         '[data-upload-file-progress-value]'
     ),
-    uploadFileMessage: uploadFileElm.querySelector('[data-upload-file-message]'),
+    uploadFileMessage: uploadFileElm.querySelector(
+        '[data-upload-file-message]'
+    ),
     uploadFileAbort: uploadFileElm.querySelector('[data-upload-file-abort]'),
 });

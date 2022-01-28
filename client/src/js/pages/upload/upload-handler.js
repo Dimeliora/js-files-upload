@@ -13,6 +13,7 @@ import {
     switchUploadFilesModalButtons,
 } from './upload-view-updates';
 import { createUploadHTML } from './upload-template-creators';
+import { headerHandler } from '../../components/header/header-handler';
 import { fileUpload } from '../../services/file-service';
 import FileItem from './upload-file-model';
 import CancelError from '../../errors/cancel-error';
@@ -174,6 +175,8 @@ export const uploadHandler = (appContainer) => {
     appContainer.innerHTML = createUploadHTML();
 
     const uploadElms = getUploadElms(appContainer);
+
+    headerHandler(uploadElms.uploadBlockElm);
 
     uploadElms.uploadInputElm.addEventListener(
         'change',

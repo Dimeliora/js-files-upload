@@ -3,7 +3,7 @@ import { createFooterHTML } from './footer-template-creators';
 import { getFooterElms } from './footer-dom-elements.js';
 
 const getFooterDOMElement = () => {
-    const rootElm = document.createElement('div');
+    const rootElm = document.createElement('footer');
     rootElm.classList.add('footer');
 
     rootElm.insertAdjacentHTML('afterbegin', createFooterHTML());

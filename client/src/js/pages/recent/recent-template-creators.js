@@ -20,28 +20,6 @@ const getFileTypeIcon = (mime) => {
 export const createRecentHTML = () => {
     return `
         <div class="recent paper" data-recent-block>
-            <div class="recent__header header">
-                <nav class="header__navigation">
-                    <a href="#upload" class="header__link"
-                        >New Upload</a
-                    >
-                    <a
-                        href="#recent"
-                        class="header__link header__link--active"
-                        >Recent</a
-                    >
-                </nav>
-                <a
-                    href="#"
-                    class="header__home home-link"
-                    title="Dashboard"
-                    aria-label="Dashboard"
-                >
-                    <svg class="home-link__icon">
-                        <use href="/icons/icon-sprite.svg#settings" />
-                    </svg>
-                </a>
-            </div>
             <div class="recent__content" data-recent-content></div>
         </div>
     `;

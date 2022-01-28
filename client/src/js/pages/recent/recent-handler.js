@@ -1,4 +1,5 @@
 import { footerHandler } from '../../components/footer/footer-handler';
+import { headerHandler } from '../../components/header/header-handler';
 import { getRecentElms, getRecentContentElms } from './recent-dom-elements';
 import {
     createRecentHTML,
@@ -62,6 +63,7 @@ export const recentHandler = async (appContainer) => {
 
     const recentElms = getRecentElms(appContainer);
 
+    headerHandler(recentElms.recentBlockElm);
     footerHandler(recentElms.recentBlockElm);
 
     if (appState.isSyncNeeded) {

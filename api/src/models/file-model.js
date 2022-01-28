@@ -1,27 +1,26 @@
 const { Schema, model, Types } = require('mongoose');
 
-const FileSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
+const FileSchema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        size: {
+            type: Number,
+            default: 0,
+        },
+        user: {
+            type: Types.ObjectId,
+            ref: 'User',
+        },
     },
-    type: {
-        type: String,
-        required: true,
-    },
-    size: {
-        type: Number,
-        default: 0,
-    },
-    creationDate: {
-        type: Date,
-        default: Date.now(),
-    },
-    user: {
-        type: Types.ObjectId,
-        ref: 'User',
-    },
-});
+    { timestamps: true }
+);
 
 const File = model('File', FileSchema);
 

@@ -14,8 +14,16 @@ const getFooterDOMElement = () => {
     return rootElm;
 };
 
-const updateSyncInfo = (syncElm, syncDate) => {
-    updateSyncStatus(syncElm, getFormattedPassedTime(new Date(syncDate)));
+const updateSyncInfo = (syncElm, syncDate, isSyncError) => {
+    updateSyncStatus(
+        syncElm,
+        getFormattedPassedTime(new Date(syncDate)),
+        isSyncError
+    );
+};
+
+const getSyncStatusUpdateHandler = (syncElm) => () => {
+    updateSyncInfo(syncElm, appState.lastSyncTime, appState.isSyncError);
 };
 
 const logoutHandler = () => {
@@ -29,7 +37,16 @@ export const footerHandler = (container) => {
 
     const footerElms = getFooterElms(footerElement);
 
-    updateSyncInfo(footerElms.footerSyncElm, appState.lastSyncTime);
+    updateSyncInfo(
+        footerElms.footerSyncElm,
+        appState.lastSyncTime,
+        appState.isSyncError
+    );
 
     footerElms.footerLogoutElm.addEventListener('click', logoutHandler);
+
+    ee.on(
+        'app/update-sync-status',
+        getSyncStatusUpdateHandler(footerElms.footerSyncElm)
+    );
 };

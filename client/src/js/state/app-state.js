@@ -4,6 +4,11 @@ class AppState {
     totalDiskSpace = null;
     usedDiskSpace = null;
     lastSyncTime = null;
+    isSyncError = false;
+
+    setSyncError() {
+        this.isSyncError = true;
+    }
 
     updateAppData(userData) {
         this.username = userData.username;
@@ -11,14 +16,16 @@ class AppState {
         this.totalDiskSpace = userData.totalDiskSpace;
         this.usedDiskSpace = userData.usedDiskSpace;
         this.lastSyncTime = Date.now();
+        this.isSyncError = false;
     }
 
     resetAppState() {
-        username = null;
-        email = null;
-        totalDiskSpace = null;
-        usedDiskSpace = null;
-        lastSyncTime = null;
+        this.username = null;
+        this.email = null;
+        this.totalDiskSpace = null;
+        this.usedDiskSpace = null;
+        this.lastSyncTime = null;
+        this.isSyncError = false;
     }
 }
 

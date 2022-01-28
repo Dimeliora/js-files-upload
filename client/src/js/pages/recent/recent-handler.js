@@ -20,6 +20,8 @@ const getRecentFiles = async (max = 0) => {
         recentState.setRecentFiles(filesData);
     } catch (error) {
         recentState.setError();
+
+        ee.emit('recent/sync-error');
     }
 };
 
@@ -78,5 +80,5 @@ export const recentHandler = async (appContainer) => {
 
     renderRecentContentBlock(recentElms);
 
-    ee.on('upload/sync-needed', resetRecentListActuality);
+    ee.on('upload/resync-needed', resetRecentListActuality);
 };

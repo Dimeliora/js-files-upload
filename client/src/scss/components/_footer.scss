@@ -10,6 +10,14 @@
     &__sync {
         display: flex;
         align-items: center;
+
+        &--error {
+            color: $red;
+
+            .footer__sync-icon {
+                fill: $red;
+            }
+        }
     }
 
     &__sync-icon {

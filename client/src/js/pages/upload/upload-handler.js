@@ -61,6 +61,8 @@ const uploadFiles = async () => {
                 fileItem.message = 'Upload completed';
 
                 disableUploadFileAbortElm(fileItem.domElm);
+
+                uploadState.setSuccefullUpload();
             }
         );
 
@@ -102,7 +104,7 @@ const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
     window.location.hash = 'recent';
 };
 
-const prepareFilesForUpload = async (files) => {
+const uploadFilesHandler = async (files) => {
     if (files.length === 0) {
         return;
     }
@@ -141,10 +143,14 @@ const prepareFilesForUpload = async (files) => {
         'click',
         getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
     );
+
+    if (uploadState.isUploadSuccessful) {
+        ee.emit('upload/resync-needed');
+    }
 };
 
 const uploadInputChangeHandler = (e) => {
-    prepareFilesForUpload(e.target.files);
+    uploadFilesHandler(e.target.files);
 };
 
 const dropzoneDragOverHandler = (e) => {
@@ -170,7 +176,7 @@ const getDropzoneDropHandler = (uploadElms) => (e) => {
 
     removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
 
-    prepareFilesForUpload(e.dataTransfer.files);
+    uploadFilesHandler(e.dataTransfer.files);
 };
 
 export const uploadHandler = (appContainer) => {

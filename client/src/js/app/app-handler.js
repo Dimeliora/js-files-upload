@@ -49,9 +49,17 @@ const syncAppHandler = async () => {
         const userData = await getUserData();
 
         appState.updateAppData(userData);
+
+        ee.emit('app/update-sync-status');
     } catch (error) {
-        //TODO - Sync errors handle
+        syncErrorHandler();
     }
+};
+
+const syncErrorHandler = () => {
+    appState.setSyncError();
+    console.log(appState);
+    ee.emit('app/update-sync-status');
 };
 
 const routesHandler = () => {
@@ -73,4 +81,6 @@ ee.on('auth/user-logged-in', userLoginHandler);
 
 ee.on('auth/user-logged-out', userLogoutHandler);
 
-ee.on('upload/sync-needed', syncAppHandler);
+ee.on('upload/resync-needed', syncAppHandler);
+
+ee.on('recent/sync-error', syncErrorHandler);

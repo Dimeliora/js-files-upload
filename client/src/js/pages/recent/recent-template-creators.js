@@ -1,3 +1,22 @@
+import {
+    getFormattedFileSize,
+    getFormattedFileCreationDate,
+} from '../../helpers/file-info-formatters';
+
+const FILE_TYPES_ICON_MAP = {
+    text: 'document-file',
+    image: 'image-file',
+    pdf: 'pdf-file',
+};
+
+const getFileTypeIcon = (mime) => {
+    const type = Object.keys(FILE_TYPES_ICON_MAP).find((key) =>
+        mime.includes(key)
+    );
+
+    return FILE_TYPES_ICON_MAP[type] || 'common-type';
+};
+
 export const createRecentHTML = () => {
     return `
         <div class="recent paper">
@@ -54,17 +73,21 @@ export const createRecentHTML = () => {
     `;
 };
 
-export const createRecentFileHTML = () => {
+export const createRecentFileHTML = (file) => {
+    const { name, type, size, createdAt } = file;
+
     return `
         <li class="recent__list-item file">
             <svg class="file__icon">
-                <use href="/icons/icon-sprite.svg#pdf-file" />
+                <use href="/icons/icon-sprite.svg#${getFileTypeIcon(type)}" />
             </svg>
             <div class="file__info">
-                <div class="file__name">user-journey-01.pdf</div>
-                <div class="file__upload-time">2m ago</div>
+                <div class="file__name">${name}</div>
+                <div class="file__upload-time">
+                    ${getFormattedFileCreationDate(createdAt)}
+                </div>
             </div>
-            <div class="file__size">604KB</div>
+            <div class="file__size">${getFormattedFileSize(size)}</div>
             <button
                 class="file__controls icon-button"
                 title="File actions"

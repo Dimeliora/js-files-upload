@@ -48,9 +48,9 @@ exports.getFilesController = async (req, res) => {
     const { max } = req.query;
 
     try {
-        const recentFiles = await getFilesService(id, max);
+        const recentFilesData = await getFilesService(id, max);
 
-        res.status(200).json(recentFiles);
+        res.status(200).json(recentFilesData);
     } catch (error) {
         if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });

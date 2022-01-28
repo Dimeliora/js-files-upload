@@ -45,11 +45,5 @@ exports.fileUploadService = async (file, userId) => {
 };
 
 exports.getFilesService = async (userId, max = 0) => {
-    const totalFilesCount = await File.find({ user: userId }).count();
-
-    const recentFiles = await File.find({ user: userId })
-        .sort({ createdAt: -1 })
-        .limit(max);
-
-    return { total: totalFilesCount, recent: recentFiles };
+    return await File.find({ user: userId }).sort({ createdAt: -1 }).limit(max);
 };

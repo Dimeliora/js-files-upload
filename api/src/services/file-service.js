@@ -44,4 +44,8 @@ exports.fileUploadService = async (file, userId) => {
     return newFile;
 };
 
-exports.getRecentFilesService = async () => {};
+exports.getFilesService = async (userId, max = 0) => {
+    return await File.find({ user: userId }).limit(max);
+};
+
+

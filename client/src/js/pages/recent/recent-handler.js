@@ -25,7 +25,7 @@ const getRecentFilesListMarkup = () => {
         return createRecentPlaceholderHTML('error');
     }
 
-    if (!recentState.totalFilesCount === 0) {
+    if (recentState.totalFilesCount === 0) {
         return createRecentPlaceholderHTML();
     }
 
@@ -41,7 +41,7 @@ const renderRecentContentBlock = (recentElms) => {
     const recentContentElms = getRecentContentElms(recentElms.recentContentElm);
 
     recentContentElms.recentListElm.innerHTML = getRecentFilesListMarkup();
-    console.log(recentState);
+
     viewAllElmStateHandler(
         recentContentElms.recentViewAllElm,
         recentState.totalFilesCount > 5

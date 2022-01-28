@@ -15,7 +15,7 @@ const getFileTypeIcon = (mime) => {
         mime.includes(key)
     );
 
-    return FILE_TYPES_ICON_MAP[type] || 'common-type';
+    return FILE_TYPES_ICON_MAP[type] || 'common-file';
 };
 
 export const createRecentContentHTML = () => {
@@ -113,11 +113,16 @@ export const createRecentFileHTML = (file) => {
 
 export const createRecentPlaceholderHTML = (reason) => {
     let placeholderText = 'No files to show';
+    let classname = '';
+
     if (reason === 'error') {
         placeholderText = 'Error occured during files list fetch';
+        classname = 'recent__list-item--error';
     }
 
     return `
-        <li class="recent__list-item recent__list-item--placeholder">${placeholderText}</li>
+        <li class="recent__list-item recent__list-item--placeholder ${classname}">
+            ${placeholderText}
+        </li>
     `;
 };

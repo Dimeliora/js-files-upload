@@ -1,7 +1,11 @@
 const { Router } = require('express');
 
 const authMW = require('../middlewares/auth-middleware');
-const { auth, login, register } = require('../controllers/auth-controller');
+const {
+    authController,
+    loginController,
+    registerController,
+} = require('../controllers/auth-controller');
 const {
     emailValidator,
     passwordValidator,
@@ -9,10 +13,14 @@ const {
 
 const authRouter = Router();
 
-authRouter.get('/', authMW, auth);
+authRouter.get('/', authMW, authController);
 
-authRouter.post('/login', login);
+authRouter.post('/login', loginController);
 
-authRouter.post('/register', [emailValidator, passwordValidator], register);
+authRouter.post(
+    '/register',
+    [emailValidator, passwordValidator],
+    registerController
+);
 
 module.exports = authRouter;

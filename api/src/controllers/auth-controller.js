@@ -1,7 +1,11 @@
 const { validationResult } = require('express-validator');
 
 const AuthError = require('../errors/auth-error');
-const { auth, login, register } = require('../services/auth-service');
+const {
+    authService,
+    loginService,
+    registerService,
+} = require('../services/auth-service');
 
 const sendAuthorizedUser = (res, userDocument) => {
     const accessToken = userDocument.generateToken();
@@ -19,11 +23,11 @@ const sendAuthorizedUser = (res, userDocument) => {
     });
 };
 
-exports.auth = async (req, res) => {
+exports.authController = async (req, res) => {
     const { id } = req.user;
 
     try {
-        const userData = await auth(id);
+        const userData = await authService(id);
 
         sendAuthorizedUser(res, userData);
     } catch (error) {
@@ -35,11 +39,11 @@ exports.auth = async (req, res) => {
     }
 };
 
-exports.login = async (req, res) => {
+exports.loginController = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const userData = await login(email, password);
+        const userData = await loginService(email, password);
 
         sendAuthorizedUser(res, userData);
     } catch (error) {
@@ -51,7 +55,7 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.register = async (req, res) => {
+exports.registerController = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({
@@ -63,7 +67,7 @@ exports.register = async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        const userData = await register(username, email, password);
+        const userData = await registerService(username, email, password);
 
         sendAuthorizedUser(res, userData);
     } catch (error) {

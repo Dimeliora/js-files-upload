@@ -2,9 +2,9 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user-model');
 const AuthError = require('../errors/auth-error');
-const { createUserDir } = require('./fs-service');
+const { createUserDirService } = require('./fs-service');
 
-exports.auth = async (userId) => {
+exports.authService = async (userId) => {
     const user = await User.findById(userId).exec();
     if (!user) {
         throw new AuthError('User not found', 404);
@@ -13,7 +13,7 @@ exports.auth = async (userId) => {
     return user;
 };
 
-exports.login = async (email, password) => {
+exports.loginService = async (email, password) => {
     const user = await User.findOne({ email }).exec();
     if (!user) {
         throw new AuthError('User not found', 404);
@@ -27,7 +27,7 @@ exports.login = async (email, password) => {
     return user;
 };
 
-exports.register = async (username, email, password) => {
+exports.registerService = async (username, email, password) => {
     const candidate = await User.findOne({ email }).exec();
     if (candidate) {
         throw new AuthError('User already exists', 400);
@@ -39,7 +39,7 @@ exports.register = async (username, email, password) => {
     const user = new User({ username, email, passwordHash });
     await user.save();
 
-    await createUserDir(user._id.toString());
+    await createUserDirService(user._id.toString());
 
     return user;
 };

@@ -6,7 +6,7 @@ const File = require('../models/file-model');
 const FileError = require('../errors/file-error');
 const { getUserFilesDir } = require('../helpers/data-path-helpers');
 
-exports.fileUploadAbilityCheck = async (filename, size, userId) => {
+exports.fileUploadAbilityCheckService = async (filename, size, userId) => {
     const user = await User.findById(userId);
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
         throw new FileError(`Not enought disk space`, 400);
@@ -19,7 +19,7 @@ exports.fileUploadAbilityCheck = async (filename, size, userId) => {
     }
 };
 
-exports.fileUpload = async (file, userId) => {
+exports.fileUploadService = async (file, userId) => {
     const user = await User.findById(userId);
 
     const userFilesDirPath = getUserFilesDir(userId);
@@ -43,3 +43,5 @@ exports.fileUpload = async (file, userId) => {
 
     return newFile;
 };
+
+exports.getRecentFilesService = async () => {};

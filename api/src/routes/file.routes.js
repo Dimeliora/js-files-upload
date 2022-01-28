@@ -1,12 +1,18 @@
 const { Router } = require('express');
 
 const authMW = require('../middlewares/auth-middleware');
-const { fileUploadAbilityCheck, fileUpload } = require('../controllers/file-controller');
+const {
+    fileUploadAbilityCheckController,
+    fileUploadController,
+    getRecentFilesController,
+} = require('../controllers/file-controller');
 
 const fileRouter = Router();
 
-fileRouter.post('/upload/check', authMW, fileUploadAbilityCheck);
+fileRouter.post('/upload/check', authMW, fileUploadAbilityCheckController);
 
-fileRouter.post('/upload', authMW, fileUpload);
+fileRouter.post('/upload', authMW, fileUploadController);
+
+fileRouter.get('/get-recent', authMW, getRecentFilesController);
 
 module.exports = fileRouter;

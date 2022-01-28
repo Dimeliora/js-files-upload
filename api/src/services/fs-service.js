@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 
 const { getUserFilesDir } = require('../helpers/data-path-helpers');
 
-exports.createUserDir = async (userId) => {
+exports.createUserDirService = async (userId) => {
     const userFilesDirPath = getUserFilesDir(userId);
 
     try {

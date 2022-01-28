@@ -1,5 +1,6 @@
 import authState from '../state/auth-state';
 import appState from '../state/app-state';
+import recentState from '../state/recent-state';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
@@ -35,8 +36,11 @@ const userLogoutHandler = () => {
     localStorage.removeItem('access-token');
 
     authState.resetAuthState();
+    appState.resetAppState();
+    recentState.resetRecentState();
 
     window.location.hash = '';
+
     routesHandler();
 };
 

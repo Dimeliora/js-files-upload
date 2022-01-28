@@ -28,6 +28,14 @@ class RecentState {
         this.totalFilesCount = 0;
         this.recentFiles = [];
     }
+
+    resetRecentState() {
+        this.isError = false;
+        this.isRecentListActual = false;
+        this.isFetching = true;
+        this.totalFilesCount = 0;
+        this.recentFiles = [];
+    }
 }
 
 export default new RecentState();

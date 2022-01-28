@@ -12,6 +12,14 @@ class AppState {
         this.usedDiskSpace = userData.usedDiskSpace;
         this.lastSyncTime = Date.now();
     }
+
+    resetAppState() {
+        username = null;
+        email = null;
+        totalDiskSpace = null;
+        usedDiskSpace = null;
+        lastSyncTime = null;
+    }
 }
 
 export default new AppState();

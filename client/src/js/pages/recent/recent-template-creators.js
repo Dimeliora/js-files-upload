@@ -1,7 +1,7 @@
 import {
     getFormattedFileSize,
-    getFormattedFileCreationDate,
-} from '../../helpers/file-info-formatters';
+    getFormattedPassedTime,
+} from '../../helpers/formatters';
 
 const FILE_TYPES_ICON_MAP = {
     text: 'document-file',
@@ -90,7 +90,7 @@ export const createRecentFileHTML = (file) => {
             <div class="file__info">
                 <div class="file__name">${name}</div>
                 <div class="file__upload-time">
-                    ${getFormattedFileCreationDate(createdAt)}
+                    ${getFormattedPassedTime(createdAt)}
                 </div>
             </div>
             <div class="file__size">${getFormattedFileSize(size)}</div>

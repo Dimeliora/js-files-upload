@@ -1,4 +1,5 @@
 import authState from '../state/auth-state';
+import appState from '../state/app-state';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
@@ -37,6 +38,10 @@ const userLogoutHandler = () => {
     routesHandler();
 };
 
+const setSyncNeededHandler = () => {
+    appState.setSyncNeed();
+};
+
 const routesHandler = () => {
     let path = window.location.hash.slice(1) || '/';
     if (!authState.isAuth) {
@@ -55,3 +60,5 @@ window.addEventListener('hashchange', routesHandler);
 ee.on('auth/user-logged-in', userLoginHandler);
 
 ee.on('auth/user-logged-out', userLogoutHandler);
+
+ee.on('upload/sync-needed', setSyncNeededHandler);

@@ -88,7 +88,7 @@ const uploadFiles = async () => {
 const abortFilesUploadHandler = () => {
     uploadState.isUploading = false;
 
-   for (const file of uploadState.uploadFiles) {
+    for (const file of uploadState.uploadFiles) {
         getFileUploadAbortHandler(file)();
     }
 };
@@ -136,6 +136,8 @@ const prepareFilesForUpload = async (files) => {
         'click',
         getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
     );
+
+    ee.emit('upload/sync-needed');
 };
 
 const uploadInputChangeHandler = (e) => {

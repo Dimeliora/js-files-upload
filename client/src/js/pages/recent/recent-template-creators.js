@@ -2,7 +2,6 @@ import {
     getFormattedFileSize,
     getFormattedFileCreationDate,
 } from '../../helpers/file-info-formatters';
-import { createLoaderHTML } from '../../components/loader/loader-template-creators';
 
 const FILE_TYPES_ICON_MAP = {
     text: 'document-file',
@@ -16,20 +15,6 @@ const getFileTypeIcon = (mime) => {
     );
 
     return FILE_TYPES_ICON_MAP[type] || 'common-file';
-};
-
-export const createRecentContentHTML = () => {
-    return `
-        <ul class="recent__list" data-recent-list></ul>
-        <div class="recent__view-all">
-            <button
-                class="recent__view-all-button button button--secondary"
-                data-view-all
-            >
-                View all uploads
-            </button>
-        </div>
-    `;
 };
 
 export const createRecentHTML = () => {
@@ -57,9 +42,7 @@ export const createRecentHTML = () => {
                     </svg>
                 </a>
             </div>
-            <div class="recent__content" data-recent-content>
-                ${createLoaderHTML()}
-            </div>
+            <div class="recent__content" data-recent-content></div>
             <div class="recent__footer footer">
                 <div class="footer__sync">
                     <svg class="footer__sync-icon">
@@ -78,6 +61,20 @@ export const createRecentHTML = () => {
                     </svg>
                 </button>
             </div>
+        </div>
+    `;
+};
+
+export const createRecentContentHTML = () => {
+    return `
+        <ul class="recent__list" data-recent-list></ul>
+        <div class="recent__view-all">
+            <button
+                class="recent__view-all-button button button--secondary"
+                data-view-all
+            >
+                View all uploads
+            </button>
         </div>
     `;
 };

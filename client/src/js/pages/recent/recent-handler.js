@@ -6,17 +6,21 @@ import {
     createRecentFileHTML,
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
+import { createLoaderHTML } from '../../components/loader/loader-template-creators';
 import { viewAllElmStateHandler } from './recent-view-updates';
 import { getFiles } from '../../services/file-service';
 import recentState from '../../state/recent-state';
+import appState from '../../state/app-state';
 
 const getRecentFiles = async (max = 0) => {
     try {
         const filesData = await getFiles(max);
 
         recentState.setRecentFiles(filesData);
+        appState.setSyncDate();
     } catch (error) {
         recentState.setError();
+        //TODO - Sync error ?
     }
 };
 
@@ -37,6 +41,11 @@ const getRecentFilesListMarkup = () => {
 };
 
 const renderRecentContentBlock = (recentElms) => {
+    if (recentState.isFetching) {
+        recentElms.recentContentElm.innerHTML = createLoaderHTML();
+        return;
+    }
+
     recentElms.recentContentElm.innerHTML = createRecentContentHTML();
     const recentContentElms = getRecentContentElms(recentElms.recentContentElm);
 
@@ -57,7 +66,13 @@ export const recentHandler = async (appContainer) => {
 
     const recentElms = getRecentElms(appContainer);
 
-    await getRecentFiles(5);
+    if (appState.isSyncNeeded) {
+        recentState.setFetching();
+
+        renderRecentContentBlock(recentElms);
+
+        await getRecentFiles(5);
+    }
 
     renderRecentContentBlock(recentElms);
 

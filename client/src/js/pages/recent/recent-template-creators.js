@@ -23,157 +23,11 @@ export const createRecentHTML = () => {
                     </svg>
                 </a>
             </div>
-            <ul class="recent__list">
-                <li class="recent__list-item file">
-                    <svg class="file__icon">
-                        <use href="/icons/icon-sprite.svg#pdf-file" />
-                    </svg>
-                    <div class="file__info">
-                        <div class="file__name">user-journey-01.pdf</div>
-                        <div class="file__upload-time">2m ago</div>
-                    </div>
-                    <button
-                        class="file__retry icon-button icon-button--danger"
-                        title="Retry file upload"
-                        aria-label="Retry file upload"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#retry" />
-                        </svg>
-                    </button>
-                    <div class="file__size">604KB</div>
-                    <button
-                        class="file__controls icon-button"
-                        title="File actions"
-                        aria-label="File actions"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#more" />
-                        </svg>
-                    </button>
-                </li>
-                <li class="recent__list-item file">
-                    <svg class="file__icon">
-                        <use href="/icons/icon-sprite.svg#folder" />
-                    </svg>
-                    <div class="file__info">
-                        <div class="file__name">Stock Photos</div>
-                        <div class="file__upload-time">3m ago</div>
-                    </div>
-                    <button
-                        class="file__retry icon-button icon-button--danger"
-                        title="Retry file upload"
-                        aria-label="Retry file upload"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#retry" />
-                        </svg>
-                    </button>
-                    <div class="file__size">2.20GB</div>
-                    <button
-                        class="file__controls icon-button"
-                        title="File actions"
-                        aria-label="File actions"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#more" />
-                        </svg>
-                    </button>
-                </li>
-                <li class="recent__list-item file">
-                    <svg class="file__icon">
-                        <use href="/icons/icon-sprite.svg#folder" />
-                    </svg>
-                    <div class="file__info">
-                        <div class="file__name">Optimised Photos</div>
-                        <div class="file__upload-time">3 days ago</div>
-                    </div>
-                    <button
-                        class="file__retry icon-button icon-button--danger"
-                        title="Retry file upload"
-                        aria-label="Retry file upload"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#retry" />
-                        </svg>
-                    </button>
-                    <div class="file__size">1.46MB</div>
-                    <button
-                        class="file__controls icon-button"
-                        title="File actions"
-                        aria-label="File actions"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#more" />
-                        </svg>
-                    </button>
-                </li>
-                <li class="recent__list-item file">
-                    <svg class="file__icon">
-                        <use href="/icons/icon-sprite.svg#document-file" />
-                    </svg>
-                    <div class="file__info">
-                        <div class="file__name">
-                            Strategy-Pitch-Final.pptx
-                        </div>
-                        <div class="file__upload-time">3 days ago</div>
-                    </div>
-                    <button
-                        class="file__retry file__retry--visible icon-button icon-button--danger"
-                        title="Retry file upload"
-                        aria-label="Retry file upload"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#retry" />
-                        </svg>
-                    </button>
-
-                    <div class="file__size file__size--error">Error</div>
-                    <button
-                        class="file__controls icon-button"
-                        title="File actions"
-                        aria-label="File actions"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#more" />
-                        </svg>
-                    </button>
-                </li>
-                <li class="recent__list-item file">
-                    <svg class="file__icon">
-                        <use href="/icons/icon-sprite.svg#image-file" />
-                    </svg>
-                    <div class="file__info">
-                        <div class="file__name">
-                            man-holding-mobile-phone-while...
-                        </div>
-                        <div class="file__upload-time">7 days ago</div>
-                    </div>
-                    <button
-                        class="file__retry icon-button icon-button--danger"
-                        title="Retry file upload"
-                        aria-label="Retry file upload"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#retry" />
-                        </svg>
-                    </button>
-
-                    <div class="file__size">929KB</div>
-                    <button
-                        class="file__controls icon-button"
-                        title="File actions"
-                        aria-label="File actions"
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#more" />
-                        </svg>
-                    </button>
-                </li>
-            </ul>
+            <ul class="recent__list" data-recent-list></ul>
             <div class="recent__view-all">
                 <button
                     class="recent__view-all-button button button--secondary"
+                    data-view-all
                 >
                     View all uploads
                 </button>
@@ -197,5 +51,41 @@ export const createRecentHTML = () => {
                 </button>
             </div>
         </div>
+    `;
+};
+
+export const createRecentFileHTML = () => {
+    return `
+        <li class="recent__list-item file">
+            <svg class="file__icon">
+                <use href="/icons/icon-sprite.svg#pdf-file" />
+            </svg>
+            <div class="file__info">
+                <div class="file__name">user-journey-01.pdf</div>
+                <div class="file__upload-time">2m ago</div>
+            </div>
+            <div class="file__size">604KB</div>
+            <button
+                class="file__controls icon-button"
+                title="File actions"
+                aria-label="File actions"
+                data-file-actions
+            >
+                <svg class="icon-button__icon">
+                    <use href="/icons/icon-sprite.svg#more" />
+                </svg>
+            </button>
+        </li>
+    `;
+};
+
+export const createRecentPlaceholderHTML = (reason = 'error') => {
+    let placeholderText = 'No files to show';
+    if (reason === 'error') {
+        placeholderText = 'Error occured during files list fetch';
+    }
+
+    return `
+        <li class="recent__list-item recent__list-item--placeholder">${placeholderText}</li>
     `;
 };

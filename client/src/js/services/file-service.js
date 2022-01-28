@@ -68,3 +68,22 @@ export const fileUpload = async (file) => {
         throw new Error(error.response.data.message);
     }
 };
+
+export const getFiles = async (max = null) => {
+    const accessToken = localStorage.getItem('access-token');
+
+    try {
+        const { data } = await fileService.get('/recent', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            params: {
+                max,
+            },
+        });
+
+        return data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};

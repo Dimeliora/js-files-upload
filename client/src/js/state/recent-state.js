@@ -1,16 +1,18 @@
 class RecentState {
     isError = false;
-    hasFiles = false;
+    totalFilesCount = 0;
     recentFiles = [];
 
-    setRecentFiles(files) {
-        this.recentFiles = files;
-        this.hasFiles = files.length > 0;
+    setRecentFiles({ total, recent }) {
         this.isError = false;
+        this.totalFilesCount = total;
+        this.recentFiles = recent;
     }
 
     setError() {
         this.isError = true;
+        this.totalFilesCount = 0;
+        this.recentFiles = [];
     }
 }
 

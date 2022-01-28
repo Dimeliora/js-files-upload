@@ -12,9 +12,9 @@ import recentState from '../../state/recent-state';
 
 const getRecentFiles = async (max = 0) => {
     try {
-        const files = await getFiles(max);
+        const filesData = await getFiles(max);
 
-        recentState.setRecentFiles(files);
+        recentState.setRecentFiles(filesData);
     } catch (error) {
         recentState.setError();
     }
@@ -25,7 +25,7 @@ const getRecentFilesListMarkup = () => {
         return createRecentPlaceholderHTML('error');
     }
 
-    if (!recentState.hasFiles) {
+    if (!recentState.totalFilesCount === 0) {
         return createRecentPlaceholderHTML();
     }
 
@@ -41,10 +41,10 @@ const renderRecentContentBlock = (recentElms) => {
     const recentContentElms = getRecentContentElms(recentElms.recentContentElm);
 
     recentContentElms.recentListElm.innerHTML = getRecentFilesListMarkup();
-
+    console.log(recentState);
     viewAllElmStateHandler(
         recentContentElms.recentViewAllElm,
-        recentState.hasFiles
+        recentState.totalFilesCount > 5
     );
 };
 

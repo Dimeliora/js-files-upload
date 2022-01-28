@@ -1,4 +1,4 @@
-import { ee } from '../../helpers/event-emitter';
+import { footerHandler } from '../../components/footer/footer-handler';
 import { getRecentElms, getRecentContentElms } from './recent-dom-elements';
 import {
     createRecentHTML,
@@ -57,14 +57,12 @@ const renderRecentContentBlock = (recentElms) => {
     );
 };
 
-const logoutHandler = () => {
-    ee.emit('auth/user-logged-out');
-};
-
 export const recentHandler = async (appContainer) => {
     appContainer.innerHTML = createRecentHTML();
 
     const recentElms = getRecentElms(appContainer);
+
+    footerHandler(recentElms.recentBlockElm);
 
     if (appState.isSyncNeeded) {
         recentState.setFetching();
@@ -75,6 +73,4 @@ export const recentHandler = async (appContainer) => {
     }
 
     renderRecentContentBlock(recentElms);
-
-    recentElms.recentLogoutElm.addEventListener('click', logoutHandler);
 };

@@ -2,7 +2,7 @@ export const createDashboardHTML = (user) => {
     const { username, email } = user;
 
     return `
-        <div class="dashboard paper">
+        <div class="dashboard paper" data-dashboard-block>
             <div class="dashboard__header">
                 <div class="dashboard__user">
                     <div class="dashboard__avatar">
@@ -70,24 +70,6 @@ export const createDashboardHTML = (user) => {
                         Change
                     </button>
                 </div>
-            </div>
-            <div class="dashboard__footer footer">
-                <div class="footer__sync">
-                    <svg class="footer__sync-icon">
-                        <use href="/icons/icon-sprite.svg#tick" />
-                    </svg>
-                    <div class="footer__sync">Last synced: 3 mins ago</div>
-                </div>
-                <button 
-                    class="footer__logout icon-button"
-                    title="Logout"
-                    aria-label="Logout"
-                    data-dashboard-logout
-                >
-                    <svg class="icon-button__icon">
-                        <use href="/icons/icon-sprite.svg#sign-out" />
-                    </svg>
-                </button>
             </div>
         </div>
     `;

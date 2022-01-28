@@ -1,11 +1,7 @@
 import authState from '../../state/auth-state';
-import { ee } from '../../helpers/event-emitter';
 import { getDashboardElms } from './dashboard-dom-elements';
 import { createDashboardHTML } from './dashboard-template-creators';
-
-const logoutHandler = () => {
-    ee.emit('auth/user-logged-out');
-};
+import { footerHandler } from '../../components/footer/footer-handler';
 
 export const dashboardHandler = (appContainer) => {
     const { user } = authState;
@@ -14,5 +10,5 @@ export const dashboardHandler = (appContainer) => {
 
     const dashboardElms = getDashboardElms(appContainer);
 
-    dashboardElms.dashboardLogoutElm.addEventListener('click', logoutHandler);
+    footerHandler(dashboardElms.dashboardBlockElm);
 };

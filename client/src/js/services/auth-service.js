@@ -31,6 +31,10 @@ export const userLogin = async (email, password) => {
 
         return data;
     } catch (error) {
+        if (!error.response) {
+            throw new Error('Service is unreachable');
+        }
+
         throw new Error(error.response.data.message);
     }
 };
@@ -45,6 +49,10 @@ export const userRegister = async (username, email, password) => {
 
         return data;
     } catch (error) {
+        if (!error.response) {
+            throw new Error('Service is unreachable');
+        }
+
         throw new Error(error.response.data.message);
     }
 };

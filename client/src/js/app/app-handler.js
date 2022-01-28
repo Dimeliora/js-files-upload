@@ -52,13 +52,13 @@ const syncAppHandler = async () => {
 
         ee.emit('app/update-sync-status');
     } catch (error) {
-        syncErrorHandler();
+        syncErrorHandler(error.message);
     }
 };
 
-const syncErrorHandler = () => {
-    appState.setSyncError();
-    console.log(appState);
+const syncErrorHandler = (errorMessage) => {
+    appState.setSyncError(errorMessage);
+
     ee.emit('app/update-sync-status');
 };
 
@@ -83,4 +83,4 @@ ee.on('auth/user-logged-out', userLogoutHandler);
 
 ee.on('upload/resync-needed', syncAppHandler);
 
-ee.on('recent/sync-error', syncErrorHandler);
+ee.on('service/fetch-error', syncErrorHandler);

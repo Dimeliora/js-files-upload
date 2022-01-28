@@ -65,6 +65,13 @@ export const fileUpload = async (file) => {
             throw new CancelError(error.message);
         }
 
+        if (!error.response) {
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
+        }
+
         throw new Error(error.response.data.message);
     }
 };
@@ -84,6 +91,13 @@ export const getFiles = async (max = null) => {
 
         return data;
     } catch (error) {
+        if (!error.response) {
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
+        }
+
         throw new Error(error.response.data.message);
     }
 };

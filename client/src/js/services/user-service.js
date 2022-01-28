@@ -18,6 +18,10 @@ export const getUserData = async () => {
 
         return data;
     } catch (error) {
+        if (!error.response) {
+            throw new Error('Service is unreachable');
+        }
+
         throw new Error(error.response.data.message);
     }
 };

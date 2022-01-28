@@ -4,10 +4,10 @@ class AppState {
     totalDiskSpace = null;
     usedDiskSpace = null;
     lastSyncTime = null;
-    isSyncError = false;
+    syncError = false;
 
-    setSyncError() {
-        this.isSyncError = true;
+    setSyncError(errorMessage) {
+        this.syncError = errorMessage;
     }
 
     updateAppData(userData) {
@@ -16,7 +16,7 @@ class AppState {
         this.totalDiskSpace = userData.totalDiskSpace;
         this.usedDiskSpace = userData.usedDiskSpace;
         this.lastSyncTime = Date.now();
-        this.isSyncError = false;
+        this.syncError = null;
     }
 
     resetAppState() {
@@ -25,7 +25,7 @@ class AppState {
         this.totalDiskSpace = null;
         this.usedDiskSpace = null;
         this.lastSyncTime = null;
-        this.isSyncError = false;
+        this.syncError = null;
     }
 }
 

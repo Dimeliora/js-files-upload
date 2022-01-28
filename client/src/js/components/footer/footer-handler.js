@@ -14,7 +14,7 @@ const getFooterDOMElement = () => {
 };
 
 const getSyncStatusUpdateHandler = (syncElm) => () => {
-    updateSyncStatusElm(syncElm, appState.lastSyncTime, appState.isSyncError);
+    updateSyncStatusElm(syncElm, appState.lastSyncTime, appState.syncError);
 };
 
 const logoutHandler = () => {
@@ -31,7 +31,7 @@ export const footerHandler = (container) => {
     updateSyncStatusElm(
         footerElms.footerSyncElm,
         appState.lastSyncTime,
-        appState.isSyncError
+        appState.syncError
     );
 
     footerElms.footerLogoutElm.addEventListener('click', logoutHandler);

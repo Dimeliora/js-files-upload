@@ -20,8 +20,6 @@ const getRecentFiles = async (max = 0) => {
         recentState.setRecentFiles(filesData);
     } catch (error) {
         recentState.setError();
-
-        ee.emit('recent/sync-error');
     }
 };
 

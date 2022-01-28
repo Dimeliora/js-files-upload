@@ -1,8 +1,7 @@
 import { ee } from '../../helpers/event-emitter';
 import { createFooterHTML } from './footer-template-creators';
 import { getFooterElms } from './footer-dom-elements';
-import { updateSyncStatus } from './footer-view-updates';
-import { getFormattedPassedTime } from '../../helpers/formatters';
+import { updateSyncStatusElm } from './footer-view-updates';
 import appState from '../../state/app-state';
 
 const getFooterDOMElement = () => {
@@ -14,16 +13,8 @@ const getFooterDOMElement = () => {
     return rootElm;
 };
 
-const updateSyncInfo = (syncElm, syncDate, isSyncError) => {
-    updateSyncStatus(
-        syncElm,
-        getFormattedPassedTime(new Date(syncDate)),
-        isSyncError
-    );
-};
-
 const getSyncStatusUpdateHandler = (syncElm) => () => {
-    updateSyncInfo(syncElm, appState.lastSyncTime, appState.isSyncError);
+    updateSyncStatusElm(syncElm, appState.lastSyncTime, appState.isSyncError);
 };
 
 const logoutHandler = () => {
@@ -37,7 +28,7 @@ export const footerHandler = (container) => {
 
     const footerElms = getFooterElms(footerElement);
 
-    updateSyncInfo(
+    updateSyncStatusElm(
         footerElms.footerSyncElm,
         appState.lastSyncTime,
         appState.isSyncError

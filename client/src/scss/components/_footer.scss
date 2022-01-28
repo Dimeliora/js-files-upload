@@ -14,8 +14,12 @@
         &--error {
             color: $red;
 
-            .footer__sync-icon {
-                fill: $red;
+            .footer__sync-icon--success {
+                display: none;
+            }
+
+            .footer__sync-icon--error {
+                display: block;
             }
         }
     }
@@ -25,5 +29,10 @@
         height: 20px;
         margin-right: 10px;
         fill: $green;
+
+        &--error {
+            display: none;
+            fill: $red;
+        }
     }
 }

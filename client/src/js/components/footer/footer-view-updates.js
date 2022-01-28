@@ -1,9 +1,13 @@
-export const updateSyncStatus = (syncElm, passedTime, isSyncError) => {
+import { getFormattedPassedTime } from '../../helpers/formatters';
+
+export const updateSyncStatusElm = (syncElm, passedTime, isSyncError) => {
     if (isSyncError) {
-        syncElm.classList.add('footer__sync--error');
-        syncElm.textContent = `Sync error`;
+        syncElm.parentElement.classList.add('footer__sync--error');
+        syncElm.textContent = `Sync error: restart app`;
     } else {
-        syncElm.classList.remove('footer__sync--error');
-        syncElm.textContent = `Last synced: ${passedTime}`;
+        syncElm.parentElement.classList.remove('footer__sync--error');
+        syncElm.textContent = `Last synced: ${getFormattedPassedTime(
+            new Date(passedTime)
+        )}`;
     }
 };

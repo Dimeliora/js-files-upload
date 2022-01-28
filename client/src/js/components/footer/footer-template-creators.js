@@ -1,10 +1,13 @@
 export const createFooterHTML = () => {
     return `
         <div class="footer__sync">
-            <svg class="footer__sync-icon">
+            <svg class="footer__sync-icon footer__sync-icon--success">
                 <use href="/icons/icon-sprite.svg#tick" />
             </svg>
-            <div class="footer__sync" data-footer-sync>
+            <svg class="footer__sync-icon footer__sync-icon--error">
+                <use href="/icons/icon-sprite.svg#error" />
+            </svg>
+            <div class="footer__sync-status" data-footer-sync>
                 Last synced: 3 mins ago
             </div>
         </div>

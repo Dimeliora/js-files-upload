@@ -5,6 +5,7 @@ const filesUpload = require('express-fileupload');
 const dbConnect = require('./db/db-connection');
 const corsMW = require('./middlewares/cors-middleware');
 const authRouter = require('./routes/auth.routes');
+const userRouter = require('./routes/user.routes');
 const fileRouter = require('./routes/file.routes');
 
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(filesUpload());
 app.use(corsMW);
 
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 app.use('/api/file', fileRouter);
 
 const startup = async () => {

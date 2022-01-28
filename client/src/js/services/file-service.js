@@ -60,6 +60,8 @@ export const fileUpload = async (file) => {
                 }
             },
         });
+
+        ee.emit('upload/sync-needed');
     } catch (error) {
         if (axios.isCancel(error)) {
             throw new CancelError(error.message);

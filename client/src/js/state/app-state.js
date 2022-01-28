@@ -1,14 +1,16 @@
 class AppState {
-    isSyncNeeded = true;
-    lastSyncDate = null;
+    username = null;
+    email = null;
+    totalDiskSpace = null;
+    usedDiskSpace = null;
+    lastSyncTime = null;
 
-    setSyncNeed() {
-        this.isSyncNeeded = true;
-    }
-
-    setSyncDate() {
-        this.isSyncNeeded = false;
-        this.lastSyncDate = Date.now();
+    updateAppData(userData) {
+        this.username = userData.username;
+        this.email = userData.email;
+        this.totalDiskSpace = userData.totalDiskSpace;
+        this.usedDiskSpace = userData.usedDiskSpace;
+        this.lastSyncTime = Date.now();
     }
 }
 

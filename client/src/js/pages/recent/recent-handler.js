@@ -1,3 +1,4 @@
+import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
 import { getRecentElms, getRecentContentElms } from './recent-dom-elements';
@@ -11,17 +12,14 @@ import { createLoaderHTML } from '../../components/loader/loader-template-creato
 import { viewAllElmStateHandler } from './recent-view-updates';
 import { getFiles } from '../../services/file-service';
 import recentState from '../../state/recent-state';
-import appState from '../../state/app-state';
 
 const getRecentFiles = async (max = 0) => {
     try {
         const filesData = await getFiles(max);
 
         recentState.setRecentFiles(filesData);
-        appState.setSyncDate();
     } catch (error) {
         recentState.setError();
-        //TODO - Sync error ?
     }
 };
 
@@ -58,6 +56,10 @@ const renderRecentContentBlock = (recentElms) => {
     );
 };
 
+const resetRecentListActuality = () => {
+    recentState.resetRecentListActualState();
+};
+
 export const recentHandler = async (appContainer) => {
     appContainer.innerHTML = createRecentHTML();
 
@@ -66,7 +68,7 @@ export const recentHandler = async (appContainer) => {
     headerHandler(recentElms.recentBlockElm);
     footerHandler(recentElms.recentBlockElm);
 
-    if (appState.isSyncNeeded) {
+    if (!recentState.isRecentListActual) {
         recentState.setFetching();
 
         renderRecentContentBlock(recentElms);
@@ -75,4 +77,6 @@ export const recentHandler = async (appContainer) => {
     }
 
     renderRecentContentBlock(recentElms);
+
+    ee.on('upload/sync-needed', resetRecentListActuality);
 };

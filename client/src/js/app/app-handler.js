@@ -4,18 +4,20 @@ import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
 import { ee } from '../helpers/event-emitter';
+import { getUserData } from '../services/user-service';
 
-const setAuthState = (accessToken, user) => {
+const setAuthAndUserData = (accessToken, user) => {
     localStorage.setItem('access-token', accessToken);
 
-    authState.setAuthState(user);
+    authState.setAuthState();
+    appState.updateAppData(user);
 };
 
 const checkUserAuthStatusHandler = async () => {
     try {
         const { accessToken, user } = await userAuth();
 
-        setAuthState(accessToken, user);
+        setAuthAndUserData(accessToken, user);
     } catch (error) {
         localStorage.removeItem('access-token');
     } finally {
@@ -24,7 +26,7 @@ const checkUserAuthStatusHandler = async () => {
 };
 
 const userLoginHandler = ({ accessToken, user }) => {
-    setAuthState(accessToken, user);
+    setAuthAndUserData(accessToken, user);
 
     routesHandler();
 };
@@ -38,8 +40,14 @@ const userLogoutHandler = () => {
     routesHandler();
 };
 
-const setSyncNeededHandler = () => {
-    appState.setSyncNeed();
+const syncAppHandler = async () => {
+    try {
+        const userData = await getUserData();
+
+        appState.updateAppData(userData);
+    } catch (error) {
+        //TODO - Sync errors handle
+    }
 };
 
 const routesHandler = () => {
@@ -61,4 +69,4 @@ ee.on('auth/user-logged-in', userLoginHandler);
 
 ee.on('auth/user-logged-out', userLogoutHandler);
 
-ee.on('upload/sync-needed', setSyncNeededHandler);
+ee.on('upload/sync-needed', syncAppHandler);

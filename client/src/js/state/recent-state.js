@@ -1,5 +1,6 @@
 class RecentState {
     isError = false;
+    isRecentListActual = false;
     isFetching = true;
     totalFilesCount = 0;
     recentFiles = [];
@@ -8,9 +9,14 @@ class RecentState {
         this.isFetching = true;
     }
 
+    resetRecentListActualState() {
+        this.isRecentListActual = false;
+    }
+
     setRecentFiles({ total, recent }) {
         this.isError = false;
         this.isFetching = false;
+        this.isRecentListActual = true;
         this.totalFilesCount = total;
         this.recentFiles = recent;
     }
@@ -18,6 +24,7 @@ class RecentState {
     setError() {
         this.isError = true;
         this.isFetching = false;
+        this.isRecentListActual = false;
         this.totalFilesCount = 0;
         this.recentFiles = [];
     }

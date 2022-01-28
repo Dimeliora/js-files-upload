@@ -1,6 +1,4 @@
-export const createDashboardHTML = (user) => {
-    const { username, email } = user;
-
+export const createDashboardHTML = (username, email) => {
     return `
         <div class="dashboard paper" data-dashboard-block>
             <div class="dashboard__header">

@@ -87,7 +87,7 @@ const uploadFiles = async () => {
 };
 
 const abortFilesUploadHandler = () => {
-    uploadState.isUploading = false;
+    uploadState.resetUploading();
 
     for (const file of uploadState.uploadFiles) {
         getFileUploadAbortHandler(file)();
@@ -95,8 +95,7 @@ const abortFilesUploadHandler = () => {
 };
 
 const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
-    uploadState.isUploading = false;
-    uploadState.uploadFiles = [];
+    uploadState.resetUploadState();
 
     uploadModalElm.remove();
 };
@@ -121,8 +120,7 @@ const prepareFilesForUpload = async (files) => {
         );
     }
 
-    uploadState.isUploading = true;
-    uploadState.uploadFiles = uploadFileItems;
+    uploadState.setFilesToUpload(uploadFileItems);
 
     uploadModalElms.uploadCancelElm.addEventListener(
         'click',
@@ -137,8 +135,6 @@ const prepareFilesForUpload = async (files) => {
         'click',
         getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
     );
-
-    ee.emit('upload/sync-needed');
 };
 
 const uploadInputChangeHandler = (e) => {

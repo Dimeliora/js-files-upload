@@ -15,6 +15,18 @@
         }
     }
 
+    &--warning {
+        .progress__filler {
+            background-color: $yellow;
+        }
+    }
+
+    &--danger {
+        .progress__filler {
+            background-color: $red;
+        }
+    }
+
     &__filler {
         position: absolute;
         top: 0;

@@ -28,9 +28,9 @@ export const createDashboardHTML = (username, email) => {
             </div>
             <div class="dashboard__storage">
                 <h2 class="dashboard__storage-heading">Storage</h2>
-                <div class="dashboard__storage-capacity">84Gb of 120Gb</div>
+                <div class="dashboard__storage-capacity" data-dashboard-storage></div>
                 <div class="dashboard__storage-bar progress">
-                    <div class="progress__filler" style="width: 80%"></div>
+                    <div class="progress__filler" data-dashboard-progress></div>
                 </div>
             </div>
             <div class="dashboard__plan">

@@ -19,17 +19,7 @@
         overflow-y: auto;
         margin-bottom: 30px;
         list-style-type: none;
-
-        &::-webkit-scrollbar {
-            width: 8px;
-            border-radius: 6px;
-            background-color: $gray-dark;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            border-radius: 6px;
-            background-color: $purple;
-        }
+        @include custom-scroll-bar();
     }
 
     &__item {

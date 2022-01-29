@@ -53,7 +53,9 @@ const renderRecentFilesList = (recentElms) => {
 
     recentFilesListElm.innerHTML = getRecentFilesListMarkup();
 
-    setFileActionsClickHandlers(recentFilesListElm.children);
+    if (recentFiles.length > 0) {
+        setFileActionsClickHandlers(recentFilesListElm.children);
+    }
 
     if (isFullUploadsList || recentFiles.length < 5) {
         recentLoadElm.innerHTML = '';

@@ -4,7 +4,11 @@ const path = require('path');
 const User = require('../models/user-model');
 const File = require('../models/file-model');
 const FileError = require('../errors/file-error');
-const { getUserFilesDir } = require('../helpers/data-path-helpers');
+const {
+    dataDir,
+    getUserFilesDir,
+    getRelativeFilePath,
+} = require('../helpers/data-path-helpers');
 
 exports.fileUploadAbilityCheckService = async (filename, size, userId) => {
     const user = await User.findById(userId);
@@ -31,6 +35,7 @@ exports.fileUploadService = async (file, userId) => {
         name: file.name,
         type: file.mimetype,
         size: file.size,
+        path: getRelativeFilePath(userId, file.name),
         user: user._id,
     });
 
@@ -46,4 +51,13 @@ exports.fileUploadService = async (file, userId) => {
 
 exports.getFilesService = async (userId, max = 0) => {
     return await File.find({ user: userId }).sort({ createdAt: -1 }).limit(max);
+};
+
+exports.downloadFileService = async (userId, fileId) => {
+    const fileData = await File.findOne({ _id: fileId, user: userId });
+    if (!fileData) {
+        throw new FileError('File not found', 404);
+    }
+
+    return path.resolve(dataDir, fileData.path);
 };

@@ -1,3 +1,4 @@
+const AuthError = require('../errors/auth-error');
 const { getUserDataService } = require('../services/user-service');
 
 exports.getUserDataController = async (req, res) => {

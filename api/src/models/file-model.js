@@ -14,6 +14,10 @@ const FileSchema = new Schema(
             type: Number,
             default: 0,
         },
+        path: {
+            type: String,
+            required: true,
+        },
         user: {
             type: Types.ObjectId,
             ref: 'User',

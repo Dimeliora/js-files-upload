@@ -1,16 +1,15 @@
 const { validationResult } = require('express-validator');
 
-const AuthError = require('../errors/auth-error');
 const {
     authService,
     loginService,
     registerService,
 } = require('../services/auth-service');
+const AuthError = require('../errors/auth-error');
 
 const sendAuthorizedUser = (res, userDocument) => {
     const accessToken = userDocument.generateToken();
     const userData = {
-        id: userDocument._id,
         username: userDocument.username,
         email: userDocument.email,
         totalDiskSpace: userDocument.totalDiskSpace,

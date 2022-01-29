@@ -8,8 +8,12 @@ const dataDir = path.resolve(rootDir, '../data');
 
 const getUserFilesDir = (userId) => path.resolve(dataDir, userId, 'files');
 
+const getRelativeFilePath = (userId, filename) =>
+    path.join(userId, 'files', filename);
+
 module.exports = {
     rootDir,
     dataDir,
     getUserFilesDir,
+    getRelativeFilePath,
 };

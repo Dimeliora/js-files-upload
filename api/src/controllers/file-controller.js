@@ -3,6 +3,7 @@ const {
     fileUploadAbilityCheckService,
     fileUploadService,
     getFilesService,
+    downloadFileService,
 } = require('../services/file-service');
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
@@ -51,6 +52,23 @@ exports.getFilesController = async (req, res) => {
         const recentFiles = await getFilesService(id, max);
 
         res.status(200).json(recentFiles);
+    } catch (error) {
+        if (error instanceof FileError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: 'Service error. Please, try later' });
+    }
+};
+
+exports.downloadFileController = async (req, res) => {
+    const { id: userId } = req.user;
+    const { fileId } = req.params;
+
+    try {
+        const filePath = await downloadFileService(userId, fileId);
+
+        res.status(200).sendFile(filePath);
     } catch (error) {
         if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });

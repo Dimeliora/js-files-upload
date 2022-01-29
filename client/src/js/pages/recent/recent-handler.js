@@ -22,6 +22,7 @@ const getRecentFiles = async (max = 0) => {
         const files = await getFiles(max);
 
         recentState.setRecentFiles(files);
+        ee.emit('recent/resync-needed');
     } catch (error) {
         recentState.setError();
     }
@@ -69,7 +70,7 @@ const renderRecentFilesList = (recentElms) => {
 
         recentViewAllElm.addEventListener(
             'click',
-            getViewAllUploadsHandler(recentElms)
+            getViewAllUploadsClickHandler(recentElms)
         );
     }
 };
@@ -85,7 +86,7 @@ const setFileActionsButtonsClickHandler = (recentFilesListElm) => {
     }
 };
 
-const getViewAllUploadsHandler = (recentElms) => async () => {
+const getViewAllUploadsClickHandler = (recentElms) => async () => {
     await fetchRecentFilesHandler(recentElms);
 
     recentState.setFullUploadList();

@@ -83,4 +83,6 @@ ee.on('auth/user-logged-out', userLogoutHandler);
 
 ee.on('upload/resync-needed', syncAppHandler);
 
+ee.on('recent/resync-needed', syncAppHandler);
+
 ee.on('service/fetch-error', syncErrorHandler);

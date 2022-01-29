@@ -10,20 +10,17 @@ class RecentState {
 
     resetRecentListActualState() {
         this.isRecentListActual = false;
-        this.isFullUploadsList = false;
     }
 
     setRecentFiles(files) {
         this.isError = false;
         this.isRecentListActual = true;
-        this.isFullUploadsList = false;
         this.recentFiles = files;
     }
 
     setError() {
         this.isError = true;
         this.isRecentListActual = false;
-        this.isFullUploadsList = false;
         this.recentFiles = [];
     }
 

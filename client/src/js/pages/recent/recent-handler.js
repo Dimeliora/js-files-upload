@@ -23,9 +23,13 @@ import {
 import { alertHandle } from '../../components/alerts/alerts-handler';
 import recentState from '../../state/recent-state';
 
-const getRecentFiles = async (max = 0) => {
+const MAX_RECENT_FILES_COUNT = 5;
+
+const getRecentFiles = async (max = MAX_RECENT_FILES_COUNT) => {
+    const filesCount = recentState.isFullUploadsList ? 0 : max;
+
     try {
-        const files = await getFiles(max);
+        const files = await getFiles(filesCount);
 
         recentState.setRecentFiles(files);
         ee.emit('recent/resync-needed');
@@ -52,10 +56,10 @@ const getRecentFilesListMarkup = () => {
     return recentListMarkup;
 };
 
-const fetchRecentFilesHandler = async (recentElms, count = 0) => {
+const fetchRecentFilesHandler = async (recentElms) => {
     recentElms.recentLoadElm.innerHTML = createLoaderHTML();
 
-    await getRecentFiles(count);
+    await getRecentFiles();
 };
 
 const renderRecentFilesList = (recentElms) => {
@@ -65,10 +69,10 @@ const renderRecentFilesList = (recentElms) => {
     recentFilesListElm.innerHTML = getRecentFilesListMarkup();
 
     if (recentFiles.length > 0) {
-        setFileActionsClickHandlers(recentFilesListElm.children, recentElms);
+        setFileActionsClickHandlers(recentElms);
     }
 
-    if (isFullUploadsList || recentFiles.length < 5) {
+    if (isFullUploadsList) {
         recentLoadElm.innerHTML = '';
 
         hideRecentLoadElm(recentLoadElm);
@@ -85,8 +89,10 @@ const renderRecentFilesList = (recentElms) => {
     }
 };
 
-const setFileActionsClickHandlers = (recentFileElms, recentElms) => {
-    for (const recentFileElm of recentFileElms) {
+const setFileActionsClickHandlers = (recentElms) => {
+    const { recentFilesListElm } = recentElms;
+
+    for (const recentFileElm of recentFilesListElm.children) {
         const fileId = recentFileElm.dataset.file;
 
         const { fileNameElm, fileDownloadElm, fileDeleteElm } =
@@ -99,7 +105,7 @@ const setFileActionsClickHandlers = (recentFileElms, recentElms) => {
 
         fileDeleteElm.addEventListener(
             'click',
-            getFileDeleteHandler(fileId, recentElms)
+            getFileDeleteHandler(recentElms, fileId)
         );
     }
 };
@@ -122,7 +128,7 @@ const getFileDownloadHandler = (fileId, filename) => async () => {
     }
 };
 
-const getFileDeleteHandler = (fileId, recentElms) => async () => {
+const getFileDeleteHandler = (recentElms, fileId) => async () => {
     const { recentFilesListElm } = recentElms;
 
     deactivateRecentFilesList(recentFilesListElm);
@@ -130,7 +136,7 @@ const getFileDeleteHandler = (fileId, recentElms) => async () => {
     try {
         await deleteFile(fileId);
 
-        await getRecentFiles(5);
+        await getRecentFiles();
 
         renderRecentFilesList(recentElms);
     } catch (error) {
@@ -141,9 +147,9 @@ const getFileDeleteHandler = (fileId, recentElms) => async () => {
 };
 
 const getViewAllUploadsClickHandler = (recentElms) => async () => {
-    await fetchRecentFilesHandler(recentElms);
-
     recentState.setFullUploadList();
+
+    await fetchRecentFilesHandler(recentElms);
 
     renderRecentFilesList(recentElms);
 };
@@ -161,7 +167,7 @@ export const recentHandler = async (appContainer) => {
     footerHandler(recentElms.recentBlockElm);
 
     if (!recentState.isRecentListActual) {
-        await fetchRecentFilesHandler(recentElms, 5);
+        await fetchRecentFilesHandler(recentElms);
     }
 
     renderRecentFilesList(recentElms);

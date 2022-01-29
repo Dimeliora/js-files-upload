@@ -38,6 +38,7 @@ export const footerHandler = (container) => {
 
     ee.on(
         'app/update-sync-status',
-        getSyncStatusUpdateHandler(footerElms.footerSyncElm)
+        getSyncStatusUpdateHandler(footerElms.footerSyncElm),
+        'footer:app/update-sync-status'
     );
 };

@@ -11,13 +11,12 @@ const fileService = axios.create({
 export const fileUpload = async (file) => {
     const accessToken = localStorage.getItem('access-token');
 
+    const source = axios.CancelToken.source();
+    const unsubscribeUploadAbortEvent = ee.on('upload/abort', () => {
+        source.cancel('Upload cancelled');
+    });
+
     try {
-        const source = axios.CancelToken.source();
-
-        ee.on('upload/abort', () => {
-            source.cancel('Upload cancelled');
-        });
-
         await fileService.post(
             '/upload/check',
             { filename: file.name, size: file.size },
@@ -73,6 +72,8 @@ export const fileUpload = async (file) => {
         }
 
         throw new Error(error.response.data.message);
+    } finally {
+        unsubscribeUploadAbortEvent();
     }
 };
 

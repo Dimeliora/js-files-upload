@@ -93,5 +93,9 @@ export const recentHandler = async (appContainer) => {
 
     renderRecentList(recentElms);
 
-    ee.on('upload/resync-needed', resetRecentListActuality);
+    ee.on(
+        'upload/resync-needed',
+        resetRecentListActuality,
+        'recent:upload/resync-needed'
+    );
 };

@@ -11,7 +11,7 @@ const setAuthAndUserData = (accessToken, user) => {
     localStorage.setItem('access-token', accessToken);
 
     authState.setAuthState();
-    appState.updateAppData(user);
+    appState.setInitialAppData(user);
 };
 
 const checkUserAuthStatusHandler = async () => {

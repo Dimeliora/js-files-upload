@@ -10,10 +10,16 @@ class AppState {
         this.syncError = errorMessage;
     }
 
-    updateAppData(userData) {
+    setInitialAppData(userData) {
         this.username = userData.username;
         this.email = userData.email;
         this.totalDiskSpace = userData.totalDiskSpace;
+        this.usedDiskSpace = userData.usedDiskSpace;
+        this.lastSyncTime = Date.now();
+        this.syncError = null;
+    }
+
+    updateAppData(userData) {
         this.usedDiskSpace = userData.usedDiskSpace;
         this.lastSyncTime = Date.now();
         this.syncError = null;

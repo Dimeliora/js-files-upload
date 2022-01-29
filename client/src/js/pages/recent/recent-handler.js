@@ -72,7 +72,7 @@ const renderRecentFilesList = (recentElms) => {
         setFileActionsClickHandlers(recentElms);
     }
 
-    if (isFullUploadsList) {
+    if (isFullUploadsList || recentFiles.length < MAX_RECENT_FILES_COUNT) {
         recentLoadElm.innerHTML = '';
 
         hideRecentLoadElm(recentLoadElm);

@@ -7,12 +7,7 @@ exports.getUserDataController = async (req, res) => {
     try {
         const userData = await getUserDataService(id);
 
-        res.status(200).json({
-            username: userData.username,
-            email: userData.email,
-            totalDiskSpace: userData.totalDiskSpace,
-            usedDiskSpace: userData.usedDiskSpace,
-        });
+        res.status(200).json({ usedDiskSpace: userData.usedDiskSpace });
     } catch (error) {
         if (error instanceof AuthError) {
             return res.status(error.status).json({ message: error.message });

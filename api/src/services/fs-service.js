@@ -1,4 +1,3 @@
-const path = require('path');
 const fs = require('fs/promises');
 
 const FileError = require('../errors/file-error');

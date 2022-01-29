@@ -35,7 +35,7 @@ export const createRecentFileHTML = (file) => {
                 <use href="/icons/icon-sprite.svg#${getMimeTypeIcon(type)}" />
             </svg>
             <div class="file__info">
-                <div class="file__name">${name}</div>
+                <div class="file__name" title="${name}">${name}</div>
                 <div class="file__upload-time">
                     ${getFormattedPassedTime(createdAt)}
                 </div>
@@ -43,31 +43,25 @@ export const createRecentFileHTML = (file) => {
             <div class="file__size">${getFormattedFileSize(size)}</div>
             <div class="file__actions">
                 <button
-                    class="file__actions-button icon-button"
-                    title="File actions"
-                    aria-label="File actions"
-                    data-file-button
+                    class="file__download icon-button"
+                    title="Download file"
+                    aria-label="Download file"
+                    data-file-dowload
                 >
                     <svg class="icon-button__icon">
-                        <use href="/icons/icon-sprite.svg#more" />
+                        <use href="/icons/icon-sprite.svg#download" />
                     </svg>
                 </button>
-                <ul class="file__actions-list" data-file-actions>
-                    <li 
-                        class="file__actions-item"
-                        tabindex="0"
-                        data-file-download
-                    >
-                        Download
-                    </li>
-                    <li 
-                        class="file__actions-item"
-                        tabindex="0"
-                        data-file-delete
-                    >
-                        Remove
-                    </li>
-                </ul>
+                <button
+                    class="file__delete icon-button icon-button--danger"
+                    title="Delete file"
+                    aria-label="Delete file"
+                    data-file-delete
+                >
+                    <svg class="icon-button__icon">
+                        <use href="/icons/icon-sprite.svg#delete" />
+                    </svg>
+                </button>
             </div>
         </li>
     `;

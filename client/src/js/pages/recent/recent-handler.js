@@ -2,11 +2,7 @@ import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
 import { getRecentElms, getFileElms } from './recent-dom-elements';
-import {
-    hideRecentLoadElm,
-    showRecentLoadElm,
-    getFileActionsShowHandler,
-} from './recent-view-updates';
+import { hideRecentLoadElm, showRecentLoadElm } from './recent-view-updates';
 import {
     createRecentHTML,
     createViewAllHTML,
@@ -56,8 +52,6 @@ const renderRecentFilesList = (recentElms) => {
 
     recentFilesListElm.innerHTML = getRecentFilesListMarkup();
 
-    setFileActionsButtonsClickHandler(recentFilesListElm);
-
     if (isFullUploadsList || recentFiles.length < 5) {
         recentLoadElm.innerHTML = '';
 
@@ -71,17 +65,6 @@ const renderRecentFilesList = (recentElms) => {
         recentViewAllElm.addEventListener(
             'click',
             getViewAllUploadsClickHandler(recentElms)
-        );
-    }
-};
-
-const setFileActionsButtonsClickHandler = (recentFilesListElm) => {
-    for (const recentFilesListItemElm of recentFilesListElm.children) {
-        const { fileButtonElm } = getFileElms(recentFilesListItemElm);
-
-        fileButtonElm.addEventListener(
-            'click',
-            getFileActionsShowHandler(recentFilesListElm)
         );
     }
 };

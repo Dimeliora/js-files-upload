@@ -2,20 +2,7 @@ import {
     getFormattedFileSize,
     getFormattedPassedTime,
 } from '../../helpers/formatters';
-
-const FILE_TYPES_ICON_MAP = {
-    text: 'document-file',
-    image: 'image-file',
-    pdf: 'pdf-file',
-};
-
-const getFileTypeIcon = (mime) => {
-    const type = Object.keys(FILE_TYPES_ICON_MAP).find((key) =>
-        mime.includes(key)
-    );
-
-    return FILE_TYPES_ICON_MAP[type] || 'common-file';
-};
+import { getMimeTypeIcon } from './recent-mime-icons-map';
 
 export const createRecentHTML = () => {
     return `
@@ -45,7 +32,7 @@ export const createRecentFileHTML = (file) => {
     return `
         <li class="recent__list-item file">
             <svg class="file__icon">
-                <use href="/icons/icon-sprite.svg#${getFileTypeIcon(type)}" />
+                <use href="/icons/icon-sprite.svg#${getMimeTypeIcon(type)}" />
             </svg>
             <div class="file__info">
                 <div class="file__name">${name}</div>

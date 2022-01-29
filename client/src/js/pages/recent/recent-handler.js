@@ -2,7 +2,12 @@ import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
 import { getRecentElms, getRecentFileElms } from './recent-dom-elements';
-import { hideRecentLoadElm, showRecentLoadElm } from './recent-view-updates';
+import {
+    hideRecentLoadElm,
+    showRecentLoadElm,
+    deactivateRecentFilesList,
+    activateRecentFilesList,
+} from './recent-view-updates';
 import {
     createRecentHTML,
     createViewAllHTML,
@@ -10,7 +15,11 @@ import {
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
 import { createLoaderHTML } from '../../components/loader/loader-template-creators';
-import { getFiles, downloadFile } from '../../services/file-service';
+import {
+    getFiles,
+    downloadFile,
+    deleteFile,
+} from '../../services/file-service';
 import { alertHandle } from '../../components/alerts/alerts-handler';
 import recentState from '../../state/recent-state';
 
@@ -26,15 +35,17 @@ const getRecentFiles = async (max = 0) => {
 };
 
 const getRecentFilesListMarkup = () => {
-    if (recentState.isError) {
+    const { isError, recentFiles } = recentState;
+
+    if (isError) {
         return createRecentPlaceholderHTML('error');
     }
 
-    if (recentState.recentFiles.length === 0) {
+    if (recentFiles.length === 0) {
         return createRecentPlaceholderHTML();
     }
 
-    const recentListMarkup = recentState.recentFiles
+    const recentListMarkup = recentFiles
         .map((file) => createRecentFileHTML(file))
         .join(' ');
 
@@ -54,7 +65,7 @@ const renderRecentFilesList = (recentElms) => {
     recentFilesListElm.innerHTML = getRecentFilesListMarkup();
 
     if (recentFiles.length > 0) {
-        setFileActionsClickHandlers(recentFilesListElm.children);
+        setFileActionsClickHandlers(recentFilesListElm.children, recentElms);
     }
 
     if (isFullUploadsList || recentFiles.length < 5) {
@@ -74,7 +85,7 @@ const renderRecentFilesList = (recentElms) => {
     }
 };
 
-const setFileActionsClickHandlers = (recentFileElms) => {
+const setFileActionsClickHandlers = (recentFileElms, recentElms) => {
     for (const recentFileElm of recentFileElms) {
         const fileId = recentFileElm.dataset.file;
 
@@ -86,7 +97,10 @@ const setFileActionsClickHandlers = (recentFileElms) => {
             getFileDownloadHandler(fileId, fileNameElm.textContent.trim())
         );
 
-        fileDeleteElm.addEventListener('click', () => {});
+        fileDeleteElm.addEventListener(
+            'click',
+            getFileDeleteHandler(fileId, recentElms)
+        );
     }
 };
 
@@ -108,10 +122,29 @@ const getFileDownloadHandler = (fileId, filename) => async () => {
     }
 };
 
+const getFileDeleteHandler = (fileId, recentElms) => async () => {
+    const { recentFilesListElm } = recentElms;
+
+    deactivateRecentFilesList(recentFilesListElm);
+
+    try {
+        await deleteFile(fileId);
+
+        await getRecentFiles(5);
+
+        renderRecentFilesList(recentElms);
+    } catch (error) {
+        alertHandle(error.message, 'error');
+    } finally {
+        activateRecentFilesList(recentFilesListElm);
+    }
+};
+
 const getViewAllUploadsClickHandler = (recentElms) => async () => {
     await fetchRecentFilesHandler(recentElms);
 
     recentState.setFullUploadList();
+
     renderRecentFilesList(recentElms);
 };
 

@@ -4,8 +4,6 @@ class RecentState {
     isFullUploadsList = false;
     recentFiles = [];
 
-    setFetching() {}
-
     setFullUploadList() {
         this.isFullUploadsList = true;
     }

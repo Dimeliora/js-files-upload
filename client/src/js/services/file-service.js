@@ -128,3 +128,24 @@ export const downloadFile = async (fileId) => {
         throw new Error(message);
     }
 };
+
+export const deleteFile = async (fileId) => {
+    const accessToken = localStorage.getItem('access-token');
+
+    try {
+        await fileService.delete(`/delete/${fileId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+    } catch (error) {
+        if (!error.response) {
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
+        }
+
+        throw new Error(error.response.data.message);
+    }
+};

@@ -1,10 +1,15 @@
+const path = require('path');
+
 const FileError = require('../errors/file-error');
+const { dataDir } = require('../helpers/data-path-helpers');
 const {
     fileUploadAbilityCheckService,
     fileUploadService,
     getFilesService,
     downloadFileService,
+    deleteFileService,
 } = require('../services/file-service');
+const { deleteUserFileService } = require('../services/fs-service');
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
     const { filename, size } = req.body;
@@ -66,9 +71,30 @@ exports.downloadFileController = async (req, res) => {
     const { fileId } = req.params;
 
     try {
-        const filePath = await downloadFileService(userId, fileId);
+        const relativeFilePath = await downloadFileService(userId, fileId);
+        const filepath = path.resolve(dataDir, relativeFilePath);
 
-        res.status(200).sendFile(filePath);
+        res.status(200).sendFile(filepath);
+    } catch (error) {
+        if (error instanceof FileError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: 'Service error. Please, try later' });
+    }
+};
+
+exports.deleteFileController = async (req, res) => {
+    const { id: userId } = req.user;
+    const { fileId } = req.params;
+
+    try {
+        const relativeFilePath = await deleteFileService(userId, fileId);
+        const filepath = path.resolve(dataDir, relativeFilePath);
+
+        await deleteUserFileService(filepath);
+
+        res.sendStatus(200);
     } catch (error) {
         if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });

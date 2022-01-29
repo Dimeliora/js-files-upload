@@ -59,5 +59,14 @@ exports.downloadFileService = async (userId, fileId) => {
         throw new FileError('File not found', 404);
     }
 
-    return path.resolve(dataDir, fileData.path);
+    return fileData.path;
+};
+
+exports.deleteFileService = async (userId, fileId) => {
+    const fileData = await File.findOneAndDelete({ _id: fileId, user: userId });
+    if (!fileData) {
+        throw new FileError('File not found', 404);
+    }
+
+    return fileData.path;
 };

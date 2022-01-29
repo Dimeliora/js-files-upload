@@ -4,7 +4,8 @@ export const getRecentElms = (rootElement) => ({
     recentLoadElm: rootElement.querySelector('[data-recent-load]'),
 });
 
-export const getFileElms = (fileElm) => ({
-    fileDownloadElm: fileElm.querySelector('[data-file-download]'),
-    fileDeleteElm: fileElm.querySelector('[data-file-delete]'),
+export const getRecentFileElms = (recentFileElm) => ({
+    fileNameElm: recentFileElm.querySelector('[data-file-name]'),
+    fileDownloadElm: recentFileElm.querySelector('[data-file-download]'),
+    fileDeleteElm: recentFileElm.querySelector('[data-file-delete]'),
 });

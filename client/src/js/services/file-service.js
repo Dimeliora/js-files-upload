@@ -77,7 +77,7 @@ export const fileUpload = async (file) => {
     }
 };
 
-export const getFiles = async (max = null) => {
+export const getFiles = async (max = 0) => {
     const accessToken = localStorage.getItem('access-token');
 
     try {
@@ -100,5 +100,31 @@ export const getFiles = async (max = null) => {
         }
 
         throw new Error(error.response.data.message);
+    }
+};
+
+export const downloadFile = async (fileId) => {
+    const accessToken = localStorage.getItem('access-token');
+
+    try {
+        const { data } = await fileService.get(`/download/${fileId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            responseType: 'blob',
+        });
+
+        return data;
+    } catch (error) {
+        if (!error.response) {
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
+        }
+
+        const response = await error.response.data.text();
+        const { message } = JSON.parse(response);
+        throw new Error(message);
     }
 };

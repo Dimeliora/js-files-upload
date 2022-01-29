@@ -1,7 +1,7 @@
 import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
-import { getRecentElms, getFileElms } from './recent-dom-elements';
+import { getRecentElms, getRecentFileElms } from './recent-dom-elements';
 import { hideRecentLoadElm, showRecentLoadElm } from './recent-view-updates';
 import {
     createRecentHTML,
@@ -10,7 +10,8 @@ import {
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
 import { createLoaderHTML } from '../../components/loader/loader-template-creators';
-import { getFiles } from '../../services/file-service';
+import { getFiles, downloadFile } from '../../services/file-service';
+import { alertHandle } from '../../components/alerts/alerts-handler';
 import recentState from '../../state/recent-state';
 
 const getRecentFiles = async (max = 0) => {
@@ -52,6 +53,8 @@ const renderRecentFilesList = (recentElms) => {
 
     recentFilesListElm.innerHTML = getRecentFilesListMarkup();
 
+    setFileActionsClickHandlers(recentFilesListElm.children);
+
     if (isFullUploadsList || recentFiles.length < 5) {
         recentLoadElm.innerHTML = '';
 
@@ -66,6 +69,40 @@ const renderRecentFilesList = (recentElms) => {
             'click',
             getViewAllUploadsClickHandler(recentElms)
         );
+    }
+};
+
+const setFileActionsClickHandlers = (recentFileElms) => {
+    for (const recentFileElm of recentFileElms) {
+        const fileId = recentFileElm.dataset.file;
+
+        const { fileNameElm, fileDownloadElm, fileDeleteElm } =
+            getRecentFileElms(recentFileElm);
+
+        fileDownloadElm.addEventListener(
+            'click',
+            getFileDownloadHandler(fileId, fileNameElm.textContent.trim())
+        );
+
+        fileDeleteElm.addEventListener('click', () => {});
+    }
+};
+
+const getFileDownloadHandler = (fileId, filename) => async () => {
+    try {
+        const fileBlob = await downloadFile(fileId);
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = URL.createObjectURL(fileBlob);
+
+        document.body.append(link);
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+        link.remove();
+    } catch (error) {
+        alertHandle(error.message, 'error');
     }
 };
 

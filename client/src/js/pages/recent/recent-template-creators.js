@@ -35,7 +35,13 @@ export const createRecentFileHTML = (file) => {
                 <use href="/icons/icon-sprite.svg#${getMimeTypeIcon(type)}" />
             </svg>
             <div class="file__info">
-                <div class="file__name" title="${name}">${name}</div>
+                <div 
+                    class="file__name"
+                    title="${name}"
+                    data-file-name
+                >
+                    ${name}
+                </div>
                 <div class="file__upload-time">
                     ${getFormattedPassedTime(createdAt)}
                 </div>
@@ -46,7 +52,7 @@ export const createRecentFileHTML = (file) => {
                     class="file__download icon-button"
                     title="Download file"
                     aria-label="Download file"
-                    data-file-dowload
+                    data-file-download
                 >
                     <svg class="icon-button__icon">
                         <use href="/icons/icon-sprite.svg#download" />

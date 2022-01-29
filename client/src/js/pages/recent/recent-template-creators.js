@@ -27,10 +27,10 @@ export const createViewAllHTML = () => {
 };
 
 export const createRecentFileHTML = (file) => {
-    const { name, type, size, createdAt } = file;
+    const { _id, name, type, size, createdAt } = file;
 
     return `
-        <li class="recent__list-item file">
+        <li class="recent__list-item file" data-file="${_id}">
             <svg class="file__icon">
                 <use href="/icons/icon-sprite.svg#${getMimeTypeIcon(type)}" />
             </svg>
@@ -41,16 +41,34 @@ export const createRecentFileHTML = (file) => {
                 </div>
             </div>
             <div class="file__size">${getFormattedFileSize(size)}</div>
-            <button
-                class="file__controls icon-button"
-                title="File actions"
-                aria-label="File actions"
-                data-file-actions
-            >
-                <svg class="icon-button__icon">
-                    <use href="/icons/icon-sprite.svg#more" />
-                </svg>
-            </button>
+            <div class="file__actions">
+                <button
+                    class="file__actions-button icon-button"
+                    title="File actions"
+                    aria-label="File actions"
+                    data-file-button
+                >
+                    <svg class="icon-button__icon">
+                        <use href="/icons/icon-sprite.svg#more" />
+                    </svg>
+                </button>
+                <ul class="file__actions-list" data-file-actions>
+                    <li 
+                        class="file__actions-item"
+                        tabindex="0"
+                        data-file-download
+                    >
+                        Download
+                    </li>
+                    <li 
+                        class="file__actions-item"
+                        tabindex="0"
+                        data-file-delete
+                    >
+                        Remove
+                    </li>
+                </ul>
+            </div>
         </li>
     `;
 };

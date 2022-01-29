@@ -1,8 +1,12 @@
 import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
-import { getRecentElms } from './recent-dom-elements';
-import { hideRecentLoadElm, showRecentLoadElm } from './recent-view-updates';
+import { getRecentElms, getFileElms } from './recent-dom-elements';
+import {
+    hideRecentLoadElm,
+    showRecentLoadElm,
+    getFileActionsShowHandler,
+} from './recent-view-updates';
 import {
     createRecentHTML,
     createViewAllHTML,
@@ -45,11 +49,13 @@ const fetchRecentFilesHandler = async (recentElms, count = 0) => {
     await getRecentFiles(count);
 };
 
-const renderRecentList = (recentElms) => {
-    const { recentLoadElm, recentListElm } = recentElms;
+const renderRecentFilesList = (recentElms) => {
+    const { recentLoadElm, recentFilesListElm } = recentElms;
     const { isFullUploadsList, recentFiles } = recentState;
 
-    recentListElm.innerHTML = getRecentFilesListMarkup();
+    recentFilesListElm.innerHTML = getRecentFilesListMarkup();
+
+    setFileActionsButtonsClickHandler(recentFilesListElm);
 
     if (isFullUploadsList || recentFiles.length < 5) {
         recentLoadElm.innerHTML = '';
@@ -68,15 +74,26 @@ const renderRecentList = (recentElms) => {
     }
 };
 
-const resetRecentListActuality = () => {
-    recentState.resetRecentListActualState();
+const setFileActionsButtonsClickHandler = (recentFilesListElm) => {
+    for (const recentFilesListItemElm of recentFilesListElm.children) {
+        const { fileButtonElm } = getFileElms(recentFilesListItemElm);
+
+        fileButtonElm.addEventListener(
+            'click',
+            getFileActionsShowHandler(recentFilesListElm)
+        );
+    }
 };
 
 const getViewAllUploadsHandler = (recentElms) => async () => {
     await fetchRecentFilesHandler(recentElms);
 
     recentState.setFullUploadList();
-    renderRecentList(recentElms);
+    renderRecentFilesList(recentElms);
+};
+
+const resetRecentListActuality = () => {
+    recentState.resetRecentListActualState();
 };
 
 export const recentHandler = async (appContainer) => {
@@ -91,7 +108,7 @@ export const recentHandler = async (appContainer) => {
         await fetchRecentFilesHandler(recentElms, 5);
     }
 
-    renderRecentList(recentElms);
+    renderRecentFilesList(recentElms);
 
     ee.on(
         'upload/resync-needed',

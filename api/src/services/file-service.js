@@ -5,13 +5,13 @@ const User = require('../models/user-model');
 const File = require('../models/file-model');
 const FileError = require('../errors/file-error');
 const {
-    dataDir,
     getUserFilesDir,
     getRelativeFilePath,
 } = require('../helpers/data-path-helpers');
+const { updateUserAfterFileDeletionService } = require('./user-service');
 
 exports.fileUploadAbilityCheckService = async (filename, size, userId) => {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec();
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
         throw new FileError(`Not enought disk space`, 400);
     }
@@ -24,7 +24,7 @@ exports.fileUploadAbilityCheckService = async (filename, size, userId) => {
 };
 
 exports.fileUploadService = async (file, userId) => {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec();
 
     const userFilesDirPath = getUserFilesDir(userId);
     const filePath = path.resolve(userFilesDirPath, file.name);
@@ -50,11 +50,15 @@ exports.fileUploadService = async (file, userId) => {
 };
 
 exports.getFilesService = async (userId, max = 0) => {
-    return await File.find({ user: userId }).sort({ createdAt: -1 }).limit(max);
+    return await File.find({ user: userId })
+        .sort({ createdAt: -1 })
+        .limit(max)
+        .exec();
 };
 
 exports.downloadFileService = async (userId, fileId) => {
-    const fileData = await File.findOne({ _id: fileId, user: userId });
+    const fileData = await File.findOne({ _id: fileId, user: userId }).exec();
+
     if (!fileData) {
         throw new FileError('File not found', 404);
     }
@@ -63,10 +67,16 @@ exports.downloadFileService = async (userId, fileId) => {
 };
 
 exports.deleteFileService = async (userId, fileId) => {
-    const fileData = await File.findOneAndDelete({ _id: fileId, user: userId });
+    const fileData = await File.findOneAndRemove({
+        _id: fileId,
+        user: userId,
+    }).exec();
+
     if (!fileData) {
         throw new FileError('File not found', 404);
     }
+
+    await updateUserAfterFileDeletionService(userId, fileData);
 
     return fileData.path;
 };

@@ -1,6 +1,7 @@
 const path = require('path');
 
 const FileError = require('../errors/file-error');
+const AuthError = require('../errors/auth-error');
 const { dataDir } = require('../helpers/data-path-helpers');
 const {
     fileUploadAbilityCheckService,
@@ -9,7 +10,7 @@ const {
     downloadFileService,
     deleteFileService,
 } = require('../services/file-service');
-const { deleteUserFileService } = require('../services/fs-service');
+const { deleteUserFileFromFSService } = require('../services/fs-service');
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
     const { filename, size } = req.body;
@@ -92,11 +93,11 @@ exports.deleteFileController = async (req, res) => {
         const relativeFilePath = await deleteFileService(userId, fileId);
         const filepath = path.resolve(dataDir, relativeFilePath);
 
-        await deleteUserFileService(filepath);
+        await deleteUserFileFromFSService(filepath);
 
         res.sendStatus(200);
     } catch (error) {
-        if (error instanceof FileError) {
+        if (error instanceof FileError || error instanceof AuthError) {
             return res.status(error.status).json({ message: error.message });
         }
 

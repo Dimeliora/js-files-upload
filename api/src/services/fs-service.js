@@ -14,7 +14,7 @@ exports.createUserDirService = async (userId) => {
     }
 };
 
-exports.deleteUserFileService = async (filepath) => {
+exports.deleteUserFileFromFSService = async (filepath) => {
     try {
         await fs.rm(filepath, { force: true });
     } catch (error) {

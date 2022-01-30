@@ -21,3 +21,11 @@ export const userStorageInfoUpdate = (dashboardElms, total, used) => {
         dashboardProgressElm.parentElement.classList.remove('progress--danger');
     }
 };
+
+export const showAvatarSpinner = (avatarElm) => {
+    avatarElm.classList.add('dashboard__avatar--spin');
+};
+
+export const hideAvatarSpinner = (avatarElm) => {
+    avatarElm.classList.remove('dashboard__avatar--spin');
+};

@@ -6,7 +6,11 @@ import {
     USER_AVATAR_FALLBACK_IMAGE,
     createDashboardHTML,
 } from './dashboard-template-creators';
-import { userStorageInfoUpdate } from './dashboard-view-updates';
+import {
+    userStorageInfoUpdate,
+    showAvatarSpinner,
+    hideAvatarSpinner,
+} from './dashboard-view-updates';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { alertHandle } from '../../components/alerts/alerts-handler';
 import { uploadUserAvatarImage } from '../../services/user-service';
@@ -29,28 +33,34 @@ const getAvatarChangeKeyDownHandler = (dashboardElms) => (e) => {
     }
 };
 
-const avatarFileChangeHandler = async ({ target }) => {
-    if (target.files.length === 0) {
+const getAvatarFileChangeHandler = (dashboardElms) => async (e) => {
+    if (e.target.files.length === 0) {
         return;
     }
 
-    const [file] = target.files;
+    const [file] = e.target.files;
     if (!avatarFileTypes[file.type]) {
         alertHandle('Avatar must be a file of type JPEG, PNG or WebP', 'error');
         return;
     }
 
     try {
+        showAvatarSpinner(dashboardElms.dashboardAvatarElm);
+
         await uploadUserAvatarImage(file);
 
         ee.emit('dashboard/avatar-uploaded');
     } catch (error) {
         alertHandle(error.message, 'error');
+        hideAvatarSpinner(dashboardElms.dashboardAvatarElm);
     }
 };
 
-const getUpdateAvatarImageHandler = (avatarImageElm) => () => {
-    setAvatarImage(avatarImageElm, appState.avatarImageUrl);
+const getUpdateAvatarImageHandler = (dashboardElms) => () => {
+    const { dashboardAvatarElm, dashboardAvatarImageElm } = dashboardElms;
+
+    setAvatarImage(dashboardAvatarImageElm, appState.avatarImageUrl);
+    hideAvatarSpinner(dashboardAvatarElm);
 };
 
 export const dashboardHandler = (appContainer) => {
@@ -86,12 +96,12 @@ export const dashboardHandler = (appContainer) => {
 
     dashboardElms.dashboardAvatarFileElm.addEventListener(
         'change',
-        avatarFileChangeHandler
+        getAvatarFileChangeHandler(dashboardElms)
     );
 
     ee.on(
         'app/avatar-url-changed',
-        getUpdateAvatarImageHandler(dashboardElms.dashboardAvatarImageElm),
+        getUpdateAvatarImageHandler(dashboardElms),
         'dashboard:app/avatar-url-changed'
     );
 };

@@ -1,9 +1,10 @@
 const AuthError = require('../errors/auth-error');
 const FileError = require('../errors/file-error');
+const { getUserDataService } = require('../services/user-service');
 const {
-    getUserDataService,
     uploadUserAvatarService,
-} = require('../services/user-service');
+    readUserAvatarService,
+} = require('../services/fs-service');
 
 exports.getUserDataController = async (req, res) => {
     try {
@@ -12,6 +13,20 @@ exports.getUserDataController = async (req, res) => {
         res.status(200).json({ usedDiskSpace: userData.usedDiskSpace });
     } catch (error) {
         if (error instanceof AuthError) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        res.status(500).json({ message: 'Service error. Please, try later' });
+    }
+};
+
+exports.getUserAvatarController = async (req, res) => {
+    try {
+        const userAvatarFilePath = await readUserAvatarService(req.user.id);
+
+        res.status(200).sendFile(userAvatarFilePath);
+    } catch (error) {
+        if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });
         }
 

@@ -3,12 +3,25 @@ export const createDashboardHTML = (username, email) => {
         <div class="dashboard paper" data-dashboard-block>
             <div class="dashboard__header">
                 <div class="dashboard__user">
-                    <div class="dashboard__avatar">
-                        <img
-                            src="/images/user-avatar.webp"
-                            alt="User avatar image"
-                            class="dashboard__avatar-image"
-                        />
+                    <div
+                        class="dashboard__avatar"
+                        title="Change avatar image"
+                        tabindex="0"
+                        data-dashboard-avatar
+                    >
+                        <div class="dashboard__avatar-wrapper">
+                            <img
+                                src="/images/user-avatar.webp"
+                                alt="User avatar image"
+                                class="dashboard__avatar-image"
+                            />
+                        </div>
+                        <div class="dashboard__avatar-badge">
+                            <svg class="dashboard__avatar-icon">
+                                <use href="/icons/icon-sprite.svg#plus" />
+                            </svg>
+                        </div>
+                        <input type="file" style="display: none" data-dashboard-avatar-file/>
                     </div>
                     <div class="dashboard__user-info">
                         <div class="dashboard__username">${username}</div>

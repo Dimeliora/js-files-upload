@@ -1,6 +1,7 @@
 class AppState {
     username = null;
     email = null;
+    avatarImageUrl = null;
     totalDiskSpace = null;
     usedDiskSpace = null;
     lastSyncTime = null;
@@ -17,6 +18,10 @@ class AppState {
         this.usedDiskSpace = userData.usedDiskSpace;
         this.lastSyncTime = Date.now();
         this.syncError = null;
+    }
+
+    setUserAvatarUrl(url) {
+        this.avatarImageUrl = url;
     }
 
     updateAppData(userData) {

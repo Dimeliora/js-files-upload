@@ -1,6 +1,9 @@
 export const getDashboardElms = (rootElement) => ({
     dashboardBlockElm: rootElement.querySelector('[data-dashboard-block]'),
     dashboardAvatarElm: rootElement.querySelector('[data-dashboard-avatar]'),
+    dashboardAvatarImageElm: rootElement.querySelector(
+        '[data-dashboard-avatar-image]'
+    ),
     dashboardAvatarFileElm: rootElement.querySelector(
         '[data-dashboard-avatar-file]'
     ),

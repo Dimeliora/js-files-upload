@@ -5,7 +5,7 @@ import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
 import { ee } from '../helpers/event-emitter';
-import { getUserData } from '../services/user-service';
+import { getUserData, getUserAvatarImage } from '../services/user-service';
 
 const setAuthAndUserData = (accessToken, user) => {
     localStorage.setItem('access-token', accessToken);
@@ -14,11 +14,25 @@ const setAuthAndUserData = (accessToken, user) => {
     appState.setInitialAppData(user);
 };
 
+const requestAndSetUserAvatarImage = async () => {
+    try {
+        const avatarImageBlob = await getUserAvatarImage();
+
+        appState.setUserAvatarUrl(URL.createObjectURL(avatarImageBlob));
+
+        ee.emit('app/avatar-url-changed');
+    } catch (error) {
+        appState.setUserAvatarUrl(null);
+    }
+};
+
 const checkUserAuthStatusHandler = async () => {
     try {
         const { accessToken, user } = await userAuth();
 
         setAuthAndUserData(accessToken, user);
+
+        await requestAndSetUserAvatarImage();
     } catch (error) {
         localStorage.removeItem('access-token');
     } finally {
@@ -26,8 +40,10 @@ const checkUserAuthStatusHandler = async () => {
     }
 };
 
-const userLoginHandler = ({ accessToken, user }) => {
+const userLoginHandler = async ({ accessToken, user }) => {
     setAuthAndUserData(accessToken, user);
+
+    await requestAndSetUserAvatarImage();
 
     routesHandler();
 };
@@ -86,3 +102,5 @@ ee.on('upload/resync-needed', syncAppHandler);
 ee.on('recent/resync-needed', syncAppHandler);
 
 ee.on('service/fetch-error', syncErrorHandler);
+
+ee.on('dashboard/avatar-uploaded', requestAndSetUserAvatarImage);

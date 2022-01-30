@@ -26,6 +26,32 @@ export const getUserData = async () => {
     }
 };
 
+export const getUserAvatarImage = async () => {
+    const accessToken = localStorage.getItem('access-token');
+
+    try {
+        const { data } = await userService.get('/avatar', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            responseType: 'blob',
+        });
+
+        return data;
+    } catch (error) {
+        if (!error.response) {
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
+        }
+
+        const response = await error.response.data.text();
+        const { message } = JSON.parse(response);
+        throw new Error(message);
+    }
+};
+
 export const uploadUserAvatarImage = async (imageFile) => {
     const accessToken = localStorage.getItem('access-token');
 
@@ -33,13 +59,11 @@ export const uploadUserAvatarImage = async (imageFile) => {
     formData.append('file', imageFile);
 
     try {
-        const { data } = await userService.post('/avatar', formData, {
+        await userService.post('/avatar', formData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-
-        return data;
     } catch (error) {
         if (!error.response) {
             throw new Error('Service is unreachable');

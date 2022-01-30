@@ -1,3 +1,5 @@
+export const USER_AVATAR_FALLBACK_IMAGE = '/images/avatar-placeholder.webp';
+
 export const createDashboardHTML = (username, email) => {
     return `
         <div class="dashboard paper" data-dashboard-block>
@@ -11,9 +13,10 @@ export const createDashboardHTML = (username, email) => {
                     >
                         <div class="dashboard__avatar-wrapper">
                             <img
-                                src="/images/user-avatar.webp"
+                                src=""
                                 alt="User avatar image"
                                 class="dashboard__avatar-image"
+                                data-dashboard-avatar-image
                             />
                         </div>
                         <div class="dashboard__avatar-badge">

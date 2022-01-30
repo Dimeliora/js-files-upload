@@ -62,7 +62,7 @@ exports.uploadUserAvatarService = async (userId, file) => {
     const userDir = getUserDir(userId);
     const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
 
-    fileData.write(userAvatarImagePath);
+    fileData.resize(100, Jimp.AUTO).quality(80).write(userAvatarImagePath);
 };
 
 exports.deleteUserFileFromFSService = async (filePath) => {

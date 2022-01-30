@@ -1,11 +1,15 @@
-const { constants } = require('fs');
 const fs = require('fs/promises');
 const path = require('path');
 const Jimp = require('jimp');
+const { existsSync } = require('fs');
 
 const FileError = require('../errors/file-error');
 const { isProperImageFile } = require('../helpers/check-mime-types');
-const { getUserFilesDir, getUserDir } = require('../helpers/data-path-helpers');
+const {
+    getUserFilesDir,
+    getUserDir,
+    getRelativeFilePath,
+} = require('../helpers/data-path-helpers');
 
 exports.createUserDirService = async (userId) => {
     const userFilesDirPath = getUserFilesDir(userId);
@@ -17,16 +21,35 @@ exports.createUserDirService = async (userId) => {
     }
 };
 
-exports.readUserAvatarService = async (userId) => {
-    try {
-        const userDir = getUserDir(userId);
-        const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
-        await fs.access(userAvatarImagePath, constants.F_OK);
+exports.checkUserFileExistanceService = (userId, filename) => {
+    const userFilesDirPath = getUserFilesDir(userId);
+    const filePath = path.resolve(userFilesDirPath, filename);
 
-        return userAvatarImagePath;
-    } catch (error) {
+    const isFileExist = existsSync(filePath);
+    if (isFileExist) {
+        throw new FileError(`File already exists`, 400);
+    }
+};
+
+exports.writeUserFileToFSService = async (userId, file) => {
+    const userFilesDirPath = getUserFilesDir(userId);
+    const filePath = path.resolve(userFilesDirPath, file.name);
+
+    await file.mv(filePath);
+
+    return getRelativeFilePath(userId, file.name);
+};
+
+exports.readUserAvatarService = (userId) => {
+    const userDir = getUserDir(userId);
+    const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
+
+    const isFileExist = existsSync(userAvatarImagePath);
+    if (!isFileExist) {
         throw new FileError('File not found', 404);
     }
+
+    return userAvatarImagePath;
 };
 
 exports.uploadUserAvatarService = async (userId, file) => {
@@ -38,12 +61,13 @@ exports.uploadUserAvatarService = async (userId, file) => {
 
     const userDir = getUserDir(userId);
     const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
+
     fileData.write(userAvatarImagePath);
 };
 
-exports.deleteUserFileFromFSService = async (filepath) => {
+exports.deleteUserFileFromFSService = async (filePath) => {
     try {
-        await fs.rm(filepath, { force: true });
+        await fs.rm(filePath, { force: true });
     } catch (error) {
         throw new FileError('File not found', 404);
     }

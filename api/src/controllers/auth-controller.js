@@ -23,10 +23,8 @@ const sendAuthorizedUser = (res, userDocument) => {
 };
 
 exports.authController = async (req, res) => {
-    const { id } = req.user;
-
     try {
-        const userData = await authService(id);
+        const userData = await authService(req.user.id);
 
         sendAuthorizedUser(res, userData);
     } catch (error) {
@@ -39,10 +37,8 @@ exports.authController = async (req, res) => {
 };
 
 exports.loginController = async (req, res) => {
-    const { email, password } = req.body;
-
     try {
-        const userData = await loginService(email, password);
+        const userData = await loginService(req.body.email, req.body.password);
 
         sendAuthorizedUser(res, userData);
     } catch (error) {

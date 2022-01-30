@@ -22,7 +22,7 @@ exports.getUserDataController = async (req, res) => {
 
 exports.getUserAvatarController = async (req, res) => {
     try {
-        const userAvatarFilePath = await readUserAvatarService(req.user.id);
+        const userAvatarFilePath = readUserAvatarService(req.user.id);
 
         res.status(200).sendFile(userAvatarFilePath);
     } catch (error) {

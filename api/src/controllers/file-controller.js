@@ -1,8 +1,5 @@
-const path = require('path');
-
 const FileError = require('../errors/file-error');
 const AuthError = require('../errors/auth-error');
-const { dataDir } = require('../helpers/data-path-helpers');
 const {
     fileUploadAbilityCheckService,
     fileUploadService,
@@ -10,14 +7,14 @@ const {
     downloadFileService,
     deleteFileService,
 } = require('../services/file-service');
-const { deleteUserFileFromFSService } = require('../services/fs-service');
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
-    const { filename, size } = req.body;
-    const { id } = req.user;
-
     try {
-        await fileUploadAbilityCheckService(filename, size, id);
+        await fileUploadAbilityCheckService(
+            req.user.id,
+            req.body.filename,
+            req.body.size
+        );
 
         res.sendStatus(200);
     } catch (error) {
@@ -34,13 +31,10 @@ exports.fileUploadController = async (req, res) => {
         return;
     }
 
-    const { file } = req.files;
-    const { id } = req.user;
-
     try {
-        const newFileData = await fileUploadService(file, id);
+        await fileUploadService(req.user.id, req.files.file);
 
-        res.status(201).json(newFileData);
+        res.sendStatus(201);
     } catch (error) {
         if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });
@@ -51,11 +45,8 @@ exports.fileUploadController = async (req, res) => {
 };
 
 exports.getFilesController = async (req, res) => {
-    const { id } = req.user;
-    const { max } = req.query;
-
     try {
-        const recentFiles = await getFilesService(id, max);
+        const recentFiles = await getFilesService(req.user.id, req.query.max);
 
         res.status(200).json(recentFiles);
     } catch (error) {
@@ -68,14 +59,13 @@ exports.getFilesController = async (req, res) => {
 };
 
 exports.downloadFileController = async (req, res) => {
-    const { id: userId } = req.user;
-    const { fileId } = req.params;
-
     try {
-        const relativeFilePath = await downloadFileService(userId, fileId);
-        const filepath = path.resolve(dataDir, relativeFilePath);
+        const filePath = await downloadFileService(
+            req.user.id,
+            req.params.fileId
+        );
 
-        res.status(200).sendFile(filepath);
+        res.status(200).sendFile(filePath);
     } catch (error) {
         if (error instanceof FileError) {
             return res.status(error.status).json({ message: error.message });
@@ -86,14 +76,8 @@ exports.downloadFileController = async (req, res) => {
 };
 
 exports.deleteFileController = async (req, res) => {
-    const { id: userId } = req.user;
-    const { fileId } = req.params;
-
     try {
-        const relativeFilePath = await deleteFileService(userId, fileId);
-        const filepath = path.resolve(dataDir, relativeFilePath);
-
-        await deleteUserFileFromFSService(filepath);
+        await deleteFileService(req.user.id, req.params.fileId);
 
         res.sendStatus(200);
     } catch (error) {

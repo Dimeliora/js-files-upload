@@ -1,41 +1,36 @@
-const fs = require('fs');
 const path = require('path');
 
 const User = require('../models/user-model');
 const File = require('../models/file-model');
 const FileError = require('../errors/file-error');
-const {
-    getUserFilesDir,
-    getRelativeFilePath,
-} = require('../helpers/data-path-helpers');
+const { deleteUserFileFromFSService } = require('./fs-service');
 const { updateUserAfterFileDeletionService } = require('./user-service');
+const {
+    checkUserFileExistanceService,
+    writeUserFileToFSService,
+} = require('./fs-service');
+const { dataDir } = require('../helpers/data-path-helpers');
 
-exports.fileUploadAbilityCheckService = async (filename, size, userId) => {
+exports.fileUploadAbilityCheckService = async (userId, filename, size) => {
     const user = await User.findById(userId).exec();
+
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
         throw new FileError(`Not enought disk space`, 400);
     }
 
-    const userFilesDirPath = getUserFilesDir(userId);
-    const filePath = path.resolve(userFilesDirPath, filename);
-    if (fs.existsSync(filePath)) {
-        throw new FileError(`File already exists`, 400);
-    }
+    checkUserFileExistanceService(userId, filename);
 };
 
-exports.fileUploadService = async (file, userId) => {
+exports.fileUploadService = async (userId, file) => {
     const user = await User.findById(userId).exec();
 
-    const userFilesDirPath = getUserFilesDir(userId);
-    const filePath = path.resolve(userFilesDirPath, file.name);
-
-    await file.mv(filePath);
+    const relativeFilePath = await writeUserFileToFSService(userId, file);
 
     const newFile = new File({
         name: file.name,
         type: file.mimetype,
         size: file.size,
-        path: getRelativeFilePath(userId, file.name),
+        path: relativeFilePath,
         user: user._id,
     });
 
@@ -45,8 +40,6 @@ exports.fileUploadService = async (file, userId) => {
     user.files.push(newFile);
 
     await user.save();
-
-    return newFile;
 };
 
 exports.getFilesService = async (userId, max = 0) => {
@@ -63,7 +56,7 @@ exports.downloadFileService = async (userId, fileId) => {
         throw new FileError('File not found', 404);
     }
 
-    return fileData.path;
+    return path.resolve(dataDir, fileData.path);
 };
 
 exports.deleteFileService = async (userId, fileId) => {
@@ -75,8 +68,9 @@ exports.deleteFileService = async (userId, fileId) => {
     if (!fileData) {
         throw new FileError('File not found', 404);
     }
+    
+    const filePath = path.resolve(dataDir, fileData.path);
+    await deleteUserFileFromFSService(filePath);
 
     await updateUserAfterFileDeletionService(userId, fileData);
-
-    return fileData.path;
 };

@@ -142,11 +142,16 @@ const getFileDeleteHandler = (recentElms, fileId) => async () => {
 
         await getRecentFiles();
 
-        if (recentState.isFullUploadsList) {
+        if (!recentState.isFullUploadsList) {
+            renderRecentFilesList(recentElms);
+            return;
+        }
+
+        if (recentState.recentFiles.length === 0) {
+            recentFilesListElm.innerHTML = createRecentPlaceholderHTML();
+        } else {
             const fileElm = getRecentFileElmById(recentFilesListElm, fileId);
             fileElm.remove();
-        } else {
-            renderRecentFilesList(recentElms);
         }
     } catch (error) {
         alertHandle(error.message, 'error');

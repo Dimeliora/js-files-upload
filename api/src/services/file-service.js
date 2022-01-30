@@ -29,7 +29,7 @@ exports.fileUploadService = async (file, userId) => {
     const userFilesDirPath = getUserFilesDir(userId);
     const filePath = path.resolve(userFilesDirPath, file.name);
 
-    file.mv(filePath);
+    await file.mv(filePath);
 
     const newFile = new File({
         name: file.name,

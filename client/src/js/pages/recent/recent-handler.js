@@ -1,7 +1,11 @@
 import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
-import { getRecentElms, getRecentFileElms } from './recent-dom-elements';
+import {
+    getRecentElms,
+    getRecentFileElmById,
+    getRecentFileElms,
+} from './recent-dom-elements';
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
@@ -138,7 +142,12 @@ const getFileDeleteHandler = (recentElms, fileId) => async () => {
 
         await getRecentFiles();
 
-        renderRecentFilesList(recentElms);
+        if (recentState.isFullUploadsList) {
+            const fileElm = getRecentFileElmById(recentFilesListElm, fileId);
+            fileElm.remove();
+        } else {
+            renderRecentFilesList(recentElms);
+        }
     } catch (error) {
         alertHandle(error.message, 'error');
     } finally {

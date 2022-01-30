@@ -5,6 +5,7 @@ import { createDashboardHTML } from './dashboard-template-creators';
 import { userStorageInfoUpdate } from './dashboard-view-updates';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { alertHandle } from '../../components/alerts/alerts-handler';
+import { uploadUserAvatarImage } from '../../services/user-service';
 
 const getAvatarChangeClickHandler = (dashboardElms) => () => {
     dashboardElms.dashboardAvatarFileElm.click();
@@ -16,17 +17,18 @@ const getAvatarChangeKeyDownHandler = (dashboardElms) => (e) => {
     }
 };
 
-const avatarFileChangeHandler = ({ target }) => {
+const avatarFileChangeHandler = async ({ target }) => {
     const [file] = target.files;
     if (!avatarFileTypes[file.type]) {
         alertHandle(
-            'Avatar file must be image of type jpeg, png or webp',
+            'Avatar file must be image of type JPEG, PNG or WebP',
             'error'
         );
         return;
     }
 
-    console.log(file);
+    await uploadUserAvatarImage(file);
+    console.log('Avatar upload complete');
 };
 
 export const dashboardHandler = (appContainer) => {

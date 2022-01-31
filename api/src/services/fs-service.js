@@ -27,7 +27,7 @@ exports.checkUserFileExistanceService = (userId, filename) => {
 
     const isFileExist = existsSync(filePath);
     if (isFileExist) {
-        throw new FileError(`File already exists`, 400);
+        throw new FileError(`Already exists`, 400);
     }
 };
 

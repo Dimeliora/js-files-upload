@@ -27,11 +27,11 @@ exports.fileUploadAbilityCheckController = async (req, res) => {
 };
 
 exports.fileUploadController = async (req, res) => {
-    if (!req.files) {
-        return;
-    }
-
     try {
+        if (!req.files) {
+            throw new FileError('File expected');
+        }
+
         await fileUploadService(req.user.id, req.files.file);
 
         res.sendStatus(201);

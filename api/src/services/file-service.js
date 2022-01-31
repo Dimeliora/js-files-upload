@@ -15,7 +15,7 @@ exports.fileUploadAbilityCheckService = async (userId, filename, size) => {
     const user = await User.findById(userId).exec();
 
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
-        throw new FileError(`Not enought disk space`, 400);
+        throw new FileError(`File is too large`, 400);
     }
 
     checkUserFileExistanceService(userId, filename);
@@ -68,7 +68,7 @@ exports.deleteFileService = async (userId, fileId) => {
     if (!fileData) {
         throw new FileError('File not found', 404);
     }
-    
+
     const filePath = path.resolve(dataDir, fileData.path);
     await deleteUserFileFromFSService(filePath);
 

@@ -1,4 +1,15 @@
+import { createFooterHTML } from './footer-template-creators';
 import { getFormattedPassedTime } from '../../helpers/formatters';
+
+export const createFooterDOMElement = () => {
+    const rootElm = document.createElement('footer');
+    rootElm.classList.add('footer');
+
+    rootElm.insertAdjacentHTML('afterbegin', createFooterHTML());
+
+    return rootElm;
+};
+
 
 export const updateSyncStatusElm = (syncElm, passedTime, syncError) => {
     if (syncError) {

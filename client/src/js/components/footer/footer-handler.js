@@ -1,17 +1,10 @@
-import { ee } from '../../helpers/event-emitter';
-import { createFooterHTML } from './footer-template-creators';
-import { getFooterElms } from './footer-dom-elements';
-import { updateSyncStatusElm } from './footer-view-updates';
 import appState from '../../state/app-state';
-
-const getFooterDOMElement = () => {
-    const rootElm = document.createElement('footer');
-    rootElm.classList.add('footer');
-
-    rootElm.insertAdjacentHTML('afterbegin', createFooterHTML());
-
-    return rootElm;
-};
+import { ee } from '../../helpers/event-emitter';
+import {
+    createFooterDOMElement,
+    updateSyncStatusElm,
+} from './footer-view-updates';
+import { getFooterElms } from './footer-dom-elements';
 
 const getSyncStatusUpdateHandler = (syncElm) => () => {
     updateSyncStatusElm(syncElm, appState.lastSyncTime, appState.syncError);
@@ -22,7 +15,7 @@ const logoutHandler = () => {
 };
 
 export const footerHandler = (container) => {
-    const footerElement = getFooterDOMElement();
+    const footerElement = createFooterDOMElement();
 
     container.append(footerElement);
 

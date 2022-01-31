@@ -1,4 +1,4 @@
-export const getFooterElms = (rootElement) => ({
-    footerSyncElm: rootElement.querySelector('[data-footer-sync]'),
-    footerLogoutElm: rootElement.querySelector('[data-footer-logout]'),
+export const getFooterElms = (footerElement) => ({
+    footerSyncElm: footerElement.querySelector('[data-footer-sync]'),
+    footerLogoutElm: footerElement.querySelector('[data-footer-logout]'),
 });

@@ -1,3 +1,5 @@
+import { ee } from '../../helpers/event-emitter';
+import { validateForm } from '../../helpers/form-validation';
 import {
     createAuthHTML,
     createLoginFormHTML,
@@ -10,11 +12,13 @@ import {
     getLoginFormTransitionHandler,
     getRegisterFormTransitionHandler,
 } from './auth-view-updates';
-import { ee } from '../../helpers/event-emitter';
-import { getAuthElms } from './auth-dom-elements';
-import { userLogin, userRegister } from '../../services/auth-service';
+import {
+    getAuthFormsContainerElm,
+    getAuthElms,
+    getRegisterFormInputElms,
+} from './auth-dom-elements';
 import { alertHandle } from '../../components/alerts/alerts-handler';
-import { validateForm } from '../../helpers/form-validation';
+import { userLogin, userRegister } from '../../services/auth-service';
 
 const getLoginFormSubmitHandler = (authElms) => async (e) => {
     e.preventDefault();
@@ -58,8 +62,7 @@ const getRegisterFormSubmitHandler = (authElms) => async (e) => {
 export const authHandler = (appContainer) => {
     appContainer.innerHTML = createAuthHTML();
 
-    const authFormsContainerElm =
-        appContainer.querySelector('[data-auth-forms]');
+    const authFormsContainerElm = getAuthFormsContainerElm(appContainer);
 
     authFormsContainerElm.insertAdjacentHTML(
         'beforeend',
@@ -70,11 +73,11 @@ export const authHandler = (appContainer) => {
         createRegisterFormHTML()
     );
 
-    const authElms = getAuthElms(appContainer);
+    const authElms = getAuthElms(authFormsContainerElm);
 
-    const registerFormInputs =
-        authElms.registerFormElm.querySelectorAll('input');
-
+    const registerFormInputs = getRegisterFormInputElms(
+        authElms.registerFormElm
+    );
     for (const input of registerFormInputs) {
         input.addEventListener('input', formInputErrorClearHandler);
     }

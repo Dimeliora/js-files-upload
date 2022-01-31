@@ -1,3 +1,4 @@
+import recentState from '../../state/recent-state';
 import { ee } from '../../helpers/event-emitter';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
@@ -19,15 +20,20 @@ import {
     createRecentPlaceholderHTML,
 } from './recent-template-creators';
 import { createLoaderHTML } from '../../components/loader/loader-template-creators';
+import { alertHandle } from '../../components/alerts/alerts-handler';
 import {
     getFiles,
     downloadFile,
     deleteFile,
 } from '../../services/file-service';
-import { alertHandle } from '../../components/alerts/alerts-handler';
-import recentState from '../../state/recent-state';
 
 const MAX_RECENT_FILES_COUNT = 5;
+
+const fetchRecentFilesHandler = async (recentElms) => {
+    recentElms.recentLoadElm.innerHTML = createLoaderHTML();
+
+    await getRecentFiles();
+};
 
 const getRecentFiles = async (max = MAX_RECENT_FILES_COUNT) => {
     const filesCount = recentState.isFullUploadsList ? 0 : max;
@@ -40,30 +46,6 @@ const getRecentFiles = async (max = MAX_RECENT_FILES_COUNT) => {
     } catch (error) {
         recentState.setError();
     }
-};
-
-const getRecentFilesListMarkup = () => {
-    const { isError, recentFiles } = recentState;
-
-    if (isError) {
-        return createRecentPlaceholderHTML('error');
-    }
-
-    if (recentFiles.length === 0) {
-        return createRecentPlaceholderHTML();
-    }
-
-    const recentListMarkup = recentFiles
-        .map((file) => createRecentFileHTML(file))
-        .join(' ');
-
-    return recentListMarkup;
-};
-
-const fetchRecentFilesHandler = async (recentElms) => {
-    recentElms.recentLoadElm.innerHTML = createLoaderHTML();
-
-    await getRecentFiles();
 };
 
 const renderRecentFilesList = (recentElms) => {
@@ -93,6 +75,24 @@ const renderRecentFilesList = (recentElms) => {
     }
 };
 
+const getRecentFilesListMarkup = () => {
+    const { isError, recentFiles } = recentState;
+
+    if (isError) {
+        return createRecentPlaceholderHTML('error');
+    }
+
+    if (recentFiles.length === 0) {
+        return createRecentPlaceholderHTML();
+    }
+
+    const recentListMarkup = recentFiles
+        .map((file) => createRecentFileHTML(file))
+        .join(' ');
+
+    return recentListMarkup;
+};
+
 const setFileActionsClickHandlers = (recentElms) => {
     const { recentFilesListElm } = recentElms;
 
@@ -112,6 +112,14 @@ const setFileActionsClickHandlers = (recentElms) => {
             getFileDeleteHandler(recentElms, fileId)
         );
     }
+};
+
+const getViewAllUploadsClickHandler = (recentElms) => async () => {
+    recentState.setFullUploadList();
+
+    await fetchRecentFilesHandler(recentElms);
+
+    renderRecentFilesList(recentElms);
 };
 
 const getFileDownloadHandler = (fileId, filename) => async () => {
@@ -158,14 +166,6 @@ const getFileDeleteHandler = (recentElms, fileId) => async () => {
     } finally {
         activateRecentFilesList(recentFilesListElm);
     }
-};
-
-const getViewAllUploadsClickHandler = (recentElms) => async () => {
-    recentState.setFullUploadList();
-
-    await fetchRecentFilesHandler(recentElms);
-
-    renderRecentFilesList(recentElms);
 };
 
 const resetRecentListActuality = () => {

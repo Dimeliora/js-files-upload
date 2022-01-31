@@ -1,3 +1,3 @@
-export const getHeaderElms = (rootElm) => ({
-    headerNavLinkElms: rootElm.querySelectorAll('[data-header-link]'),
+export const getHeaderElms = (headerElm) => ({
+    headerNavLinkElms: headerElm.querySelectorAll('[data-header-link]'),
 });

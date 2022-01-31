@@ -19,6 +19,10 @@
         padding: 16px 10px 16px 0;
         border-bottom: 1px solid $gray-light;
 
+        &:last-child {
+            border: none;
+        }
+
         &--placeholder {
             padding: 26px 0;
             border: none;

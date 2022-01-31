@@ -1,5 +1,8 @@
 import { v4 } from 'uuid';
 
+import FileItem from './upload-file-model';
+import CancelError from '../../errors/cancel-error';
+import uploadState from '../../state/upload-state';
 import { ee } from '../../helpers/event-emitter';
 import { getUploadElms } from './upload-dom-elements';
 import {
@@ -15,9 +18,126 @@ import {
 import { createUploadHTML } from './upload-template-creators';
 import { headerHandler } from '../../components/header/header-handler';
 import { fileUpload } from '../../services/file-service';
-import FileItem from './upload-file-model';
-import CancelError from '../../errors/cancel-error';
-import uploadState from '../../state/upload-state';
+
+const uploadInputChangeHandler = (e) => {
+    uploadFilesMainRoutine(e.target.files);
+};
+
+const getDropzoneClickHandler = (uploadElms) => () => {
+    uploadElms.uploadInputElm.click();
+};
+
+const dropzoneDragOverHandler = (e) => {
+    e.preventDefault();
+};
+
+const getDropzoneDragEnterHandler = (uploadElms) => (e) => {
+    e.preventDefault();
+
+    setDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
+};
+
+const getDropzoneDragLeaveHandler = (uploadElms) => () => {
+    removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
+};
+
+const getDropzoneDropHandler = (uploadElms) => (e) => {
+    e.preventDefault();
+
+    removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
+
+    const dataTransferEntries = [...e.dataTransfer.items].map((item) =>
+        item.webkitGetAsEntry()
+    );
+    uploadFilesMainRoutine(dataTransferEntries);
+};
+
+const uploadFilesMainRoutine = async (filesList) => {
+    if (filesList.length === 0) {
+        return;
+    }
+
+    const files = await proceedFilesList(filesList);
+    const fileItems = [...files].map((file) => new FileItem(v4(), file));
+
+    const uploadModalElms = prepareUploadModalElm(fileItems);
+
+    uploadState.setFilesToUpload(fileItems);
+
+    uploadModalElms.uploadCancelElm.addEventListener(
+        'click',
+        abortFilesUploadHandler
+    );
+
+    await uploadFiles();
+
+    switchUploadFilesModalButtons(uploadModalElms.uploadFilesBlockElm);
+
+    uploadModalElms.uploadDoneElm.addEventListener(
+        'click',
+        getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
+    );
+
+    if (uploadState.isUploadSuccessful) {
+        ee.emit('upload/resync-needed');
+    }
+};
+
+const proceedFilesList = async (filesList) => {
+    if (filesList instanceof FileList) {
+        return filesList;
+    }
+
+    const filePromises = [];
+    for (const item of filesList) {
+        if (item.isFile) {
+            filePromises.push(
+                new Promise((resolve) => {
+                    item.file((file) => resolve(file));
+                })
+            );
+        } else {
+            const dirReader = item.createReader();
+            filePromises.push(
+                new Promise((resolve) => {
+                    dirReader.readEntries((dirItems) => {
+                        resolve(proceedFilesList(dirItems));
+                    });
+                })
+            );
+        }
+    }
+
+    const files = await Promise.all(filePromises);
+    return files.flat(Infinity);
+};
+
+const prepareUploadModalElm = (filesItems) => {
+    const uploadModalElms = renderUploadFilesModal(filesItems);
+
+    const uploadFileElms = uploadModalElms.uploadFilesListElm.children;
+
+    for (const fileElm of uploadFileElms) {
+        const id = fileElm.dataset.uploadFile;
+
+        const fileItem = filesItems.find((item) => item.id === id);
+        fileItem.domElm = fileElm;
+
+        const uploadFileAbortElm = getUploadFileAbortElm(fileElm);
+        uploadFileAbortElm.addEventListener(
+            'click',
+            getFileUploadAbortHandler(fileItem)
+        );
+    }
+
+    return uploadModalElms;
+};
+
+const abortFilesUploadHandler = () => {
+    for (const file of uploadState.uploadFiles) {
+        getFileUploadAbortHandler(file)();
+    }
+};
 
 const getFileUploadAbortHandler = (fileItem) => () => {
     if (fileItem.status === 'uploading') {
@@ -88,95 +208,12 @@ const uploadFiles = async () => {
     }
 };
 
-const abortFilesUploadHandler = () => {
-    uploadState.resetUploading();
-
-    for (const file of uploadState.uploadFiles) {
-        getFileUploadAbortHandler(file)();
-    }
-};
-
 const getFilesUploadCompleteConfirmHandler = (uploadModalElm) => () => {
     uploadState.resetUploadState();
 
     uploadModalElm.remove();
 
     window.location.hash = 'recent';
-};
-
-const uploadFilesHandler = async (files) => {
-    if (files.length === 0) {
-        return;
-    }
-
-    const uploadFileItems = [...files].map((file) => new FileItem(v4(), file));
-
-    const uploadModalElms = renderUploadFilesModal(uploadFileItems);
-
-    const uploadFileElms = uploadModalElms.uploadFilesListElm.children;
-
-    for (const fileElm of uploadFileElms) {
-        const id = fileElm.dataset.uploadFile;
-
-        const fileItem = uploadFileItems.find((item) => item.id === id);
-        fileItem.domElm = fileElm;
-
-        const uploadFileAbortElm = getUploadFileAbortElm(fileElm);
-        uploadFileAbortElm.addEventListener(
-            'click',
-            getFileUploadAbortHandler(fileItem)
-        );
-    }
-
-    uploadState.setFilesToUpload(uploadFileItems);
-
-    uploadModalElms.uploadCancelElm.addEventListener(
-        'click',
-        abortFilesUploadHandler
-    );
-
-    await uploadFiles();
-
-    switchUploadFilesModalButtons(uploadModalElms.uploadFilesBlockElm);
-
-    uploadModalElms.uploadDoneElm.addEventListener(
-        'click',
-        getFilesUploadCompleteConfirmHandler(uploadModalElms.uploadModalElm)
-    );
-
-    if (uploadState.isUploadSuccessful) {
-        ee.emit('upload/resync-needed');
-    }
-};
-
-const uploadInputChangeHandler = (e) => {
-    uploadFilesHandler(e.target.files);
-};
-
-const dropzoneDragOverHandler = (e) => {
-    e.preventDefault();
-};
-
-const getDropzoneClickHandler = (uploadElms) => () => {
-    uploadElms.uploadInputElm.click();
-};
-
-const getDropzoneDragEnterHandler = (uploadElms) => (e) => {
-    e.preventDefault();
-
-    setDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
-};
-
-const getDropzoneDragLeaveHandler = (uploadElms) => () => {
-    removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
-};
-
-const getDropzoneDropHandler = (uploadElms) => (e) => {
-    e.preventDefault();
-
-    removeDropzoneHoveredClass(uploadElms.uploadDropzoneElm);
-
-    uploadFilesHandler(e.dataTransfer.files);
 };
 
 export const uploadHandler = (appContainer) => {
@@ -192,13 +229,13 @@ export const uploadHandler = (appContainer) => {
     );
 
     uploadElms.uploadDropzoneElm.addEventListener(
-        'dragover',
-        dropzoneDragOverHandler
+        'click',
+        getDropzoneClickHandler(uploadElms)
     );
 
     uploadElms.uploadDropzoneElm.addEventListener(
-        'click',
-        getDropzoneClickHandler(uploadElms)
+        'dragover',
+        dropzoneDragOverHandler
     );
 
     uploadElms.uploadDropzoneElm.addEventListener(

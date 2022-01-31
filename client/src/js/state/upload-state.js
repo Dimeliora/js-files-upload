@@ -3,10 +3,6 @@ class UploadState {
     isUploadSuccessful = false;
     uploadFiles = [];
 
-    resetUploading() {
-        this.isUploading = false;
-    }
-
     setSuccefullUpload() {
         this.isUploadSuccessful = true;
     }

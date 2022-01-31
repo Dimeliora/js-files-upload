@@ -5,7 +5,6 @@
     margin: 0 -16px;
     padding: 16px 20px 0;
     border-top: 1px solid $gray-light;
-    font-size: 1.6rem;
 
     &__sync {
         display: flex;
@@ -33,6 +32,14 @@
         &--error {
             display: none;
             fill: $red;
+        }
+    }
+
+    &__sync-status {
+        font-size: 1.6rem;
+
+        @media screen and (max-width: $sm) {
+            font-size: 1.4rem;
         }
     }
 }

@@ -1,7 +1,11 @@
 .upload-files {
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 695px;
+
+    @media screen and (max-width: $md) {
+        width: 100%;
+    }
 
     &--done {
         .upload-files__button--cancel {
@@ -24,10 +28,14 @@
 
     &__item {
         display: grid;
-        grid-template-columns: 200px 1fr 40px;
+        grid-template-columns: 1fr 1fr 30px;
         column-gap: 10px;
         align-items: center;
         margin-bottom: 15px;
+
+        @media screen and (max-width: $sm) {
+            grid-template-columns: 1.5fr 1fr 20px;
+        }
 
         &--done,
         &--error,
@@ -87,6 +95,10 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 1.6rem;
+
+        @media screen and (max-width: $sm) {
+            font-size: 1.2rem;
+        }
     }
 
     &__status {
@@ -99,6 +111,10 @@
         font-size: 1.4rem;
         white-space: nowrap;
         text-overflow: ellipsis;
+
+        @media screen and (max-width: $sm) {
+            font-size: 1.2rem;
+        }
     }
 
     &__controls {
@@ -109,6 +125,11 @@
         display: none;
         width: 20px;
         height: 20px;
+
+        @media screen and (max-width: $sm) {
+            width: 16px;
+            height: 16px;
+        }
 
         &--done {
             fill: $green;

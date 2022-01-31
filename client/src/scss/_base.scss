@@ -32,10 +32,16 @@ button:focus {
 }
 
 .container {
+    display: flex;
+    align-items: flex-start;
     max-width: 807px;
-    min-height: 100vh;
+    height: 100vh;
     margin: 0 auto;
     padding: 60px 20px;
+
+    @media screen and (max-width: $sm) {
+        padding: 20px;
+    }
 }
 
 .visually-hidden {

@@ -24,11 +24,10 @@
         margin-top: 20px;
         background-color: $purple;
 
-        &:hover,
-        &:focus-visible {
-            border-color: $purple;
-            background-color: transparent;
-            color: $purple;
+        @media screen and (max-width: $sm) {
+            padding: 8px 20px;
+            font-size: 1.6rem;
+            font-weight: 500;
         }
 
         &:disabled {
@@ -37,6 +36,7 @@
     }
 
     &__switch-form {
+        max-width: 50%;
         margin-top: 25px;
         padding: 0;
         border: none;
@@ -48,8 +48,12 @@
         transition: color 0.2s ease-in, opacity 0.2s ease-out;
 
         &:hover,
-        &:focus {
+        &:focus-visible {
             color: $purple;
+
+            @media screen and (max-width: $md) {
+                color: $black;
+            }
         }
 
         &:disabled {

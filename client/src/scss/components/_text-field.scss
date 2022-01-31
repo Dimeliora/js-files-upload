@@ -29,19 +29,9 @@
     &:focus-within {
         border-color: $purple;
 
-        @media screen and (max-width: $xl) {
-            border-color: $purple;
-            box-shadow: inset 0 0 8px $purple;
-        }
-
         @media screen and (max-width: $md) {
-            box-shadow: none;
+            border-color: transparent;
         }
-    }
-
-    @media screen and (max-width: $xl) {
-        border-color: $purple;
-        box-shadow: none;
     }
 
     &__icon {

@@ -1,9 +1,13 @@
 .auth {
-    text-align: center;
+    align-self: center;
 
     &__heading {
         margin-bottom: 20px;
         font-size: 3.6rem;
+
+        @media screen and (max-width: $sm) {
+            font-size: 3rem;
+        }
     }
 
     &__subheading {
@@ -21,18 +25,14 @@
     &__forms-item {
         position: absolute;
         top: 50px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 50%;
+        left: 0;
+        width: 100%;
+        max-width: 400px;
         transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
 
         &--hidden {
             opacity: 0;
             visibility: hidden;
-        }
-
-        @media screen and (max-width: $sm) {
-            width: 100%;
         }
     }
 }

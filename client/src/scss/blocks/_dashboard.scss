@@ -36,8 +36,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             visibility: hidden;
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             border: 3px solid $purple;
             border-left-color: transparent;
             border-radius: 50%;
@@ -53,6 +53,10 @@
                 visibility: visible;
             }
 
+            .dashboard__avatar-wrapper {
+                opacity: 0.75;
+            }
+
             .dashboard__avatar-badge {
                 display: none;
             }
@@ -60,8 +64,8 @@
     }
 
     &__avatar-wrapper {
-        width: 36px;
-        height: 36px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         overflow: hidden;
     }
@@ -85,6 +89,10 @@
         opacity: 0;
         border-radius: 50%;
         background-color: $purple-transparent;
+
+        @media screen and (max-width: $md) {
+            display: none;
+        }
     }
 
     &__avatar-icon {
@@ -127,10 +135,20 @@
         align-items: center;
         padding: 16px 0;
         border-bottom: 1px solid $gray-light;
+
+        @media screen and (max-width: $sm) {
+            flex-direction: column-reverse;
+            align-items: center;
+        }
     }
 
     &__upgrade {
         margin-right: 16px;
+
+        @media screen and (max-width: $sm) {
+            margin-right: 0;
+            margin-top: 10px;
+        }
     }
 
     &__plan-notice {
@@ -157,10 +175,19 @@
             border-left: 2px solid $purple;
             background-color: #ffffff;
         }
-    }
 
-    &__settings {
-        padding-bottom: 16px;
+        @media screen and (max-width: $sm) {
+            padding: 6px 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+
+            &::before {
+                top: unset;
+                bottom: -2px;
+                left: 50%;
+                transform: translate(-50%, 50%) rotate(-45deg);
+            }
+        }
     }
 
     &__settings-item {

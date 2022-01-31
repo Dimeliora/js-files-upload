@@ -6,10 +6,22 @@
 
     &__info {
         font-size: 1.6rem;
+
+        @media screen and (max-width: $sm) {
+            max-width: 60%;
+            overflow: hidden;
+            font-size: 1.4rem;
+        }
     }
 
     &__title {
         margin-bottom: 8px;
         font-weight: 700;
+    }
+
+    &__value {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }

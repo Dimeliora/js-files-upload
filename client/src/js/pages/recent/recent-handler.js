@@ -12,6 +12,7 @@ import {
     showRecentLoadElm,
     deactivateRecentFilesList,
     activateRecentFilesList,
+    setFullHeightRecentBlockClass,
 } from './recent-view-updates';
 import {
     createRecentHTML,
@@ -120,6 +121,8 @@ const getViewAllUploadsClickHandler = (recentElms) => async () => {
     await fetchRecentFilesHandler(recentElms);
 
     renderRecentFilesList(recentElms);
+
+    setFullHeightRecentBlockClass(recentElms.recentBlockElm);
 };
 
 const getFileDownloadHandler = (fileId, filename) => async () => {
@@ -179,6 +182,10 @@ export const recentHandler = async (appContainer) => {
 
     headerHandler(recentElms.recentBlockElm);
     footerHandler(recentElms.recentBlockElm);
+
+    if (recentState.isFullUploadsList) {
+        setFullHeightRecentBlockClass(recentElms.recentBlockElm);
+    }
 
     if (!recentState.isRecentListActual) {
         await fetchRecentFilesHandler(recentElms);

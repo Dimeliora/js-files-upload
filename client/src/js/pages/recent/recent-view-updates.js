@@ -13,3 +13,7 @@ export const deactivateRecentFilesList = (recentFilesListElm) => {
 export const activateRecentFilesList = (recentFilesListElm) => {
     recentFilesListElm.classList.remove('recent__list-item--inactive');
 };
+
+export const setFullHeightRecentBlockClass = (recentElm) => {
+    recentElm.classList.add('recent--full-height');
+};

@@ -62,7 +62,7 @@ export const createDashboardHTML = (username, email) => {
                     <div class="setting__info">
                         <div class="setting__title">Storage location</div>
                         <div class="setting__value">
-                            /SomeDir/MyDocuments
+                            /SomeDir/MyDocuments/SomeDir
                         </div>
                     </div>
                     <button

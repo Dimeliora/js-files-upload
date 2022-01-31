@@ -1,7 +1,6 @@
-import { ee } from '../../helpers/event-emitter';
 import appState from '../../state/app-state';
 import avatarFileTypes from './dashboard-avatar-file-types';
-import { getDashboardElms } from './dashboard-dom-elements';
+import { ee } from '../../helpers/event-emitter';
 import {
     USER_AVATAR_FALLBACK_IMAGE,
     createDashboardHTML,
@@ -11,6 +10,7 @@ import {
     showAvatarSpinner,
     hideAvatarSpinner,
 } from './dashboard-view-updates';
+import { getDashboardElms } from './dashboard-dom-elements';
 import { footerHandler } from '../../components/footer/footer-handler';
 import { alertHandle } from '../../components/alerts/alerts-handler';
 import { uploadUserAvatarImage } from '../../services/user-service';
@@ -44,14 +44,15 @@ const getAvatarFileChangeHandler = (dashboardElms) => async (e) => {
         return;
     }
 
-    try {
-        showAvatarSpinner(dashboardElms.dashboardAvatarElm);
+    showAvatarSpinner(dashboardElms.dashboardAvatarElm);
 
+    try {
         await uploadUserAvatarImage(file);
 
         ee.emit('dashboard/avatar-uploaded');
     } catch (error) {
         alertHandle(error.message, 'error');
+
         hideAvatarSpinner(dashboardElms.dashboardAvatarElm);
     }
 };
@@ -60,6 +61,7 @@ const getUpdateAvatarImageHandler = (dashboardElms) => () => {
     const { dashboardAvatarElm, dashboardAvatarImageElm } = dashboardElms;
 
     setAvatarImage(dashboardAvatarImageElm, appState.avatarImageUrl);
+
     hideAvatarSpinner(dashboardAvatarElm);
 };
 

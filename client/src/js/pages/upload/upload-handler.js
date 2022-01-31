@@ -147,7 +147,7 @@ const getFileUploadAbortHandler = (fileItem) => () => {
 
     if (fileItem.status === 'pending') {
         fileItem.status = 'cancelled';
-        fileItem.message = 'Upload cancelled';
+        fileItem.message = 'Cancelled';
 
         updateUploadFileElmStatus(
             fileItem.domElm,
@@ -178,7 +178,7 @@ const uploadFiles = async () => {
             'upload/upload-complete',
             () => {
                 fileItem.status = 'done';
-                fileItem.message = 'Upload completed';
+                fileItem.message = 'Completed';
 
                 disableUploadFileAbortElm(fileItem.domElm);
 

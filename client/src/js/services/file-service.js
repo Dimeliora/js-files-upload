@@ -13,7 +13,7 @@ export const fileUpload = async (file) => {
 
     const source = axios.CancelToken.source();
     const unsubscribeUploadAbortEvent = ee.on('upload/abort', () => {
-        source.cancel('Upload cancelled');
+        source.cancel('Cancelled');
     });
 
     try {

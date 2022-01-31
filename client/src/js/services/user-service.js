@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { ee } from '../helpers/event-emitter';
 import { BASE_URL } from '../config/base-url';
 
 const userService = axios.create({
@@ -66,7 +67,10 @@ export const uploadUserAvatarImage = async (imageFile) => {
         });
     } catch (error) {
         if (!error.response) {
-            throw new Error('Service is unreachable');
+            const message = 'Service is unreachable';
+
+            ee.emit('service/fetch-error', message);
+            throw new Error(message);
         }
 
         throw new Error(error.response.data.message);

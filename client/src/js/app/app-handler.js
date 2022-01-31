@@ -1,11 +1,25 @@
 import authState from '../state/auth-state';
 import appState from '../state/app-state';
 import recentState from '../state/recent-state';
+import { ee } from '../helpers/event-emitter';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { userAuth } from '../services/auth-service';
-import { ee } from '../helpers/event-emitter';
 import { getUserData, getUserAvatarImage } from '../services/user-service';
+
+const checkUserAuthStatusHandler = async () => {
+    try {
+        const { accessToken, user } = await userAuth();
+
+        setAuthAndUserData(accessToken, user);
+
+        await requestAndSetUserAvatarImage();
+    } catch (error) {
+        localStorage.removeItem('access-token');
+    } finally {
+        routesHandler();
+    }
+};
 
 const setAuthAndUserData = (accessToken, user) => {
     localStorage.setItem('access-token', accessToken);
@@ -26,18 +40,15 @@ const requestAndSetUserAvatarImage = async () => {
     }
 };
 
-const checkUserAuthStatusHandler = async () => {
-    try {
-        const { accessToken, user } = await userAuth();
-
-        setAuthAndUserData(accessToken, user);
-
-        await requestAndSetUserAvatarImage();
-    } catch (error) {
-        localStorage.removeItem('access-token');
-    } finally {
-        routesHandler();
+const routesHandler = () => {
+    let path = window.location.hash.slice(1) || '/';
+    if (!authState.isAuth) {
+        path = 'auth';
     }
+
+    const routeHandler = routes[path];
+
+    routeHandler(appElms.appContainer);
 };
 
 const userLoginHandler = async ({ accessToken, user }) => {
@@ -76,17 +87,6 @@ const syncErrorHandler = (errorMessage) => {
     appState.setSyncError(errorMessage);
 
     ee.emit('app/update-sync-status');
-};
-
-const routesHandler = () => {
-    let path = window.location.hash.slice(1) || '/';
-    if (!authState.isAuth) {
-        path = 'auth';
-    }
-
-    const routeHandler = routes[path];
-
-    routeHandler(appElms.appContainer);
 };
 
 window.addEventListener('load', checkUserAuthStatusHandler);

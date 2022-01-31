@@ -11,6 +11,8 @@ import {
     getRegisterFormSwitchHandler,
     getLoginFormTransitionHandler,
     getRegisterFormTransitionHandler,
+    deactivateAuthForm,
+    activateAuthForm,
 } from './auth-view-updates';
 import {
     getAuthFormsContainerElm,
@@ -26,12 +28,16 @@ const getLoginFormSubmitHandler = (authElms) => async (e) => {
     const email = authElms.loginEmailInput.value;
     const password = authElms.loginPasswordInput.value;
 
+    deactivateAuthForm(authElms.loginFormElm);
+
     try {
         const { accessToken, user } = await userLogin(email, password);
 
         ee.emit('auth/user-logged-in', { accessToken, user });
     } catch (error) {
         alertHandle(error.message, 'error');
+
+        activateAuthForm(authElms.loginFormElm);
     }
 };
 
@@ -46,6 +52,8 @@ const getRegisterFormSubmitHandler = (authElms) => async (e) => {
     const email = authElms.registerEmailInput.value;
     const password = authElms.registerPasswordInput.value;
 
+    deactivateAuthForm(authElms.registerFormElm);
+
     try {
         const { accessToken, user } = await userRegister(
             username,
@@ -56,6 +64,8 @@ const getRegisterFormSubmitHandler = (authElms) => async (e) => {
         ee.emit('auth/user-logged-in', { accessToken, user });
     } catch (error) {
         alertHandle(error.message, 'error');
+
+        activateAuthForm(authElms.registerFormElm);
     }
 };
 

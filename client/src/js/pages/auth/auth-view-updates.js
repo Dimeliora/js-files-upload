@@ -31,3 +31,11 @@ export const getRegisterFormTransitionHandler = (authElms) => (e) => {
         isFormTransitionInProgress = false;
     }
 };
+
+export const deactivateAuthForm = (formElm) => {
+    formElm.classList.add('auth-form--inactive');
+};
+
+export const activateAuthForm = (formElm) => {
+    formElm.classList.remove('auth-form--inactive');
+};

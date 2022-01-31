@@ -3,6 +3,11 @@
     text-transform: uppercase;
     text-align: center;
 
+    &--inactive {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
     &__field {
         & + .auth-form__field {
             margin-top: 10px;

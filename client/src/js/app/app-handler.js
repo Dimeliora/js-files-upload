@@ -4,6 +4,7 @@ import recentState from '../state/recent-state';
 import { ee } from '../helpers/event-emitter';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
+import { createSpinnerHTML } from '../components/loader/loader-template-creators';
 import { userAuth } from '../services/auth-service';
 import { getUserData, getUserAvatarImage } from '../services/user-service';
 
@@ -89,18 +90,24 @@ const syncErrorHandler = (errorMessage) => {
     ee.emit('app/update-sync-status');
 };
 
-window.addEventListener('load', checkUserAuthStatusHandler);
+const appHandler = () => {
+    appElms.appContainer.innerHTML = createSpinnerHTML();
 
-window.addEventListener('hashchange', routesHandler);
+    checkUserAuthStatusHandler();
 
-ee.on('auth/user-logged-in', userLoginHandler);
+    window.addEventListener('hashchange', routesHandler);
 
-ee.on('auth/user-logged-out', userLogoutHandler);
+    ee.on('auth/user-logged-in', userLoginHandler);
 
-ee.on('upload/resync-needed', syncAppHandler);
+    ee.on('auth/user-logged-out', userLogoutHandler);
 
-ee.on('recent/resync-needed', syncAppHandler);
+    ee.on('upload/resync-needed', syncAppHandler);
 
-ee.on('service/fetch-error', syncErrorHandler);
+    ee.on('recent/resync-needed', syncAppHandler);
 
-ee.on('dashboard/avatar-uploaded', requestAndSetUserAvatarImage);
+    ee.on('service/fetch-error', syncErrorHandler);
+
+    ee.on('dashboard/avatar-uploaded', requestAndSetUserAvatarImage);
+};
+
+appHandler();

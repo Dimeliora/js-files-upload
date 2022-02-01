@@ -7,3 +7,24 @@ export const createLoaderHTML = () => {
         </div>
     `;
 };
+
+export const createSpinnerHTML = () => {
+    return `
+        <div class="spinner">
+            <div class="spinner__elements">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    `;
+};

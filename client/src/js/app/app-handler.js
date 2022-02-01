@@ -5,6 +5,7 @@ import { ee } from '../helpers/event-emitter';
 import { routes } from './routes';
 import { appElms } from '../app/app-dom-elements';
 import { createSpinnerHTML } from '../components/loader/loader-template-creators';
+import { notFoundHandler } from '../pages/not-found/not-found-handler';
 import { userAuth } from '../services/auth-service';
 import { getUserData, getUserAvatarImage } from '../services/user-service';
 
@@ -47,7 +48,7 @@ const routesHandler = () => {
         path = 'auth';
     }
 
-    const routeHandler = routes[path];
+    const routeHandler = routes[path] ?? notFoundHandler;
 
     routeHandler(appElms.appContainer);
 };

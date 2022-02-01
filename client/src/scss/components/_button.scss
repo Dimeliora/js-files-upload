@@ -16,6 +16,14 @@
         }
     }
 
+    &--big {
+        @media screen and (max-width: $sm) {
+            padding: 8px 20px;
+            font-size: 1.6rem;
+            font-weight: 500;
+        }
+    }
+
     &--secondary {
         border-color: $gray-dark;
         background-color: transparent;

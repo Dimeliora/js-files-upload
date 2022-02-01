@@ -1,0 +1,21 @@
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    &__heading {
+        font-size: 14rem;
+        letter-spacing: 15px;
+    }
+
+    &__text {
+        font-size: 2.6rem;
+    }
+
+    &__button {
+        margin-top: 30px;
+    }
+}

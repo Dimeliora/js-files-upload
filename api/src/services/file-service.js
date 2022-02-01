@@ -15,10 +15,12 @@ exports.fileUploadAbilityCheckService = async (userId, filename, size) => {
     const user = await User.findById(userId).exec();
 
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
-        throw new FileError(`File is too large`, 400);
+        throw new FileError(`No space for file`, 400);
     }
 
-    checkUserFileExistanceService(userId, filename);
+    if (checkUserFileExistanceService(userId, filename)) {
+        throw new FileError(`Already exists`, 400);
+    }
 };
 
 exports.fileUploadService = async (userId, file) => {
@@ -53,6 +55,10 @@ exports.downloadFileService = async (userId, fileId) => {
     const fileData = await File.findOne({ _id: fileId, user: userId }).exec();
 
     if (!fileData) {
+        throw new FileError('File not found', 404);
+    }
+
+    if (!checkUserFileExistanceService(userId, fileData.name)) {
         throw new FileError('File not found', 404);
     }
 

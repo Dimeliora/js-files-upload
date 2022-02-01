@@ -25,10 +25,7 @@ exports.checkUserFileExistanceService = (userId, filename) => {
     const userFilesDirPath = getUserFilesDir(userId);
     const filePath = path.resolve(userFilesDirPath, filename);
 
-    const isFileExist = existsSync(filePath);
-    if (isFileExist) {
-        throw new FileError(`Already exists`, 400);
-    }
+    return existsSync(filePath);
 };
 
 exports.writeUserFileToFSService = async (userId, file) => {

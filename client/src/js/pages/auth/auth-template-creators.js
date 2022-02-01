@@ -42,7 +42,10 @@ export const createLoginFormHTML = () => {
                 <div class="text-field__error"></div>
             </div>
             <div class="auth-form__controls">
-                <button class="auth-form__submit button" type="submit">
+                <button 
+                    class="auth-form__submit button button--big"
+                    type="submit"
+                >
                     Login
                 </button>
                 <button
@@ -124,7 +127,7 @@ export const createRegisterFormHTML = () => {
             </div>
             <div class="auth-form__controls">
                 <button
-                    class="auth-form__submit button"
+                    class="auth-form__submit button button--big"
                     type="submit"
                 >
                     Register

@@ -9,10 +9,16 @@
     &__heading {
         font-size: 14rem;
         letter-spacing: 15px;
+
+        @media screen and (max-width: $sm) {
+            font-size: 12rem;
+            letter-spacing: 10px;
+        }
     }
 
     &__text {
         font-size: 2.6rem;
+        text-align: center;
     }
 
     &__button {

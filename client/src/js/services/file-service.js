@@ -112,6 +112,32 @@ export const downloadFile = async (fileId) => {
                 Authorization: `Bearer ${accessToken}`,
             },
             responseType: 'blob',
+            onDownloadProgress: (e) => {
+                let totalLength;
+                if (e.lengthComputable) {
+                    totalLength = e.total;
+                } else {
+                    totalLength =
+                        e.target.getResponseHeader('content-length') ||
+                        e.target.getResponseHeader(
+                            'x-decompressed-content-length'
+                        );
+                }
+
+                const downloadProgress = Math.round(
+                    (e.loaded / totalLength) * 100
+                );
+
+                ee.emit('recent/progress-changed', {
+                    id: fileId,
+                    progress: downloadProgress,
+                });
+
+                if (downloadProgress >= 100) {
+                    ee.emit('recent/download-complete', fileId);
+                }
+                console.log(downloadProgress);
+            },
         });
 
         return data;

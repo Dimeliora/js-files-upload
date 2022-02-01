@@ -1,17 +1,18 @@
 import recentState from '../../state/recent-state';
 import { ee } from '../../helpers/event-emitter';
-import { footerHandler } from '../../components/footer/footer-handler';
 import { headerHandler } from '../../components/header/header-handler';
+import { footerHandler } from '../../components/footer/footer-handler';
 import {
     getRecentElms,
-    getRecentFileElmById,
     getRecentFileElms,
+    getRecentFileLoder,
+    getRecentFileElmById,
 } from './recent-dom-elements';
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
-    deactivateRecentFilesList,
     activateRecentFilesList,
+    deactivateRecentFilesList,
     setFullHeightRecentBlockClass,
 } from './recent-view-updates';
 import {
@@ -19,13 +20,14 @@ import {
     createViewAllHTML,
     createRecentFileHTML,
     createRecentPlaceholderHTML,
+    createFileDownloadLoaderHTML,
 } from './recent-template-creators';
 import { createLoaderHTML } from '../../components/loader/loader-template-creators';
 import { alertHandle } from '../../components/alerts/alerts-handler';
 import {
     getFiles,
-    downloadFile,
     deleteFile,
+    downloadFile,
 } from '../../services/file-service';
 
 const MAX_RECENT_FILES_COUNT = 5;
@@ -103,9 +105,11 @@ const setFileActionsClickHandlers = (recentElms) => {
         const { fileNameElm, fileDownloadElm, fileDeleteElm } =
             getRecentFileElms(recentFileElm);
 
+        const filename = fileNameElm.textContent.trim();
+
         fileDownloadElm.addEventListener(
             'click',
-            getFileDownloadHandler(fileId, fileNameElm.textContent.trim())
+            getFileDownloadHandler(recentFileElm, fileId, filename)
         );
 
         fileDeleteElm.addEventListener(
@@ -125,23 +129,56 @@ const getViewAllUploadsClickHandler = (recentElms) => async () => {
     setFullHeightRecentBlockClass(recentElms.recentBlockElm);
 };
 
-const getFileDownloadHandler = (fileId, filename) => async () => {
-    try {
-        const fileBlob = await downloadFile(fileId);
+const getFileDownloadHandler =
+    (recentFileElm, fileId, filename) => async () => {
+        // File Download Loader Test
+        const { fileSizeElm } = getRecentFileElms(recentFileElm);
+        fileSizeElm.insertAdjacentHTML(
+            'beforeend',
+            createFileDownloadLoaderHTML()
+        );
 
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = URL.createObjectURL(fileBlob);
+        const fileLoaderElm = getRecentFileLoder(recentFileElm);
+        const perimeter =
+            fileLoaderElm.width.baseVal.value * 2 +
+            fileLoaderElm.height.baseVal.value * 2;
 
-        document.body.append(link);
-        link.click();
+        fileLoaderElm.style.strokeDasharray = `${perimeter} ${perimeter}`;
+        fileLoaderElm.style.strokeDashoffset = perimeter;
+        // const setProgress = (box, length, perc) => {
+        //     box.style.strokeDashoffset = length - (perc / 100) * length;
+        // };
 
-        URL.revokeObjectURL(link.href);
-        link.remove();
-    } catch (error) {
-        alertHandle(error.message, 'error');
-    }
-};
+        ee.on('recent/progress-changed', ({ id, progress }) => {
+            if (id === fileId) {
+                fileLoaderElm.style.strokeDashoffset =
+                    perimeter - (progress / 100) * perimeter;
+            }
+        });
+        ee.on('recent/download-complete', (id) => {
+            if (id === fileId) {
+                fileLoaderElm.parentElement.remove();
+            }
+        });
+
+        // end of File Download Loader Test
+
+        try {
+            const fileBlob = await downloadFile(fileId);
+
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = URL.createObjectURL(fileBlob);
+
+            document.body.append(link);
+            link.click();
+
+            URL.revokeObjectURL(link.href);
+            link.remove();
+        } catch (error) {
+            alertHandle(error.message, 'error');
+        }
+    };
 
 const getFileDeleteHandler = (recentElms, fileId) => async () => {
     const { recentFilesListElm } = recentElms;

@@ -46,7 +46,11 @@ export const createRecentFileHTML = (file) => {
                     ${getFormattedPassedTime(createdAt)}
                 </div>
             </div>
-            <div class="file__size">${getFormattedFileSize(size)}</div>
+            <div class="file__size" data-file-size>
+                <span class="file__size-text">
+                    ${getFormattedFileSize(size)}
+                </span>               
+            </div>
             <div class="file__actions">
                 <button
                     class="file__download icon-button"
@@ -70,6 +74,24 @@ export const createRecentFileHTML = (file) => {
                 </button>
             </div>
         </li>
+    `;
+};
+
+export const createFileDownloadLoaderHTML = () => {
+    return `
+        <svg class="file__size-loader">
+            <rect
+                class="file__size-filler"
+                x="1"
+                y="1"
+                width="78"
+                height="23"
+                fill="transparent"
+                stroke-width="2"
+                stroke="#6b72c2"
+                data-file-loader
+            />
+        </svg> 
     `;
 };
 

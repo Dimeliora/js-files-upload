@@ -32,6 +32,7 @@
         column-gap: 10px;
         align-items: center;
         margin-bottom: 15px;
+        padding-right: 10px;
 
         @media screen and (max-width: $sm) {
             grid-template-columns: 1.5fr 1fr 20px;
@@ -123,13 +124,8 @@
 
     &__icon {
         display: none;
-        width: 20px;
-        height: 20px;
-
-        @media screen and (max-width: $sm) {
-            width: 16px;
-            height: 16px;
-        }
+        width: 16px;
+        height: 16px;
 
         &--done {
             fill: $green;

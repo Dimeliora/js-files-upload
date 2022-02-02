@@ -6,8 +6,8 @@
     transition: opacity 0.3s ease-out;
 
     @media screen and (max-width: $sm) {
-        grid-template-columns: 20px 1fr 55px 45px;
-        column-gap: 10px;
+        grid-template-columns: 20px 1fr 50px 50px;
+        column-gap: 8px;
     }
 
     &--deleting {
@@ -52,8 +52,6 @@
     }
 
     &__size {
-        width: 80px;
-        height: 25px;
         padding: 4px 8px;
         border: 2px solid $gray-dark;
         font-size: 1.2rem;

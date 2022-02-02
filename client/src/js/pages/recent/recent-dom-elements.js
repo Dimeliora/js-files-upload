@@ -4,10 +4,6 @@ export const getRecentElms = (rootElement) => ({
     recentLoadElm: rootElement.querySelector("[data-recent-load]"),
 });
 
-export const getRecentFileElmById = (recentFilesListElm, fileId) => {
-    return recentFilesListElm.querySelector(`[data-file="${fileId}"]`);
-};
-
 export const getRecentFileElms = (recentFileElm) => ({
     fileNameElm: recentFileElm.querySelector("[data-file-name]"),
     fileSizeElm: recentFileElm.querySelector("[data-file-size]"),

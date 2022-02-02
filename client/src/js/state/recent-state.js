@@ -44,6 +44,7 @@ class RecentState {
         this.isRecentListActual = false;
         this.isFullUploadsList = false;
         this.recentFiles = [];
+        this.filesToDelete = [];
     }
 }
 

@@ -2,11 +2,7 @@ import recentState from "../../state/recent-state";
 import { ee } from "../../helpers/event-emitter";
 import { headerHandler } from "../../components/header/header-handler";
 import { footerHandler } from "../../components/footer/footer-handler";
-import {
-    getRecentElms,
-    getRecentFileElms,
-    getRecentFileElmById,
-} from "./recent-dom-elements";
+import { getRecentElms, getRecentFileElms } from "./recent-dom-elements";
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
@@ -33,6 +29,7 @@ import {
     downloadFile,
 } from "../../services/file-service";
 
+let fileDeletionTimerId;
 const MAX_RECENT_FILES_COUNT = 5;
 
 const fetchRecentFilesHandler = async (recentElms) => {
@@ -183,7 +180,6 @@ const getFileDownloadHandler =
         }
     };
 
-let fileDeletionTimerId;
 const getFileDeleteHandler = (recentElms, recentFileElm, fileId) => () => {
     clearTimeout(fileDeletionTimerId);
 
@@ -220,6 +216,11 @@ const getDeleteFilesRoutine = (recentElms) => async () => {
         }
     } catch (error) {
         alertHandle(error.message, "error");
+
+        for (const fileToDelete of recentState.filesToDelete) {
+            resetDeletingFileClass(fileToDelete.fileElm);
+            enableRecentFileControls(fileToDelete.fileElm);
+        }
     } finally {
         recentState.removeFilesToDelete();
     }

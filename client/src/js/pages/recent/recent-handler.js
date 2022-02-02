@@ -10,13 +10,13 @@ import {
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
-    activateRecentFilesList,
-    deactivateRecentFilesList,
+    setDeletingFileClass,
+    resetDeletingFileClass,
+    enableRecentFileControls,
+    disableRecentFileControls,
     updateDownloadProgressElm,
     removeDownloadProgressElm,
     prepareDownloadProgressElm,
-    enableRecentFileControls,
-    disableRecentFileControls,
     setFullHeightRecentBlockClass,
 } from "./recent-view-updates";
 import {
@@ -117,7 +117,7 @@ const setFileActionsClickHandlers = (recentElms) => {
 
         fileDeleteElm.addEventListener(
             "click",
-            getFileDeleteHandler(recentElms, fileId)
+            getFileDeleteHandler(recentElms, recentFileElm, fileId)
         );
     }
 };
@@ -183,33 +183,39 @@ const getFileDownloadHandler =
         }
     };
 
-const getFileDeleteHandler = (recentElms, fileId) => async () => {
-    const { recentFilesListElm } = recentElms;
+const getFileDeleteHandler =
+    (recentElms, recentFileElm, fileId) => async () => {
+        const { recentFilesListElm } = recentElms;
 
-    deactivateRecentFilesList(recentFilesListElm);
+        setDeletingFileClass(recentFileElm);
+        disableRecentFileControls(recentFileElm);
 
-    try {
-        await deleteFile(fileId);
+        try {
+            await deleteFile(fileId);
 
-        await getRecentFiles();
+            await getRecentFiles();
 
-        if (!recentState.isFullUploadsList) {
-            renderRecentFilesList(recentElms);
-            return;
+            if (!recentState.isFullUploadsList) {
+                renderRecentFilesList(recentElms);
+                return;
+            }
+
+            if (recentState.recentFiles.length === 0) {
+                recentFilesListElm.innerHTML = createRecentPlaceholderHTML();
+            } else {
+                const fileElm = getRecentFileElmById(
+                    recentFilesListElm,
+                    fileId
+                );
+                fileElm.remove();
+            }
+        } catch (error) {
+            alertHandle(error.message, "error");
+        } finally {
+            resetDeletingFileClass(recentFileElm);
+            enableRecentFileControls(recentFileElm);
         }
-
-        if (recentState.recentFiles.length === 0) {
-            recentFilesListElm.innerHTML = createRecentPlaceholderHTML();
-        } else {
-            const fileElm = getRecentFileElmById(recentFilesListElm, fileId);
-            fileElm.remove();
-        }
-    } catch (error) {
-        alertHandle(error.message, "error");
-    } finally {
-        activateRecentFilesList(recentFilesListElm);
-    }
-};
+    };
 
 const resetRecentListActuality = () => {
     recentState.resetRecentListActualState();

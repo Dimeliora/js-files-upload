@@ -1,34 +1,37 @@
-import recentState from '../../state/recent-state';
-import { ee } from '../../helpers/event-emitter';
-import { headerHandler } from '../../components/header/header-handler';
-import { footerHandler } from '../../components/footer/footer-handler';
+import recentState from "../../state/recent-state";
+import { ee } from "../../helpers/event-emitter";
+import { headerHandler } from "../../components/header/header-handler";
+import { footerHandler } from "../../components/footer/footer-handler";
 import {
     getRecentElms,
     getRecentFileElms,
-    getRecentFileLoder,
     getRecentFileElmById,
-} from './recent-dom-elements';
+} from "./recent-dom-elements";
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
     activateRecentFilesList,
     deactivateRecentFilesList,
+    updateDownloadProgressElm,
+    removeDownloadProgressElm,
+    prepareDownloadProgressElm,
+    enableRecentFileControls,
+    disableRecentFileControls,
     setFullHeightRecentBlockClass,
-} from './recent-view-updates';
+} from "./recent-view-updates";
 import {
     createRecentHTML,
     createViewAllHTML,
     createRecentFileHTML,
     createRecentPlaceholderHTML,
-    createFileDownloadLoaderHTML,
-} from './recent-template-creators';
-import { createLoaderHTML } from '../../components/loader/loader-template-creators';
-import { alertHandle } from '../../components/alerts/alerts-handler';
+} from "./recent-template-creators";
+import { createLoaderHTML } from "../../components/loader/loader-template-creators";
+import { alertHandle } from "../../components/alerts/alerts-handler";
 import {
     getFiles,
     deleteFile,
     downloadFile,
-} from '../../services/file-service';
+} from "../../services/file-service";
 
 const MAX_RECENT_FILES_COUNT = 5;
 
@@ -45,7 +48,7 @@ const getRecentFiles = async (max = MAX_RECENT_FILES_COUNT) => {
         const files = await getFiles(filesCount);
 
         recentState.setRecentFiles(files);
-        ee.emit('recent/resync-needed');
+        ee.emit("recent/resync-needed");
     } catch (error) {
         recentState.setError();
     }
@@ -62,7 +65,7 @@ const renderRecentFilesList = (recentElms) => {
     }
 
     if (isFullUploadsList || recentFiles.length < MAX_RECENT_FILES_COUNT) {
-        recentLoadElm.innerHTML = '';
+        recentLoadElm.innerHTML = "";
 
         hideRecentLoadElm(recentLoadElm);
     } else {
@@ -72,7 +75,7 @@ const renderRecentFilesList = (recentElms) => {
         showRecentLoadElm(recentLoadElm);
 
         recentViewAllElm.addEventListener(
-            'click',
+            "click",
             getViewAllUploadsClickHandler(recentElms)
         );
     }
@@ -82,7 +85,7 @@ const getRecentFilesListMarkup = () => {
     const { isError, recentFiles } = recentState;
 
     if (isError) {
-        return createRecentPlaceholderHTML('error');
+        return createRecentPlaceholderHTML("error");
     }
 
     if (recentFiles.length === 0) {
@@ -91,7 +94,7 @@ const getRecentFilesListMarkup = () => {
 
     const recentListMarkup = recentFiles
         .map((file) => createRecentFileHTML(file))
-        .join(' ');
+        .join(" ");
 
     return recentListMarkup;
 };
@@ -108,12 +111,12 @@ const setFileActionsClickHandlers = (recentElms) => {
         const filename = fileNameElm.textContent.trim();
 
         fileDownloadElm.addEventListener(
-            'click',
+            "click",
             getFileDownloadHandler(recentFileElm, fileId, filename)
         );
 
         fileDeleteElm.addEventListener(
-            'click',
+            "click",
             getFileDeleteHandler(recentElms, fileId)
         );
     }
@@ -131,42 +134,37 @@ const getViewAllUploadsClickHandler = (recentElms) => async () => {
 
 const getFileDownloadHandler =
     (recentFileElm, fileId, filename) => async () => {
-        // File Download Loader Test
-        const { fileSizeElm } = getRecentFileElms(recentFileElm);
-        fileSizeElm.insertAdjacentHTML(
-            'beforeend',
-            createFileDownloadLoaderHTML()
+        const { fileProgressElm, progressLength } =
+            prepareDownloadProgressElm(recentFileElm);
+
+        disableRecentFileControls(recentFileElm);
+
+        const unsubscribeProgressChangeEvent = ee.on(
+            "recent/progress-changed",
+            ({ id, progress }) => {
+                if (id === fileId) {
+                    updateDownloadProgressElm(
+                        fileProgressElm,
+                        progressLength,
+                        progress
+                    );
+                }
+            }
         );
 
-        const fileLoaderElm = getRecentFileLoder(recentFileElm);
-        const perimeter =
-            fileLoaderElm.width.baseVal.value * 2 +
-            fileLoaderElm.height.baseVal.value * 2;
-
-        fileLoaderElm.style.strokeDasharray = `${perimeter} ${perimeter}`;
-        fileLoaderElm.style.strokeDashoffset = perimeter;
-        // const setProgress = (box, length, perc) => {
-        //     box.style.strokeDashoffset = length - (perc / 100) * length;
-        // };
-
-        ee.on('recent/progress-changed', ({ id, progress }) => {
-            if (id === fileId) {
-                fileLoaderElm.style.strokeDashoffset =
-                    perimeter - (progress / 100) * perimeter;
+        const unsubscribeDownloadCompleteEvent = ee.on(
+            "recent/download-complete",
+            (id) => {
+                if (id === fileId) {
+                    removeDownloadProgressElm(fileProgressElm);
+                }
             }
-        });
-        ee.on('recent/download-complete', (id) => {
-            if (id === fileId) {
-                fileLoaderElm.parentElement.remove();
-            }
-        });
-
-        // end of File Download Loader Test
+        );
 
         try {
             const fileBlob = await downloadFile(fileId);
 
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.download = filename;
             link.href = URL.createObjectURL(fileBlob);
 
@@ -176,7 +174,12 @@ const getFileDownloadHandler =
             URL.revokeObjectURL(link.href);
             link.remove();
         } catch (error) {
-            alertHandle(error.message, 'error');
+            alertHandle(error.message, "error");
+        } finally {
+            enableRecentFileControls(recentFileElm);
+
+            unsubscribeProgressChangeEvent();
+            unsubscribeDownloadCompleteEvent();
         }
     };
 
@@ -202,7 +205,7 @@ const getFileDeleteHandler = (recentElms, fileId) => async () => {
             fileElm.remove();
         }
     } catch (error) {
-        alertHandle(error.message, 'error');
+        alertHandle(error.message, "error");
     } finally {
         activateRecentFilesList(recentFilesListElm);
     }
@@ -231,8 +234,8 @@ export const recentHandler = async (appContainer) => {
     renderRecentFilesList(recentElms);
 
     ee.on(
-        'upload/resync-needed',
+        "upload/resync-needed",
         resetRecentListActuality,
-        'recent:upload/resync-needed'
+        "recent:upload/resync-needed"
     );
 };

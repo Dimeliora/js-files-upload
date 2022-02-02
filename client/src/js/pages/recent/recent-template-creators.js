@@ -1,8 +1,8 @@
 import {
     getFormattedFileSize,
     getFormattedPassedTime,
-} from '../../helpers/formatters';
-import { getMimeTypeIcon } from './recent-mime-icons-map';
+} from "../../helpers/formatters";
+import { getMimeTypeIcon } from "./recent-mime-icons-map";
 
 export const createRecentHTML = () => {
     return `
@@ -46,24 +46,24 @@ export const createRecentFileHTML = (file) => {
                     ${getFormattedPassedTime(createdAt)}
                 </div>
             </div>
-            <div class="file__size" data-file-size>
-                <span class="file__size-text">
-                    ${getFormattedFileSize(size)}
-                </span>               
+            <div class="file__size">
+                ${getFormattedFileSize(size)}             
             </div>
-            <div class="file__actions">
+            <div class="file__actions" data-file-actions>
+                <div class="file__download">
+                    <button
+                        class="file__action-button icon-button"
+                        title="Download file"
+                        aria-label="Download file"
+                        data-file-download
+                    >
+                        <svg class="icon-button__icon">
+                            <use href="/icons/icon-sprite.svg#download" />
+                        </svg>
+                    </button>
+                </div>
                 <button
-                    class="file__download icon-button"
-                    title="Download file"
-                    aria-label="Download file"
-                    data-file-download
-                >
-                    <svg class="icon-button__icon">
-                        <use href="/icons/icon-sprite.svg#download" />
-                    </svg>
-                </button>
-                <button
-                    class="file__delete icon-button icon-button--danger"
+                    class="file__action-button icon-button icon-button--danger"
                     title="Delete file"
                     aria-label="Delete file"
                     data-file-delete
@@ -77,31 +77,29 @@ export const createRecentFileHTML = (file) => {
     `;
 };
 
-export const createFileDownloadLoaderHTML = () => {
+export const createFileDownloadProgressHTML = () => {
     return `
-        <svg class="file__size-loader">
-            <rect
-                class="file__size-filler"
-                x="1"
-                y="1"
-                width="78"
-                height="23"
+        <svg class="file__download-progress">
+            <circle
+                cx="15"
+                cy="15"
+                r="13"
                 fill="transparent"
                 stroke-width="2"
                 stroke="#6b72c2"
-                data-file-loader
+                data-file-progress
             />
         </svg> 
     `;
 };
 
 export const createRecentPlaceholderHTML = (reason) => {
-    let placeholderText = 'No files to show';
-    let classname = '';
+    let placeholderText = "No files to show";
+    let classname = "";
 
-    if (reason === 'error') {
-        placeholderText = 'Error occured during files list fetch';
-        classname = 'recent__list-item--error';
+    if (reason === "error") {
+        placeholderText = "Error occured during files list fetch";
+        classname = "recent__list-item--error";
     }
 
     return `

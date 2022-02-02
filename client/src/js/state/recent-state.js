@@ -3,6 +3,7 @@ class RecentState {
     isRecentListActual = false;
     isFullUploadsList = false;
     recentFiles = [];
+    filesToDelete = [];
 
     setFullUploadList() {
         this.isFullUploadsList = true;
@@ -16,6 +17,20 @@ class RecentState {
         this.isError = false;
         this.isRecentListActual = true;
         this.recentFiles = files;
+    }
+
+    addFileToDelete(fileData) {
+        this.filesToDelete.push(fileData);
+    }
+
+    removeFilesToDelete() {
+        this.filesToDelete = [];
+    }
+
+    deleteFileFromRecent(fileId) {
+        this.recentFiles = this.recentFiles.filter(
+            (file) => file._id !== fileId
+        );
     }
 
     setError() {

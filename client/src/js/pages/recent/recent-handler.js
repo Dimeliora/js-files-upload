@@ -29,7 +29,7 @@ import { createLoaderHTML } from "../../components/loader/loader-template-creato
 import { alertHandle } from "../../components/alerts/alerts-handler";
 import {
     getFiles,
-    deleteFile,
+    deleteFiles,
     downloadFile,
 } from "../../services/file-service";
 
@@ -183,39 +183,47 @@ const getFileDownloadHandler =
         }
     };
 
-const getFileDeleteHandler =
-    (recentElms, recentFileElm, fileId) => async () => {
-        const { recentFilesListElm } = recentElms;
+let fileDeletionTimerId;
+const getFileDeleteHandler = (recentElms, recentFileElm, fileId) => () => {
+    clearTimeout(fileDeletionTimerId);
 
-        setDeletingFileClass(recentFileElm);
-        disableRecentFileControls(recentFileElm);
+    recentState.addFileToDelete({ fileElm: recentFileElm, id: fileId });
 
-        try {
-            await deleteFile(fileId);
+    setDeletingFileClass(recentFileElm);
+    disableRecentFileControls(recentFileElm);
 
-            await getRecentFiles();
+    fileDeletionTimerId = setTimeout(getDeleteFilesRoutine(recentElms), 1000);
+};
 
-            if (!recentState.isFullUploadsList) {
-                renderRecentFilesList(recentElms);
-                return;
+const getDeleteFilesRoutine = (recentElms) => async () => {
+    try {
+        const filesToDeleteIds = recentState.filesToDelete.map(({ id }) => id);
+
+        await deleteFiles(filesToDeleteIds);
+
+        if (recentState.isFullUploadsList) {
+            for (const fileToDelete of recentState.filesToDelete) {
+                const { fileElm, id } = fileToDelete;
+
+                recentState.deleteFileFromRecent(id);
+                fileElm.remove();
             }
 
             if (recentState.recentFiles.length === 0) {
-                recentFilesListElm.innerHTML = createRecentPlaceholderHTML();
-            } else {
-                const fileElm = getRecentFileElmById(
-                    recentFilesListElm,
-                    fileId
-                );
-                fileElm.remove();
+                recentElms.recentFilesListElm.innerHTML =
+                    createRecentPlaceholderHTML();
             }
-        } catch (error) {
-            alertHandle(error.message, "error");
-        } finally {
-            resetDeletingFileClass(recentFileElm);
-            enableRecentFileControls(recentFileElm);
+        } else {
+            await getRecentFiles();
+
+            renderRecentFilesList(recentElms);
         }
-    };
+    } catch (error) {
+        alertHandle(error.message, "error");
+    } finally {
+        recentState.removeFilesToDelete();
+    }
+};
 
 const resetRecentListActuality = () => {
     recentState.resetRecentListActualState();

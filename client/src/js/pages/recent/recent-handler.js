@@ -5,7 +5,6 @@ import { footerHandler } from "../../components/footer/footer-handler";
 import { getRecentElms, getRecentFileElms } from "./recent-dom-elements";
 import {
     hideRecentLoadElm,
-    showRecentLoadElm,
     setDeletingFileView,
     resetDeletingFileView,
     setFullHeightRecentBlockClass,
@@ -61,8 +60,6 @@ const renderRecentFilesList = (recentElms) => {
 
         recentLoadElm.innerHTML = createViewAllHTML();
         const recentViewAllElm = recentLoadElm.firstElementChild;
-
-        showRecentLoadElm(recentLoadElm);
 
         recentViewAllElm.addEventListener(
             "click",
@@ -237,3 +234,5 @@ export const recentHandler = async (appContainer) => {
 
     renderRecentFilesList(recentElms);
 };
+
+window.s = recentState;

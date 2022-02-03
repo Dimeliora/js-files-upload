@@ -16,6 +16,7 @@ class RecentState {
 
     setRecentFiles(files) {
         this.isError = false;
+        this.canFetchMore = false;
         this.recentFiles = files;
     }
 

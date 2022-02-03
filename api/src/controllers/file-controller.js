@@ -1,12 +1,13 @@
-const FileError = require('../errors/file-error');
-const AuthError = require('../errors/auth-error');
+const FileError = require("../errors/file-error");
+const AuthError = require("../errors/auth-error");
 const {
     fileUploadAbilityCheckService,
     fileUploadService,
     getFilesService,
     downloadFileService,
     deleteFileService,
-} = require('../services/file-service');
+} = require("../services/file-service");
+const { validateUser } = require("../services/auth-service");
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
     try {
@@ -22,14 +23,14 @@ exports.fileUploadAbilityCheckController = async (req, res) => {
             return res.status(error.status).json({ message: error.message });
         }
 
-        res.status(500).json({ message: 'Service error. Please, try later' });
+        res.status(500).json({ message: "Service error. Please, try later" });
     }
 };
 
 exports.fileUploadController = async (req, res) => {
     try {
         if (!req.files) {
-            throw new FileError('File expected');
+            throw new FileError("File expected");
         }
 
         await fileUploadService(req.user.id, req.files.file);
@@ -40,7 +41,7 @@ exports.fileUploadController = async (req, res) => {
             return res.status(error.status).json({ message: error.message });
         }
 
-        res.status(500).json({ message: 'Service error. Please, try later' });
+        res.status(500).json({ message: "Service error. Please, try later" });
     }
 };
 
@@ -54,24 +55,23 @@ exports.getFilesController = async (req, res) => {
             return res.status(error.status).json({ message: error.message });
         }
 
-        res.status(500).json({ message: 'Service error. Please, try later' });
+        res.status(500).json({ message: "Service error. Please, try later" });
     }
 };
 
 exports.downloadFileController = async (req, res) => {
     try {
-        const filePath = await downloadFileService(
-            req.user.id,
-            req.params.fileId
-        );
+        const userId = await validateUser(req.query.access_token);
 
-        res.status(200).sendFile(filePath);
+        const filePath = await downloadFileService(userId, req.params.fileId);
+
+        res.status(200).download(filePath);
     } catch (error) {
-        if (error instanceof FileError) {
+        if (error instanceof FileError || error instanceof AuthError) {
             return res.status(error.status).json({ message: error.message });
         }
 
-        res.status(500).json({ message: 'Service error. Please, try later' });
+        res.status(500).json({ message: "Service error. Please, try later" });
     }
 };
 
@@ -85,6 +85,6 @@ exports.deleteFileController = async (req, res) => {
             return res.status(error.status).json({ message: error.message });
         }
 
-        res.status(500).json({ message: 'Service error. Please, try later' });
+        res.status(500).json({ message: "Service error. Please, try later" });
     }
 };

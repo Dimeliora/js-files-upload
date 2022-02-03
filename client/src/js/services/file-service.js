@@ -8,19 +8,6 @@ const fileService = axios.create({
     baseURL: `${BASE_URL}/file`,
 });
 
-const getProgressValue = (e) => {
-    let totalLength;
-    if (e.lengthComputable) {
-        totalLength = e.total;
-    } else {
-        totalLength =
-            e.target.getResponseHeader("content-length") ||
-            e.target.getResponseHeader("x-decompressed-content-length");
-    }
-
-    return Math.round((e.loaded / totalLength) * 100);
-};
-
 export const fileUpload = async (file) => {
     const accessToken = localStorage.getItem("access-token");
 
@@ -50,7 +37,20 @@ export const fileUpload = async (file) => {
             },
             cancelToken: source.token,
             onUploadProgress: (e) => {
-                const uploadProgress = getProgressValue(e);
+                let totalLength;
+                if (e.lengthComputable) {
+                    totalLength = e.total;
+                } else {
+                    totalLength =
+                        e.target.getResponseHeader("content-length") ||
+                        e.target.getResponseHeader(
+                            "x-decompressed-content-length"
+                        );
+                }
+
+                const uploadProgress = Math.round(
+                    (e.loaded / totalLength) * 100
+                );
 
                 ee.emit("upload/progress-changed", uploadProgress);
 
@@ -103,42 +103,10 @@ export const getFiles = async (max = 0) => {
     }
 };
 
-export const downloadFile = async (fileId) => {
+export const downloadFile = (fileId) => {
     const accessToken = localStorage.getItem("access-token");
 
-    try {
-        const { data } = await fileService.get(`/download/${fileId}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            responseType: "blob",
-            onDownloadProgress: (e) => {
-                const downloadProgress = getProgressValue(e);
-
-                ee.emit("recent/progress-changed", {
-                    id: fileId,
-                    progress: downloadProgress,
-                });
-
-                if (downloadProgress >= 100) {
-                    ee.emit("recent/download-complete", fileId);
-                }
-            },
-        });
-
-        return data;
-    } catch (error) {
-        if (!error.response) {
-            const message = "Service is unreachable";
-
-            ee.emit("service/fetch-error", message);
-            throw new Error(message);
-        }
-
-        const response = await error.response.data.text();
-        const { message } = JSON.parse(response);
-        throw new Error(message);
-    }
+    return `${BASE_URL}/file/download/${fileId}?access_token=${accessToken}`;
 };
 
 export const deleteFiles = async (filesIds) => {

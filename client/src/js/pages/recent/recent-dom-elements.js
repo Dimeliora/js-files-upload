@@ -6,12 +6,7 @@ export const getRecentElms = (rootElement) => ({
 
 export const getRecentFileElms = (recentFileElm) => ({
     fileNameElm: recentFileElm.querySelector("[data-file-name]"),
-    fileSizeElm: recentFileElm.querySelector("[data-file-size]"),
-    fileActionsElm: recentFileElm.querySelector("[data-file-actions]"),
     fileDownloadElm: recentFileElm.querySelector("[data-file-download]"),
     fileDeleteElm: recentFileElm.querySelector("[data-file-delete]"),
 });
 
-export const getRecentFileProgressElm = (recentFileElm) => {
-    return recentFileElm.querySelector("[data-file-progress]");
-};

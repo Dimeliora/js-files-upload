@@ -17,10 +17,7 @@ export const createRecentHTML = () => {
 
 export const createViewAllHTML = () => {
     return `
-        <button
-            class="recent__view-all-button button button--secondary"
-            data-view-all
-        >
+        <button class="recent__view-all-button button button--secondary">
             View all uploads
         </button>
     `;
@@ -49,19 +46,17 @@ export const createRecentFileHTML = (file) => {
             <div class="file__size">
                 ${getFormattedFileSize(size)}             
             </div>
-            <div class="file__actions" data-file-actions>
-                <div class="file__download">
-                    <button
-                        class="file__action-button icon-button"
-                        title="Download file"
-                        aria-label="Download file"
-                        data-file-download
-                    >
-                        <svg class="icon-button__icon">
-                            <use href="/icons/icon-sprite.svg#download" />
-                        </svg>
-                    </button>
-                </div>
+            <div class="file__actions">
+                <button
+                    class="file__action-button icon-button"
+                    title="Download file"
+                    aria-label="Download file"
+                    data-file-download
+                >
+                    <svg class="icon-button__icon">
+                        <use href="/icons/icon-sprite.svg#download" />
+                    </svg>
+                </button>
                 <button
                     class="file__action-button icon-button icon-button--danger"
                     title="Delete file"
@@ -74,22 +69,6 @@ export const createRecentFileHTML = (file) => {
                 </button>
             </div>
         </li>
-    `;
-};
-
-export const createFileDownloadProgressHTML = () => {
-    return `
-        <svg class="file__download-progress">
-            <circle
-                cx="15"
-                cy="15"
-                r="13"
-                fill="transparent"
-                stroke-width="2"
-                stroke="#6b72c2"
-                data-file-progress
-            />
-        </svg> 
     `;
 };
 

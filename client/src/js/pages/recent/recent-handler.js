@@ -6,13 +6,8 @@ import { getRecentElms, getRecentFileElms } from "./recent-dom-elements";
 import {
     hideRecentLoadElm,
     showRecentLoadElm,
-    setDeletingFileClass,
-    resetDeletingFileClass,
-    enableRecentFileControls,
-    disableRecentFileControls,
-    updateDownloadProgressElm,
-    removeDownloadProgressElm,
-    prepareDownloadProgressElm,
+    setDeletingFileView,
+    resetDeletingFileView,
     setFullHeightRecentBlockClass,
 } from "./recent-view-updates";
 import {
@@ -111,7 +106,7 @@ const setFileActionsClickHandlers = (recentElms, recentListItems) => {
 
         fileDownloadElm.addEventListener(
             "click",
-            getFileDownloadHandler(listItem, fileId, filename)
+            getFileDownloadHandler(fileId, filename)
         );
 
         fileDeleteElm.addEventListener(
@@ -171,64 +166,24 @@ const fullfillRecentFilesList = (recentElms, renderedFilesIds) => {
     setFileActionsClickHandlers(recentElms, fetchedListItems);
 };
 
-const getFileDownloadHandler =
-    (recentFileElm, fileId, filename) => async () => {
-        const { fileProgressElm, progressLength } =
-            prepareDownloadProgressElm(recentFileElm);
+const getFileDownloadHandler = (fileId, filename) => () => {
+    const fileSrc = downloadFile(fileId);
 
-        disableRecentFileControls(recentFileElm);
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = fileSrc;
 
-        const unsubscribeProgressChangeEvent = ee.on(
-            "recent/progress-changed",
-            ({ id, progress }) => {
-                if (id === fileId) {
-                    updateDownloadProgressElm(
-                        fileProgressElm,
-                        progressLength,
-                        progress
-                    );
-                }
-            }
-        );
-
-        const unsubscribeDownloadCompleteEvent = ee.on(
-            "recent/download-complete",
-            (id) => {
-                if (id === fileId) {
-                    removeDownloadProgressElm(fileProgressElm);
-                }
-            }
-        );
-
-        try {
-            const fileBlob = await downloadFile(fileId);
-
-            const link = document.createElement("a");
-            link.download = filename;
-            link.href = URL.createObjectURL(fileBlob);
-
-            document.body.append(link);
-            link.click();
-
-            URL.revokeObjectURL(link.href);
-            link.remove();
-        } catch (error) {
-            alertHandle(error.message, "error");
-        } finally {
-            enableRecentFileControls(recentFileElm);
-
-            unsubscribeProgressChangeEvent();
-            unsubscribeDownloadCompleteEvent();
-        }
-    };
+    document.body.append(link);
+    link.click();
+    link.remove();
+};
 
 const getFileDeleteHandler = (recentElms, recentFileElm, fileId) => () => {
     clearTimeout(fileDeletionTimerId);
 
     recentState.addFileToDelete({ fileElm: recentFileElm, id: fileId });
 
-    setDeletingFileClass(recentFileElm);
-    disableRecentFileControls(recentFileElm);
+    setDeletingFileView(recentFileElm);
 
     fileDeletionTimerId = setTimeout(
         getDeleteFilesRoutine(recentElms),
@@ -257,8 +212,7 @@ const getDeleteFilesRoutine = (recentElms) => async () => {
         alertHandle(error.message, "error");
 
         for (const fileToDelete of recentState.filesToDelete) {
-            resetDeletingFileClass(fileToDelete.fileElm);
-            enableRecentFileControls(fileToDelete.fileElm);
+            resetDeletingFileView(fileToDelete.fileElm);
         }
     } finally {
         recentState.removeFilesToDelete();

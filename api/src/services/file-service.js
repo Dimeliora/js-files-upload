@@ -1,15 +1,15 @@
-const path = require('path');
+const path = require("path");
 
-const User = require('../models/user-model');
-const File = require('../models/file-model');
-const FileError = require('../errors/file-error');
-const { deleteUserFileFromFSService } = require('./fs-service');
-const { updateUserAfterFileDeletionService } = require('./user-service');
+const User = require("../models/user-model");
+const File = require("../models/file-model");
+const FileError = require("../errors/file-error");
+const { deleteUserFilesFromFSService } = require("./fs-service");
+const { updateUserAfterFilesDeletionService } = require("./user-service");
 const {
     checkUserFileExistanceService,
     writeUserFileToFSService,
-} = require('./fs-service');
-const { dataDir } = require('../helpers/data-path-helpers');
+} = require("./fs-service");
+const { dataDir } = require("../helpers/data-path-helpers");
 
 exports.fileUploadAbilityCheckService = async (userId, filename, size) => {
     const user = await User.findById(userId).exec();
@@ -55,28 +55,31 @@ exports.downloadFileService = async (userId, fileId) => {
     const fileData = await File.findOne({ _id: fileId, user: userId }).exec();
 
     if (!fileData) {
-        throw new FileError('File not found', 404);
+        throw new FileError("File not found", 404);
     }
 
     if (!checkUserFileExistanceService(userId, fileData.name)) {
-        throw new FileError('File not found', 404);
+        throw new FileError("File not found", 404);
     }
 
     return path.resolve(dataDir, fileData.path);
 };
 
-exports.deleteFileService = async (userId, fileId) => {
-    const fileData = await File.findOneAndRemove({
-        _id: fileId,
+exports.deleteFilesService = async (userId, fileIds) => {
+    const filesDocs = await File.find({
+        _id: { $in: fileIds },
         user: userId,
     }).exec();
 
-    if (!fileData) {
-        throw new FileError('File not found', 404);
+    for (const file of filesDocs) {
+        await file.remove();
     }
 
-    const filePath = path.resolve(dataDir, fileData.path);
-    await deleteUserFileFromFSService(filePath);
+    const filesPathArray = filesDocs.map((file) =>
+        path.resolve(dataDir, file.path)
+    );
 
-    await updateUserAfterFileDeletionService(userId, fileData);
+    await deleteUserFilesFromFSService(filesPathArray);
+
+    await updateUserAfterFilesDeletionService(userId, filesDocs);
 };

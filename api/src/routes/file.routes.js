@@ -6,7 +6,7 @@ const {
     fileUploadController,
     getFilesController,
     downloadFileController,
-    deleteFileController,
+    deleteFilesController,
 } = require("../controllers/file-controller");
 
 const fileRouter = Router();
@@ -19,6 +19,6 @@ fileRouter.get("/recent", authMW, getFilesController);
 
 fileRouter.get("/download/:fileId", downloadFileController);
 
-fileRouter.delete("/delete/:fileId", authMW, deleteFileController);
+fileRouter.post("/delete", authMW, deleteFilesController);
 
 module.exports = fileRouter;

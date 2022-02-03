@@ -5,7 +5,7 @@ const {
     fileUploadService,
     getFilesService,
     downloadFileService,
-    deleteFileService,
+    deleteFilesService,
 } = require("../services/file-service");
 const { validateUser } = require("../services/auth-service");
 
@@ -75,9 +75,9 @@ exports.downloadFileController = async (req, res) => {
     }
 };
 
-exports.deleteFileController = async (req, res) => {
+exports.deleteFilesController = async (req, res) => {
     try {
-        await deleteFileService(req.user.id, req.params.fileId);
+        await deleteFilesService(req.user.id, req.body.filesToDelete);
 
         res.sendStatus(200);
     } catch (error) {

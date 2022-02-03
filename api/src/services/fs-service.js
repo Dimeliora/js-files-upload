@@ -1,15 +1,15 @@
-const fs = require('fs/promises');
-const path = require('path');
-const Jimp = require('jimp');
-const { existsSync } = require('fs');
+const fs = require("fs/promises");
+const path = require("path");
+const Jimp = require("jimp");
+const { existsSync } = require("fs");
 
-const FileError = require('../errors/file-error');
-const { isProperImageFile } = require('../helpers/check-mime-types');
+const FileError = require("../errors/file-error");
+const { isProperImageFile } = require("../helpers/check-mime-types");
 const {
     getUserFilesDir,
     getUserDir,
     getRelativeFilePath,
-} = require('../helpers/data-path-helpers');
+} = require("../helpers/data-path-helpers");
 
 exports.createUserDirService = async (userId) => {
     const userFilesDirPath = getUserFilesDir(userId);
@@ -39,11 +39,11 @@ exports.writeUserFileToFSService = async (userId, file) => {
 
 exports.readUserAvatarService = (userId) => {
     const userDir = getUserDir(userId);
-    const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
+    const userAvatarImagePath = path.resolve(userDir, "avatar.png");
 
     const isFileExist = existsSync(userAvatarImagePath);
     if (!isFileExist) {
-        throw new FileError('File not found', 404);
+        throw new FileError("File not found", 404);
     }
 
     return userAvatarImagePath;
@@ -51,21 +51,23 @@ exports.readUserAvatarService = (userId) => {
 
 exports.uploadUserAvatarService = async (userId, file) => {
     if (!isProperImageFile(file.mimetype)) {
-        throw new FileError('Invalid image file type', 400);
+        throw new FileError("Invalid image file type", 400);
     }
 
     const fileData = await Jimp.read(file.data);
 
     const userDir = getUserDir(userId);
-    const userAvatarImagePath = path.resolve(userDir, 'avatar.png');
+    const userAvatarImagePath = path.resolve(userDir, "avatar.png");
 
     fileData.resize(100, Jimp.AUTO).quality(80).write(userAvatarImagePath);
 };
 
-exports.deleteUserFileFromFSService = async (filePath) => {
-    try {
-        await fs.rm(filePath, { force: true });
-    } catch (error) {
-        throw new FileError('File not found', 404);
+exports.deleteUserFilesFromFSService = async (filesPathArray) => {
+    for (const filePath of filesPathArray) {
+        try {
+            await fs.rm(filePath, { force: true });
+        } catch (error) {
+            throw new FileError("File not found", 404);
+        }
     }
 };

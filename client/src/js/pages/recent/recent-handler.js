@@ -136,7 +136,7 @@ const fullfillRecentFilesList = (recentElms, renderedFilesIds) => {
         (file) => !renderedFilesIds.includes(file._id)
     );
 
-    if (fetchedFiles.length === 0) {
+    if (fetchedFiles.length === 0 && renderedFilesIds.length === 0) {
         recentFilesListElm.innerHTML =
             createRecentPlaceholderHTML(canFetchMore);
 
@@ -208,6 +208,8 @@ const getDeleteFilesRoutine = (recentElms) => async () => {
             recentElms.recentFilesListElm.innerHTML =
                 createRecentPlaceholderHTML(recentState.canFetchMore);
         }
+
+        ee.emit("recent/resync-needed");
     } catch (error) {
         alertHandle(error.message, "error");
 

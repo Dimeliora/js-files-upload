@@ -113,13 +113,17 @@ export const deleteFiles = async (filesIds) => {
     const accessToken = localStorage.getItem("access-token");
 
     try {
-        for (const fileId of filesIds) {
-            await fileService.delete(`/delete/${fileId}`, {
+        await fileService.post(
+            `/delete`,
+            {
+                filesToDelete: filesIds,
+            },
+            {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-            });
-        }
+            }
+        );
     } catch (error) {
         if (!error.response) {
             const message = "Service is unreachable";

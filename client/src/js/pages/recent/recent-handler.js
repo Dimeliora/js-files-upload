@@ -19,6 +19,7 @@ import {
     createRecentHTML,
     createViewAllHTML,
     createRecentFileHTML,
+    createRecentErrorHTML,
     createRecentPlaceholderHTML,
 } from "./recent-template-creators";
 import { createLoaderHTML } from "../../components/loader/loader-template-creators";
@@ -31,6 +32,7 @@ import {
 
 let fileDeletionTimerId;
 const MAX_RECENT_FILES_COUNT = 5;
+const DELETE_FILE_DEBOUNCE_TIME = 1000;
 
 const fetchRecentFilesHandler = async (recentElms) => {
     recentElms.recentLoadElm.innerHTML = createLoaderHTML();
@@ -38,8 +40,10 @@ const fetchRecentFilesHandler = async (recentElms) => {
     await getRecentFiles();
 };
 
-const getRecentFiles = async (max = MAX_RECENT_FILES_COUNT) => {
-    const filesCount = recentState.isFullUploadsList ? 0 : max;
+const getRecentFiles = async () => {
+    const filesCount = recentState.isFullUploadsList
+        ? 0
+        : MAX_RECENT_FILES_COUNT;
 
     try {
         const files = await getFiles(filesCount);
@@ -55,17 +59,11 @@ const renderRecentFilesList = (recentElms) => {
     const { recentLoadElm, recentFilesListElm } = recentElms;
     const { isFullUploadsList, recentFiles } = recentState;
 
-    recentFilesListElm.innerHTML = getRecentFilesListMarkup();
-
-    if (recentFiles.length > 0) {
-        setFileActionsClickHandlers(recentElms);
-    }
-
     if (isFullUploadsList || recentFiles.length < MAX_RECENT_FILES_COUNT) {
-        recentLoadElm.innerHTML = "";
-
         hideRecentLoadElm(recentLoadElm);
     } else {
+        recentState.setCanFetchMore();
+
         recentLoadElm.innerHTML = createViewAllHTML();
         const recentViewAllElm = recentLoadElm.firstElementChild;
 
@@ -76,17 +74,23 @@ const renderRecentFilesList = (recentElms) => {
             getViewAllUploadsClickHandler(recentElms)
         );
     }
+
+    recentFilesListElm.innerHTML = getRecentFilesListMarkup();
+
+    if (recentFiles.length > 0) {
+        setFileActionsClickHandlers(recentElms, recentFilesListElm.children);
+    }
 };
 
 const getRecentFilesListMarkup = () => {
-    const { isError, recentFiles } = recentState;
+    const { isError, canFetchMore, recentFiles } = recentState;
 
     if (isError) {
-        return createRecentPlaceholderHTML("error");
+        return createRecentErrorHTML();
     }
 
     if (recentFiles.length === 0) {
-        return createRecentPlaceholderHTML();
+        return createRecentPlaceholderHTML(canFetchMore);
     }
 
     const recentListMarkup = recentFiles
@@ -96,37 +100,75 @@ const getRecentFilesListMarkup = () => {
     return recentListMarkup;
 };
 
-const setFileActionsClickHandlers = (recentElms) => {
-    const { recentFilesListElm } = recentElms;
-
-    for (const recentFileElm of recentFilesListElm.children) {
-        const fileId = recentFileElm.dataset.file;
+const setFileActionsClickHandlers = (recentElms, recentListItems) => {
+    for (const listItem of recentListItems) {
+        const fileId = listItem.dataset.file;
 
         const { fileNameElm, fileDownloadElm, fileDeleteElm } =
-            getRecentFileElms(recentFileElm);
+            getRecentFileElms(listItem);
 
         const filename = fileNameElm.textContent.trim();
 
         fileDownloadElm.addEventListener(
             "click",
-            getFileDownloadHandler(recentFileElm, fileId, filename)
+            getFileDownloadHandler(listItem, fileId, filename)
         );
 
         fileDeleteElm.addEventListener(
             "click",
-            getFileDeleteHandler(recentElms, recentFileElm, fileId)
+            getFileDeleteHandler(recentElms, listItem, fileId)
         );
     }
 };
 
 const getViewAllUploadsClickHandler = (recentElms) => async () => {
+    const renderedFilesIds = recentState.recentFiles.map((file) => file._id);
+
     recentState.setFullUploadList();
 
     await fetchRecentFilesHandler(recentElms);
 
-    renderRecentFilesList(recentElms);
+    fullfillRecentFilesList(recentElms, renderedFilesIds);
 
     setFullHeightRecentBlockClass(recentElms.recentBlockElm);
+};
+
+const fullfillRecentFilesList = (recentElms, renderedFilesIds) => {
+    const { recentFilesListElm, recentLoadElm } = recentElms;
+    const { recentFiles, canFetchMore } = recentState;
+
+    const fetchedFiles = recentFiles.filter(
+        (file) => !renderedFilesIds.includes(file._id)
+    );
+
+    if (fetchedFiles.length === 0) {
+        recentFilesListElm.innerHTML =
+            createRecentPlaceholderHTML(canFetchMore);
+
+        hideRecentLoadElm(recentLoadElm);
+        return;
+    }
+
+    const fetchedFilesListItemsMarkup = fetchedFiles
+        .map((file) => createRecentFileHTML(file))
+        .join(" ");
+
+    if (renderedFilesIds.length > 0) {
+        recentFilesListElm.insertAdjacentHTML(
+            "beforeend",
+            fetchedFilesListItemsMarkup
+        );
+    } else {
+        recentFilesListElm.innerHTML = fetchedFilesListItemsMarkup;
+    }
+
+    hideRecentLoadElm(recentLoadElm);
+
+    const fetchedListItems = [...recentFilesListElm.children].slice(
+        renderedFilesIds.length
+    );
+
+    setFileActionsClickHandlers(recentElms, fetchedListItems);
 };
 
 const getFileDownloadHandler =
@@ -188,7 +230,10 @@ const getFileDeleteHandler = (recentElms, recentFileElm, fileId) => () => {
     setDeletingFileClass(recentFileElm);
     disableRecentFileControls(recentFileElm);
 
-    fileDeletionTimerId = setTimeout(getDeleteFilesRoutine(recentElms), 1000);
+    fileDeletionTimerId = setTimeout(
+        getDeleteFilesRoutine(recentElms),
+        DELETE_FILE_DEBOUNCE_TIME
+    );
 };
 
 const getDeleteFilesRoutine = (recentElms) => async () => {
@@ -197,22 +242,16 @@ const getDeleteFilesRoutine = (recentElms) => async () => {
 
         await deleteFiles(filesToDeleteIds);
 
-        if (recentState.isFullUploadsList) {
-            for (const fileToDelete of recentState.filesToDelete) {
-                const { fileElm, id } = fileToDelete;
+        for (const fileToDelete of recentState.filesToDelete) {
+            const { fileElm, id } = fileToDelete;
 
-                recentState.deleteFileFromRecent(id);
-                fileElm.remove();
-            }
+            recentState.deleteFileFromRecent(id);
+            fileElm.remove();
+        }
 
-            if (recentState.recentFiles.length === 0) {
-                recentElms.recentFilesListElm.innerHTML =
-                    createRecentPlaceholderHTML();
-            }
-        } else {
-            await getRecentFiles();
-
-            renderRecentFilesList(recentElms);
+        if (recentState.recentFiles.length === 0) {
+            recentElms.recentFilesListElm.innerHTML =
+                createRecentPlaceholderHTML(recentState.canFetchMore);
         }
     } catch (error) {
         alertHandle(error.message, "error");
@@ -224,10 +263,6 @@ const getDeleteFilesRoutine = (recentElms) => async () => {
     } finally {
         recentState.removeFilesToDelete();
     }
-};
-
-const resetRecentListActuality = () => {
-    recentState.resetRecentListActualState();
 };
 
 export const recentHandler = async (appContainer) => {
@@ -242,15 +277,7 @@ export const recentHandler = async (appContainer) => {
         setFullHeightRecentBlockClass(recentElms.recentBlockElm);
     }
 
-    if (!recentState.isRecentListActual) {
-        await fetchRecentFilesHandler(recentElms);
-    }
+    await fetchRecentFilesHandler(recentElms);
 
     renderRecentFilesList(recentElms);
-
-    ee.on(
-        "upload/resync-needed",
-        resetRecentListActuality,
-        "recent:upload/resync-needed"
-    );
 };

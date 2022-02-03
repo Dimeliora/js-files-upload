@@ -5,6 +5,7 @@ import {
 import { createFileDownloadProgressHTML } from "./recent-template-creators";
 
 export const hideRecentLoadElm = (recentLoadElm) => {
+    recentLoadElm.innerHTML = "";
     recentLoadElm.classList.add("recent__view-all--hidden");
 };
 

@@ -1,21 +1,21 @@
 class RecentState {
     isError = false;
-    isRecentListActual = false;
     isFullUploadsList = false;
+    canFetchMore = false;
     recentFiles = [];
     filesToDelete = [];
 
     setFullUploadList() {
         this.isFullUploadsList = true;
+        this.canFetchMore = false;
     }
 
-    resetRecentListActualState() {
-        this.isRecentListActual = false;
+    setCanFetchMore() {
+        this.canFetchMore = true;
     }
 
     setRecentFiles(files) {
         this.isError = false;
-        this.isRecentListActual = true;
         this.recentFiles = files;
     }
 
@@ -35,14 +35,13 @@ class RecentState {
 
     setError() {
         this.isError = true;
-        this.isRecentListActual = false;
         this.recentFiles = [];
     }
 
     resetRecentState() {
         this.isError = false;
-        this.isRecentListActual = false;
         this.isFullUploadsList = false;
+        this.canFetchMore = false;
         this.recentFiles = [];
         this.filesToDelete = [];
     }

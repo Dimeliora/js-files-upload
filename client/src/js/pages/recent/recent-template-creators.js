@@ -93,18 +93,24 @@ export const createFileDownloadProgressHTML = () => {
     `;
 };
 
-export const createRecentPlaceholderHTML = (reason) => {
+export const createRecentPlaceholderHTML = (canFetchMore) => {
     let placeholderText = "No files to show";
-    let classname = "";
-
-    if (reason === "error") {
-        placeholderText = "Error occured during files list fetch";
-        classname = "recent__list-item--error";
+    if (canFetchMore) {
+        placeholderText =
+            'No recent files left. Click "View all uploads" to try fetch all';
     }
 
     return `
-        <li class="recent__list-item recent__list-item--placeholder ${classname}">
+        <li class="recent__list-item recent__list-item--placeholder">
             ${placeholderText}
+        </li>
+    `;
+};
+
+export const createRecentErrorHTML = () => {
+    return `
+        <li class="recent__list-item recent__list-item--error recent__list-item--placeholder">
+            Error occured during files list fetch
         </li>
     `;
 };

@@ -28,13 +28,13 @@ exports.checkUserFileExistanceService = (userId, filename) => {
     return existsSync(filePath);
 };
 
-exports.writeUserFileToFSService = async (userId, file) => {
+exports.writeUserFileToFSService = async (userId, file, filename) => {
     const userFilesDirPath = getUserFilesDir(userId);
-    const filePath = path.resolve(userFilesDirPath, file.name);
+    const filePath = path.resolve(userFilesDirPath, filename);
 
     await file.mv(filePath);
 
-    return getRelativeFilePath(userId, file.name);
+    return getRelativeFilePath(userId, filename);
 };
 
 exports.readUserAvatarService = (userId) => {

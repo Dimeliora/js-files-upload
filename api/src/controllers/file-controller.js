@@ -11,11 +11,7 @@ const { validateUser } = require("../services/auth-service");
 
 exports.fileUploadAbilityCheckController = async (req, res) => {
     try {
-        await fileUploadAbilityCheckService(
-            req.user.id,
-            req.body.filename,
-            req.body.size
-        );
+        await fileUploadAbilityCheckService(req.user.id, req.body.size);
 
         res.sendStatus(200);
     } catch (error) {

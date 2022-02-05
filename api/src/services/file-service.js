@@ -10,26 +10,32 @@ const {
     writeUserFileToFSService,
 } = require("./fs-service");
 const { dataDir } = require("../helpers/data-path-helpers");
+const { getPostfixedFileName } = require("../helpers/get-postfixed-filename");
 
-exports.fileUploadAbilityCheckService = async (userId, filename, size) => {
+exports.fileUploadAbilityCheckService = async (userId, size) => {
     const user = await User.findById(userId).exec();
 
     if (user.totalDiskSpace - user.usedDiskSpace < size) {
         throw new FileError(`No space for file`, 400);
     }
-
-    if (checkUserFileExistanceService(userId, filename)) {
-        throw new FileError(`Already exists`, 400);
-    }
 };
 
 exports.fileUploadService = async (userId, file) => {
+    const files = await File.find({ user: userId }).exec();
+
+    const userFilesNames = files.map((file) => file.name);
+    const postfixedFilename = getPostfixedFileName(userFilesNames, file.name);
+
     const user = await User.findById(userId).exec();
 
-    const relativeFilePath = await writeUserFileToFSService(userId, file);
+    const relativeFilePath = await writeUserFileToFSService(
+        userId,
+        file,
+        postfixedFilename
+    );
 
     const newFile = new File({
-        name: file.name,
+        name: postfixedFilename,
         type: file.mimetype,
         size: file.size,
         path: relativeFilePath,

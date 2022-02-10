@@ -57,6 +57,6 @@ exports.validateUser = async (accessToken) => {
 
         return decoded.id;
     } catch (error) {
-        throw new AuthError("Authentication failed", 400);
+        throw new AuthError("Authentication failed", 401);
     }
 };

@@ -36,7 +36,7 @@ exports.getUserAvatarController = async (req, res) => {
 
 exports.uploadUserAvatarController = async (req, res) => {
     if (!req.files) {
-        return;
+        throw new FileError("File expected", 400);
     }
 
     try {

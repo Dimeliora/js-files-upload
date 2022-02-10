@@ -26,7 +26,7 @@ exports.fileUploadAbilityCheckController = async (req, res) => {
 exports.fileUploadController = async (req, res) => {
     try {
         if (!req.files) {
-            throw new FileError("File expected");
+            throw new FileError("File expected", 400);
         }
 
         await fileUploadService(req.user.id, req.files.file);
